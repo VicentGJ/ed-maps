@@ -5,4 +5,6 @@ module cujae.edmaps {
 
     opens cujae.edmaps to javafx.fxml;
     exports cujae.edmaps;
+    exports cujae.edmaps.ui;
+    opens cujae.edmaps.ui to javafx.fxml;
 }

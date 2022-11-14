@@ -1,4 +1,4 @@
-package cujae.edmaps;
+package cujae.edmaps.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
