@@ -1,6 +1,7 @@
 module cujae.edmaps {
     requires javafx.controls;
     requires javafx.fxml;
+    requires LinkedGraph;
 
 
     opens cujae.edmaps to javafx.fxml;
