@@ -2,10 +2,12 @@ package cujae.edmaps.core;
 
 import cu.edu.cujae.ceis.graph.*;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
+import cu.edu.cujae.ceis.graph.interfaces.ILinkedDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -13,6 +15,30 @@ public class City {
     private String name;
     private LinkedGraph graph;
     private List<Bus> buses;
+
+    public City(String name) {
+        setName(name);
+        this.graph = new LinkedGraph();
+        this.buses = new LinkedList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ILinkedDirectedGraph getGraph() {
+        return graph;
+    }
+    public List<Bus> getBuses() {
+        return buses;
+    }
+    public void addBus(List<Bus> buses) {
+        throw new UnsupportedOperationException();
+    }
 
     public void addBusStop(String name){
         if(!existName(name)){
