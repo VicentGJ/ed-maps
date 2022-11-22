@@ -4,6 +4,8 @@ import cu.edu.cujae.ceis.graph.*;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
+import cujae.edmaps.core.dijkstra.CompletePath;
+import cujae.edmaps.core.dijkstra.DijsktraShortestPath;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +17,7 @@ public class City {
     private String name;
     private LinkedGraph graph;
     private List<Bus> buses;
+    private DijsktraShortestPath dijsktraShortestPath;
 
     public City(String name) {
         setName(name);
@@ -80,6 +83,12 @@ public class City {
             }
         }
         return result;
+    }
+    public CompletePath getPathBetween(Vertex start, Vertex goal) throws Exception {
+        if(dijsktraShortestPath == null || !dijsktraShortestPath.getStart().equals(start)){
+            dijsktraShortestPath = new DijsktraShortestPath(start);
+        }
+        return dijsktraShortestPath.getShortestPathTo(goal);
     }
 
 }
