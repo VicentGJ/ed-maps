@@ -1,16 +1,14 @@
 package cujae.edmaps.core.dijkstra;
 
-import cu.edu.cujae.ceis.graph.LinkedGraph;
 import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.Bus;
 import cujae.edmaps.core.Route;
 
-import java.lang.reflect.WildcardType;
 import java.util.*;
 
-public class DijsktraShortestPath {
+public class DijkstraShortestPath {
     private Vertex start;
     private Map<Vertex, WayToArrive> nodes;
 
@@ -27,7 +25,7 @@ public class DijsktraShortestPath {
         }
     }
 
-    public DijsktraShortestPath(Vertex start) {
+    public DijkstraShortestPath(Vertex start) {
         this.start = start;
         nodes = new HashMap<>();
         Map<Vertex, WayToArrive> toUnlock = new HashMap<>();
