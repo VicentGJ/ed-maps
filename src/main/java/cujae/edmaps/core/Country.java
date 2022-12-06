@@ -8,8 +8,8 @@ public class Country {
     private String name;
     private Country country;
 
-    public Country getInstance(){
-        if(country == null)
+    public Country getInstance() {
+        if (country == null)
             country = new Country("Cuba");
         return country;
     }
@@ -23,8 +23,8 @@ public class Country {
         return cities;
     }
 
-    public void addCities(List<City> cities) {
-        throw new UnsupportedOperationException();
+    public void addCity(City city) {
+        cities.add(city);
     }
 
     public String getName() {

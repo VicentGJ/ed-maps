@@ -21,7 +21,9 @@ public class Route {
         return distance;
     }
 
-    public void setDistance(Double distance) {
-        this.distance = distance;
+    public boolean setDistance(Double distance) {
+        if (distance < 0) return false;
+        else this.distance = distance;
+        return true;
     }
 }
