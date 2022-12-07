@@ -49,6 +49,7 @@ public class City {
         }
     }
 
+    // TODO: validate if BUS is null, distance has to be <= 500
     public void addRoute(BusStop stop1, BusStop stop2, Bus bus, Double distance) {
         Vertex v1 = getVertex(stop1);
         if (v1 != null) {
@@ -59,7 +60,7 @@ public class City {
             }
         }
     }
-
+    // TODO: This method is unnecessary, addRoute can do the same thing
     public void addNearbyStop(BusStop stop1, BusStop stop2, Double distance) {
         Vertex v1 = getVertex(stop1);
         if (v1 != null) {
@@ -70,7 +71,7 @@ public class City {
             }
         }
     }
-
+    // TODO: this name is not clear
     public boolean existName(String name) {
         Iterator<Vertex> i = routeGraph.getVerticesList().iterator();
         boolean found = false;
