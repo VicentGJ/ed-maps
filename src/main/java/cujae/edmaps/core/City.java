@@ -109,6 +109,7 @@ public class City {
 
     /**
      * TODO: Document the method
+     * TODO: Modify the parameters to take string instead of Vertex
      */
     public CompletePath getPathBetween(Vertex start, Vertex goal) throws Exception {
         if (dijsktraShortestPath == null || !dijsktraShortestPath.getStart().equals(start)) {
