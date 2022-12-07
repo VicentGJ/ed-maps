@@ -6,10 +6,9 @@ import cujae.edmaps.core.Bus;
 public class Path {
     private Vertex stop;
     private Bus bus;
+    private Float distance;
 
-    private Double distance;
-
-    public Path(Vertex stop, Bus bus, Double distance) {
+    public Path(Vertex stop, Bus bus, Float distance) {
         this.stop = stop;
         this.bus = bus;
         this.distance = distance;
@@ -31,11 +30,11 @@ public class Path {
         this.bus = bus;
     }
 
-    public Double getDistance() {
+    public Float getDistance() {
         return distance;
     }
 
-    public void setDistance(Double distance) {
+    public void setDistance(Float distance) {
         this.distance = distance;
     }
 }

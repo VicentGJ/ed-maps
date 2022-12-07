@@ -1,7 +1,7 @@
 package cujae.edmaps.core;
 
 import cu.edu.cujae.ceis.graph.*;
-import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeDirectedGraph;
+import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.DijkstraShortestPath;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class City {
     private String name;
-    private LinkedGraph routeGraph;
+    private ILinkedWeightedEdgeNotDirectedGraph routeGraph;
     private List<Bus> busList;
     private DijkstraShortestPath dijsktraShortestPath;
 
@@ -31,7 +31,7 @@ public class City {
         this.name = name;
     }
 
-    public ILinkedWeightedEdgeDirectedGraph getRouteGraph() {
+    public ILinkedWeightedEdgeNotDirectedGraph getRouteGraph() {
         return routeGraph;
     }
 
@@ -122,7 +122,7 @@ public class City {
     public CompletePath getPathBetween(String start, String goal) throws Exception {
         Vertex tail = getVertex(start);
         Vertex head = getVertex(goal);
-        if (dijsktraShortestPath == null || !dijsktraShortestPath.getStart().equals(start)) {
+        if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equals(start)) {
             dijsktraShortestPath = new DijkstraShortestPath(tail);
         }
         return dijsktraShortestPath.getShortestPathTo(head);
@@ -145,11 +145,11 @@ public class City {
     /**
      * Insert the <strong>weighted directed edge</strong> from tail to head
      *
-     * @param busStopTail the BusStop's name from which the directed edge is going to point
-     * @param busStopHead the BusStop's name to which the directed edge is going to point
+     * @param busStopTail the BusStop's name from which the edge is going to point
+     * @param busStopHead the BusStop's name to which the edge is going to point
      * @param busName     the Bus's name that will represent the Route, or <strong>null</strong> to set a walking route
      * @param distance    the distance to set from tail to head, has to be positive and if busName is <strong>null</strong>, it has to be <= 500
-     * @return true if the route was inserted correctly, false otherwise
+     * @throws InvalidParameterException if busStopTail or busStopHead doesn't exist, and if distance < 0 or if is a walking route and distance >500
      */
     public void insertRoute(String busStopTail, String busStopHead, String busName, Float distance) throws InvalidParameterException {
         if (distance > 0) {
@@ -160,30 +160,27 @@ public class City {
                     int headIndex = getBusStopIndex(busStopHead);
                     if (headIndex != -1) {
                         Route route = new Route(bus, distance);
-                        this.routeGraph.insertWEdgeDG(tailIndex, headIndex, route);
-                    } else throw new InvalidParameterException("busStopHead: "+busStopHead);
-                } else throw new InvalidParameterException("busStopTail: "+busStopTail);
-            }
-        }
+                        this.routeGraph.insertWEdgeNDG(tailIndex, headIndex, route);
+                    } else throw new InvalidParameterException("busStopHead: " + busStopHead);
+                } else throw new InvalidParameterException("busStopTail: " + busStopTail);
+            } else throw new InvalidParameterException("distance(walking route): " + distance);
+        } else throw new InvalidParameterException("distance: " + distance);
     }
 
     /**
-     * Removes the <strong>weighted directed edge</strong> that points from tail to head
+     * Removes the <strong>weighted edge</strong> that points from tail to head
      *
-     * @param tail the BusStop's name that represents the tail of the directed edge
-     * @param head the BusStop's name that represents the head of the directed edge
-     * @return true if edge was removed successfully, false otherwise
+     * @param tail the BusStop's name that represents the tail of the edge
+     * @param head the BusStop's name that represents the head of the edge
+     * @throws InvalidParameterException if tail or head doesn't exist
      */
-    public boolean removeRoute(String tail, String head) {
-        boolean success = false;
+    public void removeRoute(String tail, String head) {
         int indexTail = getBusStopIndex(tail);
         if (indexTail != -1) {
             int indexHead = getBusStopIndex(head);
             if (indexHead != -1) {
-                this.routeGraph.deleteEdgeD(indexTail, indexHead);
-                success = true;
-            }
-        }
-        return success;
+                this.routeGraph.deleteEdgeND(indexTail, indexHead);
+            } else throw new InvalidParameterException("tail: " + tail);
+        } else throw new InvalidParameterException("head: " + head);
     }
 }
