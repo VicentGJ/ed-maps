@@ -83,7 +83,10 @@ public class City {
     public boolean existBus(String name) {
         boolean found = false;
         for (Bus bus : busList)
-            if (bus.getName().equals(name)) found = true;
+            if (bus.getName().equals(name)) {
+                found = true;
+                break;
+            }
         return found;
     }
 
