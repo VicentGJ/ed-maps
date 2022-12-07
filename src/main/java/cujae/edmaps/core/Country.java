@@ -6,9 +6,9 @@ import java.util.List;
 public class Country {
     List<City> cities;
     private String name;
-    private Country country;
+    private static Country country;
 
-    public Country getInstance() {
+    public static Country getInstance() {
         if (country == null)
             country = new Country("Cuba");
         return country;
