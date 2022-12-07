@@ -111,14 +111,20 @@ public class City {
     }
 
     /**
-     * TODO: Document the method
-     * TODO: Modify the parameters to take string instead of Vertex
+     * Finds the shortest path between the given busStops
+     *
+     * @param start the BusStop's name of the starting point
+     * @param goal  the BusStop's name of the goal point
+     * @return a CompletePath instance with the path from start to goal
+     * @throws Exception
      */
-    public CompletePath getPathBetween(Vertex start, Vertex goal) throws Exception {
+    public CompletePath getPathBetween(String start, String goal) throws Exception {
+        Vertex tail = getVertex(start);
+        Vertex head = getVertex(goal);
         if (dijsktraShortestPath == null || !dijsktraShortestPath.getStart().equals(start)) {
-            dijsktraShortestPath = new DijsktraShortestPath(start);
+            dijsktraShortestPath = new DijsktraShortestPath(tail);
         }
-        return dijsktraShortestPath.getShortestPathTo(goal);
+        return dijsktraShortestPath.getShortestPathTo(head);
     }
 
     /**
