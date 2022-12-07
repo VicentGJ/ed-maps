@@ -6,6 +6,7 @@ import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.DijkstraShortestPath;
 
+import java.security.InvalidParameterException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -150,8 +151,7 @@ public class City {
      * @param distance    the distance to set from tail to head, has to be positive and if busName is <strong>null</strong>, it has to be <= 500
      * @return true if the route was inserted correctly, false otherwise
      */
-    public boolean insertRoute(String busStopTail, String busStopHead, String busName, Double distance) {
-        boolean success = false;
+    public void insertRoute(String busStopTail, String busStopHead, String busName, Float distance) throws InvalidParameterException {
         if (distance > 0) {
             Bus bus = getBus(busName);
             if (bus != null || distance <= 500) {
@@ -161,12 +161,10 @@ public class City {
                     if (headIndex != -1) {
                         Route route = new Route(bus, distance);
                         this.routeGraph.insertWEdgeDG(tailIndex, headIndex, route);
-                        success = true;
-                    }
-                }
+                    } else throw new InvalidParameterException("busStopHead: "+busStopHead);
+                } else throw new InvalidParameterException("busStopTail: "+busStopTail);
             }
         }
-        return success;
     }
 
     /**
