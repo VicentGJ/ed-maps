@@ -177,15 +177,24 @@ public class City {
      * @param head the BusStop's name that represents the head of the edge
      * @throws InvalidParameterException if tail or head doesn't exist
      */
-    //FIXME: get also the bus name to know which route delete
-    public void removeRoute(String tail, String head) {
-        int indexTail = getBusStopIndex(tail);
-        if (indexTail != -1) {
-            int indexHead = getBusStopIndex(head);
-            if (indexHead != -1) {
-                this.routeGraph.deleteEdgeND(indexTail, indexHead);
-            } else throw new InvalidParameterException("tail: " + tail);
-        } else throw new InvalidParameterException("head: " + head);
+    public void removeRoute(String tail, String head, String busName) {
+        if (tail == null || head == null) return;
+        Vertex tailVertex = getVertex(tail);
+        if (tailVertex == null) throw new InvalidParameterException("tail not found: " + tail);
+        Vertex headVertex = getVertex(head);
+        if (headVertex == null) throw new InvalidParameterException("head not found: " + head);
+        WeightedEdge wEdge = getEdge(tailVertex, busName);
+        Iterator<Edge> edgeIterator = tailVertex.getEdgeList().iterator();
+        boolean removed = false;
+        WeightedEdge currentWEdge = null;
+        while (edgeIterator.hasNext() && !removed) {
+            currentWEdge = (WeightedEdge) edgeIterator.next();
+            if (currentWEdge.getVertex().equals(headVertex) && wEdge == currentWEdge) {
+                edgeIterator.remove();
+                removed = true;
+                removeRoute(head, tail, busName);
+            }
+        }
     }
 
     /**
