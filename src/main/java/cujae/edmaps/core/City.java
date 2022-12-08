@@ -287,6 +287,7 @@ public class City {
         Iterator<Edge> it = stop1.getEdgeList().iterator();
         while (it.hasNext() && !found) {
             WeightedEdge aux = (WeightedEdge) it.next();
+            //FIXME: .getBus() can return null if is a walking route, throwing an exception when doing null.getName()
             if (((Route) aux.getWeight()).getBus().getName().equals(bus)) {
                 result = aux;
                 found = true;

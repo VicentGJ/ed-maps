@@ -29,6 +29,7 @@ public class HelloApplication extends Application {
 
     public static void userHistoryCityCreation() {
         //user story 1: create city and get the shortest path between 2 bus stops
+        System.out.println("User story 1: shortest path");
         City havana = new City("Havana");
         havana.addBus("Route-1");
         havana.addBus("Route-2");
@@ -61,9 +62,11 @@ public class HelloApplication extends Application {
         }
 
         //user story 2: remove a bus and all its routes/edges
+        System.out.println("user story 2: remove bus and its connections(no output)");
         havana.removeBus("Route-3");
 
         //user story 3: rename bus stop
+        System.out.println("user story 3: rename bus stop");
         Vertex historicCenter = havana.getVertex("Old town");
         BusStop busstop = ((BusStop) historicCenter.getInfo());
         System.out.println(busstop.getName());
@@ -77,10 +80,11 @@ public class HelloApplication extends Application {
         }
 
         //user story 4: modify route distance
+        System.out.println("user story 4: modify route distance");
         WeightedEdge wEdge = havana.getEdge(havana.getVertex("Airport"), "Route-1");
         Route route = (Route) wEdge.getWeight();
         System.out.println(route.getDistance());
-        havana.modifyDistanceBetween("Airport", "Train Station", "Route-1", 6.0f);
+        havana.modifyDistanceBetween("Airport", "Train Station", "Route-1", 600.0f);
         System.out.println(route.getDistance());
 
         try {
@@ -89,6 +93,10 @@ public class HelloApplication extends Application {
         } catch (InvalidParameterException e) {
             e.printStackTrace();
         }
+
+        //user story 5: set walking route
+        System.out.println("user story 5: wat a walking route(no output)");
+        havana.insertRoute("Airport", "Train Station", null, 450f);
     }
 
 
