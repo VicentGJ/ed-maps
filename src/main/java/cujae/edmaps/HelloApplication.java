@@ -23,7 +23,7 @@ public class HelloApplication extends Application {
     }
 
     public static void userHistoryCityCreation() {
-
+        //user story 1: create city and get the shortest path between 2 bus stops
         City havana = new City("Havana");
         havana.addBus("Route-1");
         havana.addBus("Route-2");
@@ -45,15 +45,18 @@ public class HelloApplication extends Application {
         havana.insertRoute("Train Station", "Old town", "Route-3", 1.0f);
         try {
             CompletePath path = havana.getPathBetween("Airport", "Old town");
-            for(Path p : path.getPaths()){
-                System.out.println(p.getBus()!=null?p.getBus().getName():null);
+            for (Path p : path.getPaths()) {
+                System.out.println(p.getBus() != null ? p.getBus().getName() : null);
                 System.out.println(p.getDistance());
-                System.out.println(((BusStop)p.getStop().getInfo()).getName());
+                System.out.println(((BusStop) p.getStop().getInfo()).getName());
                 System.out.println(":::::::::::::::::");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //user story 2: remove a bus and all its routes/edges
+        havana.removeBus("Route-3");
     }
 
     public static void main(String[] args) {
