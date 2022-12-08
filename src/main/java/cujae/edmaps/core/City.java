@@ -187,6 +187,22 @@ public class City {
     }
 
     /**
+     * Modify the name of the specified BusStop
+     * @param oldName The actual BusStop's name
+     * @param newName the new BusStop's name
+     * @throws InvalidParameterException if the oldName doesn't exist or if the newName is already taken
+     */
+    public void modifyBusStopName(String oldName, String newName){
+        Vertex vertex = getVertex(oldName);
+        if(vertex != null){
+            if(!existBusStop(newName))
+                ((BusStop)vertex.getInfo()).setName(newName);
+            else throw new InvalidParameterException("newName:" + newName);
+        }
+        else throw new InvalidParameterException("oldName:" + oldName);
+    }
+
+    /**
      * Removes the Bus and all its routes in the graph
      *
      * @param name the Bus's name to remove
