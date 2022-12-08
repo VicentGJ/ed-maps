@@ -185,47 +185,49 @@ public class City {
             } else throw new InvalidParameterException("tail: " + tail);
         } else throw new InvalidParameterException("head: " + head);
     }
-
     /**
-     * Removes the Bus and all its routes in the graph
-     *
-     * @param name the Bus's name to remove
-     * @throws InvalidParameterException if bus doesn't exist
+     * Modify the distance of a route between two busStops
+     * @param tail the BusStop's name that represents the departure stop of the route
+     * @param head the BusStop's name that represents the arrival stop of the route
+     * @param bus the name of the route it's going to be deleted
+     * @param newDistance the new route's distance
+     * @throws InvalidParameterException if tail, head or bus don't exist
      */
-    public void removeBus(String name) {
-        Iterator<Bus> i = busList.iterator();
-        boolean removed = false;
-        Bus current = null;
-        while (i.hasNext() && !removed) {
-            current = i.next();
-            if (current.getName().equals(name)) {
-                removeConnections(current);
-                i.remove();
-                removed = true;
-            }
+    public void modifyDistanceBetween(String tail, String head, String bus, float newDistance){
+        Vertex stop1 = getVertex(tail);
+        if(stop1 != null){
+            Vertex stop2 = getVertex(head);
+            if(stop2 != null){
+                WeightedEdge edge = getEdge(stop1, bus);
+                if(edge != null){
+                    ((Route)edge.getWeight()).setDistance(newDistance);
+                    edge = getEdge(stop2, bus);
+                    ((Route)edge.getWeight()).setDistance(newDistance);
+                }else throw new InvalidParameterException("bus:" + bus);
+            }else throw new InvalidParameterException("head:" + head);
         }
-        if (!removed) throw new InvalidParameterException("name not found: " + name);
+        else throw new InvalidParameterException("tail:" + tail);
+
+
     }
 
     /**
-     * Remove all the connections of a given Bus
-     *
-     * @param bus the Bus which connections are going to be deleted
+     * Gets the edge that represents the route
+     * @param stop1 Departure vertex
+     * @param bus Bus name
+     * @return The WeightedEdge
      */
-    private void removeConnections(Bus bus) {
-        LinkedList<Vertex> vertices = routeGraph.getVerticesList();
-        Iterator<Vertex> i = vertices.iterator();
-        Vertex currentVertex = null;
-        while (i.hasNext()) {
-            currentVertex = i.next();
-            LinkedList<Edge> edges = currentVertex.getEdgeList();
-            Iterator<Edge> j = edges.iterator();
-            WeightedEdge currentWEdge = null;
-            while (j.hasNext()) {
-                currentWEdge = (WeightedEdge) j.next();
-                Route route = (Route) currentWEdge.getWeight();
-                if (route.getBus().equals(bus)) j.remove();
+    private WeightedEdge getEdge(Vertex stop1, String bus){
+        WeightedEdge result = null;
+        boolean found = false;
+        Iterator<Edge> it = stop1.getEdgeList().iterator();
+        while(it.hasNext() && !found){
+            WeightedEdge aux = (WeightedEdge) it.next();
+            if(((Route)aux.getWeight()).getBus().getName().equals(bus)){
+                result = aux;
+                found = true;
             }
         }
+        return result;
     }
 }
