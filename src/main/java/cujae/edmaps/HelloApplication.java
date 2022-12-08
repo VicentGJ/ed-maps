@@ -1,7 +1,9 @@
 package cujae.edmaps;
 
+import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
 import cujae.edmaps.core.dijkstra.CompletePath;
+import cujae.edmaps.core.dijkstra.Path;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -43,7 +45,12 @@ public class HelloApplication extends Application {
         havana.insertRoute("Train Station", "Old town", "Route-3", 1.0f);
         try {
             CompletePath path = havana.getPathBetween("Airport", "Old town");
-            System.out.println(path.getPaths());
+            for(Path p : path.getPaths()){
+                System.out.println(p.getBus()!=null?p.getBus().getName():null);
+                System.out.println(p.getDistance());
+                System.out.println(((BusStop)p.getStop().getInfo()).getName());
+                System.out.println(":::::::::::::::::");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
