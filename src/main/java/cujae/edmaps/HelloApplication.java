@@ -1,7 +1,11 @@
 package cujae.edmaps;
 
+import cu.edu.cujae.ceis.graph.edge.Edge;
+import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
+import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
+import cujae.edmaps.core.Route;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
 import javafx.application.Application;
@@ -10,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 
 public class HelloApplication extends Application {
     @Override
@@ -57,7 +62,35 @@ public class HelloApplication extends Application {
 
         //user story 2: remove a bus and all its routes/edges
         havana.removeBus("Route-3");
+
+        //user story 3: rename bus stop
+        Vertex historicCenter = havana.getVertex("Old town");
+        BusStop busstop = ((BusStop) historicCenter.getInfo());
+        System.out.println(busstop.getName());
+        havana.renameBusStop("Old town", "Historic Center");
+        System.out.println(busstop.getName());
+
+        try {
+            havana.renameBusStop("Historic Center", "Train Station");
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();
+        }
+
+        //user story 4: modify route distance
+        WeightedEdge wEdge = havana.getEdge(havana.getVertex("Airport"), "Route-1");
+        Route route = (Route) wEdge.getWeight();
+        System.out.println(route.getDistance());
+        havana.modifyDistanceBetween("Airport", "Train Station", "Route-1", 6.0f);
+        System.out.println(route.getDistance());
+
+        try {
+            havana.modifyDistanceBetween("Airport", "Train Station", "Route-1", 0f);
+            System.out.println(route.getDistance());
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();
+        }
     }
+
 
     public static void main(String[] args) {
         userHistoryCityCreation();

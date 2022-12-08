@@ -121,6 +121,7 @@ public class City {
      * @return a CompletePath instance with the path from start to goal
      * @throws Exception
      */
+    //TODO: document when is the Exception thrown
     public CompletePath getPathBetween(String start, String goal) throws Exception {
         Vertex tail = getVertex(start);
         Vertex head = getVertex(goal);
@@ -163,8 +164,8 @@ public class City {
                     if (headIndex != -1) {
                         Route route = new Route(bus, distance);
                         this.routeGraph.insertWEdgeNDG(tailIndex, headIndex, route);
-                    } else throw new InvalidParameterException("busStopHead: " + busStopHead);
-                } else throw new InvalidParameterException("busStopTail: " + busStopTail);
+                    } else throw new InvalidParameterException("busStopHead not found: " + busStopHead);
+                } else throw new InvalidParameterException("busStopTail not found: " + busStopTail);
             } else throw new InvalidParameterException("distance(walking route): " + distance);
         } else throw new InvalidParameterException("distance: " + distance);
     }
@@ -176,6 +177,7 @@ public class City {
      * @param head the BusStop's name that represents the head of the edge
      * @throws InvalidParameterException if tail or head doesn't exist
      */
+    //FIXME: get also the bus name to know which route delete
     public void removeRoute(String tail, String head) {
         int indexTail = getBusStopIndex(tail);
         if (indexTail != -1) {
@@ -231,59 +233,61 @@ public class City {
 
     /**
      * Modify the name of the specified BusStop
+     *
      * @param oldName The actual BusStop's name
      * @param newName the new BusStop's name
      * @throws InvalidParameterException if the oldName doesn't exist or if the newName is already taken
      */
-    public void modifyBusStopName(String oldName, String newName){
+    public void renameBusStop(String oldName, String newName) {
         Vertex vertex = getVertex(oldName);
-        if(vertex != null){
-            if(!existBusStop(newName))
-                ((BusStop)vertex.getInfo()).setName(newName);
-            else throw new InvalidParameterException("newName:" + newName);
-        }
-        else throw new InvalidParameterException("oldName:" + oldName);
+        if (vertex != null) {
+            if (!existBusStop(newName))
+                ((BusStop) vertex.getInfo()).setName(newName);
+            else throw new InvalidParameterException("newName already exist: " + newName);
+        } else throw new InvalidParameterException("oldName not found: " + oldName);
     }
 
     /**
      * Modify the distance of a route between two busStops
-     * @param tail the BusStop's name that represents the departure stop of the route
-     * @param head the BusStop's name that represents the arrival stop of the route
-     * @param bus the name of the route it's going to be deleted
+     *
+     * @param tail        the BusStop's name that represents the departure stop of the route
+     * @param head        the BusStop's name that represents the arrival stop of the route
+     * @param bus         the name of the route it's going to be deleted
      * @param newDistance the new route's distance
      * @throws InvalidParameterException if tail, head or bus don't exist
      */
-    public void modifyDistanceBetween(String tail, String head, String bus, float newDistance){
+    public void modifyDistanceBetween(String tail, String head, String bus, Float newDistance) {
+        if (newDistance <= 0) throw new InvalidParameterException("newDistance: " + newDistance);
         Vertex stop1 = getVertex(tail);
-        if(stop1 != null){
+        if (stop1 != null) {
             Vertex stop2 = getVertex(head);
-            if(stop2 != null){
+            if (stop2 != null) {
                 WeightedEdge edge = getEdge(stop1, bus);
-                if(edge != null){
-                    ((Route)edge.getWeight()).setDistance(newDistance);
+                if (edge != null) {
+                    ((Route) edge.getWeight()).setDistance(newDistance);
                     edge = getEdge(stop2, bus);
-                    ((Route)edge.getWeight()).setDistance(newDistance);
-                }else throw new InvalidParameterException("bus:" + bus);
-            }else throw new InvalidParameterException("head:" + head);
-        }
-        else throw new InvalidParameterException("tail:" + tail);
+                    ((Route) edge.getWeight()).setDistance(newDistance);
+                } else throw new InvalidParameterException("bus:" + bus);
+            } else throw new InvalidParameterException("head:" + head);
+        } else throw new InvalidParameterException("tail:" + tail);
 
 
     }
 
     /**
      * Gets the edge that represents the route
+     *
      * @param stop1 Departure vertex
-     * @param bus Bus name
+     * @param bus   Bus name
      * @return The WeightedEdge
      */
-    private WeightedEdge getEdge(Vertex stop1, String bus){
+    public WeightedEdge getEdge(Vertex stop1, String bus) {
         WeightedEdge result = null;
         boolean found = false;
         Iterator<Edge> it = stop1.getEdgeList().iterator();
-        while(it.hasNext() && !found){
+        while (it.hasNext() && !found) {
             WeightedEdge aux = (WeightedEdge) it.next();
-            if(((Route)aux.getWeight()).getBus().getName().equals(bus)){
+            if (((Route) aux.getWeight()).getBus().getName().equals(bus)) {
                 result = aux;
                 found = true;
             }
