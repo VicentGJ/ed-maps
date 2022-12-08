@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 
 public class HelloApplication extends Application {
     @Override
@@ -58,9 +59,24 @@ public class HelloApplication extends Application {
         //user story 2: remove a bus and all its routes/edges
         havana.removeBus("Route-3");
     }
+    public static void userHistoryModifyBusStopName(){
+        City havana = new City("Havana");
+        havana.addBusStop("Airport");
+        havana.addBusStop("Train Station");
+        try {
+            havana.modifyBusStopName("Airport", "José Martí Airport");
+            System.out.println("ok!");
+            havana.modifyBusStopName("José Martí Airport", "Train Station");
+            System.out.println(":(");
+        }catch(InvalidParameterException e){
+            System.out.println(e.getMessage());
+        }
+
+    }
 
     public static void main(String[] args) {
         userHistoryCityCreation();
+        userHistoryModifyBusStopName();
         launch();
     }
 }
