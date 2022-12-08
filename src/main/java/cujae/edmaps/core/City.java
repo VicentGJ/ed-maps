@@ -1,8 +1,6 @@
 package cujae.edmaps.core;
 
 import cu.edu.cujae.ceis.graph.*;
-import cu.edu.cujae.ceis.graph.edge.Edge;
-import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.CompletePath;
@@ -185,47 +183,19 @@ public class City {
             } else throw new InvalidParameterException("tail: " + tail);
         } else throw new InvalidParameterException("head: " + head);
     }
-
     /**
-     * Removes the Bus and all its routes in the graph
-     *
-     * @param name the Bus's name to remove
-     * @throws InvalidParameterException if bus doesn't exist
+     * Modify the name of the specified BusStop
+     * @param oldName The actual BusStop's name
+     * @param newName the new BusStop's name
+     * @throws InvalidParameterException if the oldName doesn't exist or if the newName is already taken
      */
-    public void removeBus(String name) {
-        Iterator<Bus> i = busList.iterator();
-        boolean removed = false;
-        Bus current = null;
-        while (i.hasNext() && !removed) {
-            current = i.next();
-            if (current.getName().equals(name)) {
-                removeConnections(current);
-                i.remove();
-                removed = true;
-            }
+    public void modifyBusStopName(String oldName, String newName){
+        Vertex vertex = getVertex(oldName);
+        if(vertex != null){
+            if(!existBusStop(newName))
+                ((BusStop)vertex.getInfo()).setName(newName);
+            else throw new InvalidParameterException("newName:" + newName);
         }
-        if (!removed) throw new InvalidParameterException("name not found: " + name);
-    }
-
-    /**
-     * Remove all the connections of a given Bus
-     *
-     * @param bus the Bus which connections are going to be deleted
-     */
-    private void removeConnections(Bus bus) {
-        LinkedList<Vertex> vertices = routeGraph.getVerticesList();
-        Iterator<Vertex> i = vertices.iterator();
-        Vertex currentVertex = null;
-        while (i.hasNext()) {
-            currentVertex = i.next();
-            LinkedList<Edge> edges = currentVertex.getEdgeList();
-            Iterator<Edge> j = edges.iterator();
-            WeightedEdge currentWEdge = null;
-            while (j.hasNext()) {
-                currentWEdge = (WeightedEdge) j.next();
-                Route route = (Route) currentWEdge.getWeight();
-                if (route.getBus().equals(bus)) j.remove();
-            }
-        }
+        else throw new InvalidParameterException("oldName:" + oldName);
     }
 }
