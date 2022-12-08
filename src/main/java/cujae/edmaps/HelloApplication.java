@@ -22,7 +22,7 @@ public class HelloApplication extends Application {
         stage.close();
     }
 
-    public static void testCLI() {
+    public static void userHistoryCityCreation() {
 
         City havana = new City("Havana");
         havana.addBus("Route-1");
@@ -57,7 +57,7 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
-        testCLI();
+        userHistoryCityCreation();
         launch();
     }
 }
