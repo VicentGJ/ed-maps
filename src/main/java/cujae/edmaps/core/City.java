@@ -1,6 +1,8 @@
 package cujae.edmaps.core;
 
 import cu.edu.cujae.ceis.graph.*;
+import cu.edu.cujae.ceis.graph.edge.Edge;
+import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.CompletePath;
@@ -182,5 +184,50 @@ public class City {
                 this.routeGraph.deleteEdgeND(indexTail, indexHead);
             } else throw new InvalidParameterException("tail: " + tail);
         } else throw new InvalidParameterException("head: " + head);
+    }
+    /**
+     * Modify the distance of a route between two busStops
+     * @param tail the BusStop's name that represents the departure stop of the route
+     * @param head the BusStop's name that represents the arrival stop of the route
+     * @param bus the name of the route it's going to be deleted
+     * @param newDistance the new route's distance
+     * @throws InvalidParameterException if tail, head or bus don't exist
+     */
+    public void modifyDistanceBetween(String tail, String head, String bus, float newDistance){
+        Vertex stop1 = getVertex(tail);
+        if(stop1 != null){
+            Vertex stop2 = getVertex(head);
+            if(stop2 != null){
+                WeightedEdge edge = getEdge(stop1, bus);
+                if(edge != null){
+                    ((Route)edge.getWeight()).setDistance(newDistance);
+                    edge = getEdge(stop2, bus);
+                    ((Route)edge.getWeight()).setDistance(newDistance);
+                }else throw new InvalidParameterException("bus:" + bus);
+            }else throw new InvalidParameterException("head:" + head);
+        }
+        else throw new InvalidParameterException("tail:" + tail);
+
+
+    }
+
+    /**
+     * Gets the edge that represents the route
+     * @param stop1 Departure vertex
+     * @param bus Bus name
+     * @return The WeightedEdge
+     */
+    private WeightedEdge getEdge(Vertex stop1, String bus){
+        WeightedEdge result = null;
+        boolean found = false;
+        Iterator<Edge> it = stop1.getEdgeList().iterator();
+        while(it.hasNext() && !found){
+            WeightedEdge aux = (WeightedEdge) it.next();
+            if(((Route)aux.getWeight()).getBus().getName().equals(bus)){
+                result = aux;
+                found = true;
+            }
+        }
+        return result;
     }
 }
