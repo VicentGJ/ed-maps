@@ -4,8 +4,6 @@ import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.Bus;
 
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 public class CompletePath {
     private LinkedList<Path> paths;
@@ -13,7 +11,12 @@ public class CompletePath {
     public CompletePath() {
         paths = new LinkedList<>();
     }
-    public void addPath(Vertex vertex, Bus bus, Double distance){
+
+    public void addPath(Vertex vertex, Bus bus, Float distance) {
         paths.addFirst(new Path(vertex, bus, distance));
+    }
+
+    public LinkedList<Path> getPaths() {
+        return paths;
     }
 }
