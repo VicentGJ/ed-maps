@@ -78,12 +78,7 @@ public class DijkstraShortestPath {
     private Vertex getShortest(Map<Vertex, WayToArrive> map){
         Vertex result = null;
         Iterator<Map.Entry<Vertex, WayToArrive>> it = map.entrySet().iterator();
-        Double min = 0.0;
-        if(it.hasNext()){
-            Map.Entry<Vertex, WayToArrive> entry = it.next();
-            min = entry.getValue().distance;
-            result = entry.getKey();
-        }
+        double min = Double.MAX_VALUE;
         while(it.hasNext()){
             Map.Entry<Vertex, WayToArrive> entry = it.next();
             if(min > entry.getValue().distance){
