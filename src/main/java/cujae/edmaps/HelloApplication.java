@@ -55,9 +55,33 @@ public class HelloApplication extends Application {
             e.printStackTrace();
         }
     }
+    public static void userHistoryModifyDistanceOfARoute(){
+        City havana = new City("Havana");
+        havana.addBus("Route-1");
+        havana.addBus("Route-2");
+        havana.addBus("Route-3");
+        havana.addBusStop("Airport");
+        havana.addBusStop("Train Station");
+        havana.addBusStop("Residential town");
+        havana.addBusStop("Old town");
+        havana.addBusStop("City Hall");
+        //Route-1
+        havana.insertRoute("Airport", "Train Station", "Route-1", 1.0f);
+        havana.insertRoute("Train Station", "City Hall", "Route-1", 1.0f);
+        havana.insertRoute("City Hall", "Old town", "Route-1", 1.0f);
+        havana.insertRoute("Old town", "Residential town", "Route-1", 2.0f);
+        //Route-2
+        havana.insertRoute("Airport", "Residential town", "Route-2", 2.0f);
+        //Route-3
+        havana.insertRoute("Airport", "Train Station", "Route-3", 1.0f);
+        havana.insertRoute("Train Station", "Old town", "Route-3", 1.0f);
+        havana.modifyDistanceBetween("Airport", "Train Station", "Route-1", 600f);
+
+    }
 
     public static void main(String[] args) {
         userHistoryCityCreation();
+        userHistoryModifyDistanceOfARoute();
         launch();
     }
 }
