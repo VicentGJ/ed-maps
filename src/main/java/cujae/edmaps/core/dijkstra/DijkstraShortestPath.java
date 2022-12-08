@@ -29,7 +29,9 @@ public class DijkstraShortestPath {
         this.start = start;
         nodes = new HashMap<>();
         Map<Vertex, WayToArrive> toUnlock = new HashMap<>();
-        toUnlock.put(start, new WayToArrive(null, 0.0f, null));
+        WayToArrive wayToArrive = new WayToArrive(null, 0.0f, null);
+        nodes.put(start, wayToArrive);
+        toUnlock.put(start, wayToArrive);
         dijkstraAlgorithm(new HashSet<>(), toUnlock);
     }
 
