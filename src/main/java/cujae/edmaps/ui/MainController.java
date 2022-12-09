@@ -25,6 +25,6 @@ public class MainController {
 
     @FXML
     private void onMakeConsult() throws IOException {
-        ViewLoader.newWindow(getClass().getResource("consult-shortest-path"), "Consult Shortest Path", null);
+        ViewLoader.newWindow(getClass().getResource("consult-shortest-path.fxml"), "Consult Shortest Path", null);
     }
 }
