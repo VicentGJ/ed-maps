@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,6 +19,8 @@ public class ConsultController implements Initializable {
 
     @FXML
     private ComboBox<String> startComboBox, destinationComboBox;
+    @FXML
+    private Label totalDistanceDisplay;
 
     private final ObservableList<String> stopList = FXCollections.observableArrayList();
     private final City city = City.getInstance();
@@ -40,6 +43,7 @@ public class ConsultController implements Initializable {
                 System.out.println(p.getDistance());
                 System.out.println(((BusStop) p.getStop().getInfo()).getName());
                 System.out.println(":::::::::::::::::");
+                totalDistanceDisplay.setText(p.getDistance().toString());
             }
         } catch (Exception e) {
             e.printStackTrace();

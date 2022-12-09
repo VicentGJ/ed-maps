@@ -36,12 +36,17 @@
                     <columns>
                       <TableColumn prefWidth="75.0" text="Stops" />
                       <TableColumn prefWidth="75.0" text="Bus" />
-                        <TableColumn prefWidth="75.0" text="Distance" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Total Distance: " />
+                        <Label fx:id="totalDistanceDisplay" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>
