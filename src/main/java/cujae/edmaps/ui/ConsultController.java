@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 public class ConsultController implements Initializable {
 
     @FXML
-    private ComboBox<String> startCombobox, destinationComboBox;
+    private ComboBox<String> startComboBox, destinationComboBox;
 
     private ObservableList<String> stopList = FXCollections.observableArrayList();
     private final City city = City.getInstance();
@@ -27,14 +27,14 @@ public class ConsultController implements Initializable {
         for (BusStop stop: city.getBusStopList()) {
             stopList.add(stop.getName());
         }
-        startCombobox.setItems(stopList);
+        startComboBox.setItems(stopList);
         destinationComboBox.setItems(stopList);
     }
 
     @FXML
     public void onOkButton() {
         try {
-            CompletePath path = city.getPathBetween(startCombobox.getValue(), destinationComboBox.getValue());
+            CompletePath path = city.getPathBetween(startComboBox.getValue(), destinationComboBox.getValue());
             for (Path p : path.getPaths()) {
                 System.out.println(p.getBus() != null ? p.getBus().getName() : null);
                 System.out.println(p.getDistance());
