@@ -30,7 +30,11 @@
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
                   <Label text="Distance: " />
-                  <Spinner fx:id="distanceSpinner" />
+                  <Spinner fx:id="distanceSpinner" editable="true">
+                  <valueFactory>
+                     <SpinnerValueFactory.IntegerSpinnerValueFactory max="999999" min="0" />
+                  </valueFactory>
+                  </Spinner>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="metters" />
                </children>
             </HBox>
