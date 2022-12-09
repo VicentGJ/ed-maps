@@ -16,7 +16,7 @@ public class SimpleAddController implements Initializable {
     @FXML
     private TextField nameField;
     private boolean isBus = false;
-    private City city = City.getInstance();
+    private final City city = City.getInstance();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
