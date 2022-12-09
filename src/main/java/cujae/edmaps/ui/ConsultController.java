@@ -19,7 +19,7 @@ public class ConsultController implements Initializable {
     @FXML
     private ComboBox<String> startComboBox, destinationComboBox;
 
-    private ObservableList<String> stopList = FXCollections.observableArrayList();
+    private final ObservableList<String> stopList = FXCollections.observableArrayList();
     private final City city = City.getInstance();
 
     @Override
