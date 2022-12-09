@@ -19,7 +19,16 @@ public class City {
     private List<Bus> busList;
     private DijkstraShortestPath dijsktraShortestPath;
 
-    public City(String name) {
+    private static City city;
+
+    public static City getInstance() {
+        if (city == null) {
+            city = new City("Alacant");
+        }
+        return city;
+    }
+
+    private City(String name) {
         setName(name);
         this.routeGraph = new LinkedGraph();
         this.busList = new LinkedList<>();
