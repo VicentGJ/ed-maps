@@ -5,6 +5,7 @@ import cujae.edmaps.core.City;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
 import cujae.edmaps.utils.ViewLoader;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,7 +19,7 @@ public class ConsultController implements Initializable {
     @FXML
     private ComboBox<String> startCombobox, destinationComboBox;
 
-    private ObservableList<String> stopList;
+    private ObservableList<String> stopList = FXCollections.observableArrayList();
     private final City city = City.getInstance();
 
     @Override
