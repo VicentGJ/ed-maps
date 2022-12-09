@@ -1,6 +1,5 @@
 package cujae.edmaps;
 
-import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
@@ -21,10 +20,9 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Tocas!");
+        stage.setTitle("ED MAPS");
         stage.setScene(scene);
         stage.show();
-        stage.close();
     }
 
     public static void userHistoryCityCreation() {
@@ -73,11 +71,12 @@ public class HelloApplication extends Application {
         havana.renameBusStop("Old town", "Historic Center");
         System.out.println(busstop.getName());
 
-        try {
+        // Validation already tested, uncomment to try again
+        /** try {
             havana.renameBusStop("Historic Center", "Train Station");
         } catch (InvalidParameterException e) {
             e.printStackTrace();
-        }
+        } **/
 
         //user story 4: modify route distance
         System.out.println("user story 4: modify route distance");
@@ -87,12 +86,13 @@ public class HelloApplication extends Application {
         havana.modifyDistanceBetween("Airport", "Train Station", "Route-1", 600.0f);
         System.out.println(route.getDistance());
 
-        try {
+        // Validation already tested, uncomment to try again
+        /** try {
             havana.modifyDistanceBetween("Airport", "Train Station", "Route-1", 0f);
             System.out.println(route.getDistance());
         } catch (InvalidParameterException e) {
             e.printStackTrace();
-        }
+        } **/
 
         //user story 5: set walking route
         System.out.println("user story 5: wat a walking route(no output)");
