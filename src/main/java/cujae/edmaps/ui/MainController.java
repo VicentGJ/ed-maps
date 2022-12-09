@@ -22,4 +22,9 @@ public class MainController {
     private void onAddConnection(ActionEvent event) throws IOException {
         ViewLoader.newWindow(getClass().getResource("add-connection-form.fxml"), "Add Connection", null);
     }
+
+    @FXML
+    private void onMakeConsult() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("consult-shortest-path"), "Consult Shortest Path", null);
+    }
 }
