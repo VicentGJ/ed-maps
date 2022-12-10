@@ -42,6 +42,8 @@ public class FileManager {
         return instance;
     }
 
+//CITIES
+
     /**
      * @return all the files in the cities/ directory
      */
@@ -51,16 +53,19 @@ public class FileManager {
 
     /**
      * Get a single city file
+     *
      * @param cityName the name of the city to get
      * @return the File of the wanted city or null if the file is not found
      */
-    public File loadCity(String cityName) {
+    public File loadCityFile(String cityName) {
         File[] cities = new File(CITIES_DIRECTORY).listFiles();
         File city = null;
-        for (File f : cities) {
-            if (f.getName().equalsIgnoreCase(cityName)) {
-                city = f;
-                break;
+        if (cities != null) {
+            for (File f : cities) {
+                if (f.getName().equalsIgnoreCase(cityName)) {
+                    city = f;
+                    break;
+                }
             }
         }
         return city;
@@ -72,7 +77,17 @@ public class FileManager {
     }
 
     /**
+     * Deletes the city file corresponding to the given city
      *
+     * @param cityName the City's name which file is going to be deleted
+     * @return true if and only if the file or directory is successfully deleted; false otherwise
+     */
+    public boolean deleteCityFile(String cityName) {
+        return loadCityFile(cityName).delete();
+    }
+//CONSULTS
+
+    /**
      * @return all the Files in the consults/ directory
      */
     public File[] getAllConsultFiles() {
@@ -81,16 +96,19 @@ public class FileManager {
 
     /**
      * Get a single consult file
+     *
      * @param cityName the name of the city which consults are needed
      * @return the file of the city's consults or null if file is not found
      */
-    public File loadConsult(String cityName) {
+    public File loadConsultFile(String cityName) {
         File[] cities = new File(CONSULTS_DIRECTORY).listFiles();
         File consults = null;
-        for (File f : cities) {
-            if (f.getName().equalsIgnoreCase(cityName)) {
-                consults = f;
-                break;
+        if (cities != null) {
+            for (File f : cities) {
+                if (f.getName().equalsIgnoreCase(cityName)) {
+                    consults = f;
+                    break;
+                }
             }
         }
         return consults;
@@ -99,5 +117,15 @@ public class FileManager {
     //TODO
     public File saveConsult() {
         throw new RuntimeException();
+    }
+
+    /**
+     * Deletes the consult file corresponding to the given city
+     *
+     * @param cityName the City's name with consults file is going to be deleted
+     * @return true if and only if the file is successfully deleted; false otherwise
+     */
+    public boolean deleteConsultFile(String cityName) {
+        return loadConsultFile(cityName).delete();
     }
 }
