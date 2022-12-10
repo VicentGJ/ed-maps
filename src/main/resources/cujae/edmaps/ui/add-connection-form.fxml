@@ -4,50 +4,56 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.control.SpinnerValueFactory?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="353.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.ConnectionAddController">
-   <children>
-      <VBox layoutX="250.0" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <VBox>
-               <children>
-                  <Label text="Stop 1:" />
-                  <ComboBox fx:id="stop1ComboBox" prefWidth="150.0" />
-               </children>
-            </VBox>
-            <VBox>
-               <children>
-                  <Label text="Stop 2:" />
-                  <ComboBox fx:id="stop2ComboBox" prefWidth="150.0" />
-               </children>
-            </VBox>
-            <VBox>
-               <children>
-                  <Label text="Bus:" />
-                  <ComboBox fx:id="busComboBox" prefWidth="150.0" />
-               </children>
-            </VBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
-               <children>
-                  <Label text="Distance: " />
-                  <Spinner fx:id="distanceSpinner" editable="true">
-                  <valueFactory>
-                     <SpinnerValueFactory.IntegerSpinnerValueFactory max="999999" min="0" />
-                  </valueFactory>
-                  </Spinner>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="metters" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onOkButton" text="Ok" />
-                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCancelButton" text="Cancel" />
-               </children>
-            </HBox>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </VBox>
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0"
+            prefWidth="353.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cujae.edmaps.ui.ConnectionAddController">
+    <children>
+        <VBox layoutX="250.0" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" spacing="10.0"
+              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <VBox>
+                    <children>
+                        <Label text="Stop 1:"/>
+                        <ComboBox fx:id="stop1ComboBox" prefWidth="150.0"/>
+                    </children>
+                </VBox>
+                <VBox>
+                    <children>
+                        <Label text="Stop 2:"/>
+                        <ComboBox fx:id="stop2ComboBox" prefWidth="150.0"/>
+                    </children>
+                </VBox>
+                <VBox>
+                    <children>
+                        <Label text="Bus:"/>
+                        <ComboBox fx:id="busComboBox" prefWidth="150.0"/>
+                    </children>
+                </VBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                    <children>
+                        <Label text="Distance: "/>
+                        <Spinner fx:id="distanceSpinner" editable="true">
+                            <valueFactory>
+                                <SpinnerValueFactory.DoubleSpinnerValueFactory max="Infinity" min="0"/>
+                            </valueFactory>
+                        </Spinner>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="metters"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#onOkButton" text="Ok"/>
+                        <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCancelButton"
+                                text="Cancel"/>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </VBox>
+    </children>
 </AnchorPane>
