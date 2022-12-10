@@ -9,6 +9,7 @@ import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.DijkstraShortestPath;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,16 @@ public class City {
     private List<Bus> busList;
     private DijkstraShortestPath dijsktraShortestPath;
 
-    public City(String name) {
+    private static City city;
+
+    public static City getInstance() {
+        if (city == null) {
+            city = new City("Alacant");
+        }
+        return city;
+    }
+
+    private City(String name) {
         setName(name);
         this.routeGraph = new LinkedGraph();
         this.busList = new LinkedList<>();
@@ -62,6 +72,15 @@ public class City {
         if (!existBusStop(name)) {
             routeGraph.insertVertex(new BusStop(name));
         }
+    }
+
+    public List<BusStop> getBusStopList() {
+        List<BusStop> busStopList = new ArrayList<>();
+        List<Vertex> vertices = routeGraph.getVerticesList();
+        for (Vertex v: vertices) {
+            busStopList.add((BusStop) v.getInfo());
+        }
+        return busStopList;
     }
 
     /**
