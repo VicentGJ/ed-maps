@@ -32,10 +32,10 @@
             <VBox spacing="5.0">
                <children>
                   <Label text="Results" />
-                  <TableView editable="true" fixedCellSize="0.0" prefHeight="391.0" prefWidth="296.0">
+                  <TableView fx:id="tableView" editable="true" fixedCellSize="0.0" prefHeight="391.0" prefWidth="296.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="Stops" />
-                      <TableColumn prefWidth="75.0" text="Bus" />
+                      <TableColumn fx:id="stopColumn" prefWidth="75.0" text="Stops" />
+                      <TableColumn fx:id="busColumn" prefWidth="75.0" text="Bus" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
