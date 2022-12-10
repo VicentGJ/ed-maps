@@ -40,7 +40,7 @@
                                 <SpinnerValueFactory.DoubleSpinnerValueFactory max="Infinity" min="0"/>
                             </valueFactory>
                         </Spinner>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="metters"/>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="meters"/>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
