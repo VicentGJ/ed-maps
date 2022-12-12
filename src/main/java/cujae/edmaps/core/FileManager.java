@@ -135,7 +135,7 @@ public class FileManager {
         File consults = null;
         if (cities != null) {
             for (File f : cities) {
-                if (f.getName().equalsIgnoreCase(cityName)) {//FIXME: cityName + consults file extension to be used
+                if (f.getName().equalsIgnoreCase(cityName + ".txt")) {
                     consults = f;
                     break;
                 }
