@@ -22,9 +22,9 @@ public class City {
 
     private static City city;
 
-    public static City getInstance() {
+    public static City getInstance() {//FIXME: every instance cant be called Madrid
         if (city == null) {
-            city = new City("Alacant");
+            city = new City("Madrid");
         }
         return city;
     }

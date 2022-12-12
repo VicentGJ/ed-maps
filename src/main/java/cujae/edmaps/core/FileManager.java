@@ -67,7 +67,7 @@ public class FileManager {
         File city = null;
         if (cities != null) {
             for (File f : cities) {
-                if (f.getName().equalsIgnoreCase(cityName)) {
+                if (f.getName().equalsIgnoreCase(cityName + ".csv")) {
                     city = f;
                     break;
                 }
@@ -77,31 +77,31 @@ public class FileManager {
     }
 
     //TODO
-    public File saveCity(City city) throws Exception {
+    public File saveCity(City city) {
         File file = loadCityFile(city.getName());
-        if(file != null){
-            if (file.exists())
-                file.delete();
-        }
-        else
+        try {
+            if (file != null) file.delete();
             file = new File(CITIES_DIRECTORY + city.getName() + ".csv");
-        if (!file.createNewFile())
-            throw new Exception();
-        FileWriter fileWriter = new FileWriter(file);
-        List<Vertex> verticesList = city.getRouteGraph().getVerticesList();
-        for (Vertex vertex : verticesList) {
-            BusStop stop = (BusStop) vertex.getInfo();
-            fileWriter.write(stop.getName() + ",");
-        }
-        fileWriter.write("\n");
-        for (Vertex vertex : verticesList) {
-            for (Vertex vertex2 : verticesList) {
-                if (vertex.isAdjacent(vertex2)) {
-                    fileWriter.write(1);
-                } else fileWriter.write(0);
-                fileWriter.write(",");
+            file.createNewFile();
+            FileWriter fileWriter = new FileWriter(file);
+            List<Vertex> verticesList = city.getRouteGraph().getVerticesList();
+            for (Vertex vertex : verticesList) {
+                BusStop stop = (BusStop) vertex.getInfo();
+                fileWriter.write(stop.getName() + ",");
             }
             fileWriter.write("\n");
+            for (Vertex vertex : verticesList) {
+                for (Vertex vertex2 : verticesList) {
+                    if (vertex.isAdjacent(vertex2)) {
+                        fileWriter.write("1");
+                    } else fileWriter.write("0");
+                    fileWriter.write(",");
+                }
+                fileWriter.write("\n");
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return file;
     }
@@ -135,7 +135,7 @@ public class FileManager {
         File consults = null;
         if (cities != null) {
             for (File f : cities) {
-                if (f.getName().equalsIgnoreCase(cityName)) {
+                if (f.getName().equalsIgnoreCase(cityName)) {//FIXME: cityName + consults file extension to be used
                     consults = f;
                     break;
                 }
