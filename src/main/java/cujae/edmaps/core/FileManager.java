@@ -1,6 +1,11 @@
 package cujae.edmaps.core;
 
+import cu.edu.cujae.ceis.graph.vertex.Vertex;
+
 import java.io.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * FileManager class is a singleton class for this project files management.
@@ -72,8 +77,33 @@ public class FileManager {
     }
 
     //TODO
-    public File saveCity(City city) {
-        throw new RuntimeException();
+    public File saveCity(City city) throws Exception {
+        File file = loadCityFile(city.getName());
+        if(file != null){
+            if (file.exists())
+                file.delete();
+        }
+        else
+            file = new File(CITIES_DIRECTORY + city.getName() + ".csv");
+        if (!file.createNewFile())
+            throw new Exception();
+        FileWriter fileWriter = new FileWriter(file);
+        List<Vertex> verticesList = city.getRouteGraph().getVerticesList();
+        for (Vertex vertex : verticesList) {
+            BusStop stop = (BusStop) vertex.getInfo();
+            fileWriter.write(stop.getName() + ",");
+        }
+        fileWriter.write("\n");
+        for (Vertex vertex : verticesList) {
+            for (Vertex vertex2 : verticesList) {
+                if (vertex.isAdjacent(vertex2)) {
+                    fileWriter.write(1);
+                } else fileWriter.write(0);
+                fileWriter.write(",");
+            }
+            fileWriter.write("\n");
+        }
+        return file;
     }
 
     /**
