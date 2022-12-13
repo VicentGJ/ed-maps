@@ -1,4 +1,5 @@
 package cujae.edmaps.utils;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -39,5 +40,9 @@ public class ViewLoader {
 
     public static Stage getStage() {
         return stage;
+    }
+
+    public static void setStage(Stage stage) {
+        ViewLoader.stage = stage;
     }
 }
