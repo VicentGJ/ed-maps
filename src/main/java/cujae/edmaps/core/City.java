@@ -22,9 +22,9 @@ public class City {
 
     private static City city;
 
-    public static City getInstance() {
+    public static City getInstance() {//FIXME: every instance cant be called Madrid
         if (city == null) {
-            city = new City("Alacant");
+            city = new City("Madrid");
         }
         return city;
     }
@@ -77,7 +77,7 @@ public class City {
     public List<BusStop> getBusStopList() {
         List<BusStop> busStopList = new ArrayList<>();
         List<Vertex> vertices = routeGraph.getVerticesList();
-        for (Vertex v: vertices) {
+        for (Vertex v : vertices) {
             busStopList.add((BusStop) v.getInfo());
         }
         return busStopList;
@@ -147,7 +147,9 @@ public class City {
         if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equals(start)) {
             dijsktraShortestPath = new DijkstraShortestPath(tail);
         }
-        return dijsktraShortestPath.getShortestPathTo(head);
+        CompletePath consult = dijsktraShortestPath.getShortestPathTo(head);
+        consult.save();
+        return consult;
     }
 
     /**
@@ -197,21 +199,29 @@ public class City {
      * @throws InvalidParameterException if tail or head doesn't exist
      */
     public void removeRoute(String tail, String head, String busName) {
-        if (tail == null || head == null) return;
         Vertex tailVertex = getVertex(tail);
         if (tailVertex == null) throw new InvalidParameterException("tail not found: " + tail);
         Vertex headVertex = getVertex(head);
         if (headVertex == null) throw new InvalidParameterException("head not found: " + head);
         WeightedEdge wEdge = getEdge(tailVertex, busName);
         Iterator<Edge> edgeIterator = tailVertex.getEdgeList().iterator();
-        boolean removed = false;
+        boolean removedFromTail = false;
+        boolean removedFromHead = false;
         WeightedEdge currentWEdge = null;
-        while (edgeIterator.hasNext() && !removed) {
+        while (!removedFromTail && edgeIterator.hasNext()) {
             currentWEdge = (WeightedEdge) edgeIterator.next();
             if (currentWEdge.getVertex().equals(headVertex) && wEdge == currentWEdge) {
                 edgeIterator.remove();
-                removed = true;
-                removeRoute(head, tail, busName);
+                removedFromTail = true;
+                edgeIterator = headVertex.getEdgeList().iterator();
+                wEdge = getEdge(headVertex, busName);
+                while (!removedFromHead && edgeIterator.hasNext()) {
+                    currentWEdge = (WeightedEdge) edgeIterator.next();
+                    if (currentWEdge.getVertex().equals(tailVertex) && wEdge == currentWEdge) {
+                        edgeIterator.remove();
+                        removedFromHead = true;
+                    }
+                }
             }
         }
     }
