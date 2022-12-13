@@ -64,7 +64,7 @@ public class City {
     public Bus getBus(String busName) {
         Bus bus = null;
         for (Bus b : busList)
-            if (b.getName().equals(busName)) bus = b;
+            if (b.getName().equalsIgnoreCase(busName)) bus = b;
         return bus;
     }
 
@@ -92,7 +92,7 @@ public class City {
     public boolean existBusStop(String name) {
         Iterator<Vertex> i = routeGraph.getVerticesList().iterator();
         boolean found = false;
-        while (i.hasNext() && !found) found = ((BusStop) i.next().getInfo()).getName().equals(name);
+        while (i.hasNext() && !found) found = ((BusStop) i.next().getInfo()).getName().equalsIgnoreCase(name);
         return found;
     }
 
@@ -105,7 +105,7 @@ public class City {
     public boolean existBus(String name) {
         boolean found = false;
         for (Bus bus : busList)
-            if (bus.getName().equals(name)) {
+            if (bus.getName().equalsIgnoreCase(name)) {
                 found = true;
                 break;
             }
@@ -124,7 +124,7 @@ public class City {
         boolean found = false;
         while (it.hasNext() && !found) {
             Vertex aux = it.next();
-            if (((BusStop) aux.getInfo()).getName().equals(busStopName)) {
+            if (((BusStop) aux.getInfo()).getName().equalsIgnoreCase(busStopName)) {
                 found = true;
                 result = aux;
             }
@@ -144,7 +144,7 @@ public class City {
     public CompletePath getPathBetween(String start, String goal) throws Exception {
         Vertex tail = getVertex(start);
         Vertex head = getVertex(goal);
-        if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equals(start)) {
+        if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equalsIgnoreCase(start)) {
             dijsktraShortestPath = new DijkstraShortestPath(tail);
         }
         CompletePath consult = dijsktraShortestPath.getShortestPathTo(head);
@@ -162,7 +162,7 @@ public class City {
         int index = -1;
         int count = 0;
         for (Iterator<Vertex> i = this.routeGraph.getVerticesList().iterator(); index == -1 && i.hasNext(); ++count)
-            if (((BusStop) i.next().getInfo()).getName().equals(busStopName)) index = count;
+            if (((BusStop) i.next().getInfo()).getName().equalsIgnoreCase(busStopName)) index = count;
         return index;
     }
 
@@ -183,13 +183,19 @@ public class City {
                 if (tailIndex != -1) {
                     int headIndex = getBusStopIndex(busStopHead);
                     if (headIndex != -1) {
-                        Route route = new Route(bus, distance);
-                        this.routeGraph.insertWEdgeNDG(tailIndex, headIndex, route);
+                        Edge existentEdge = getEdge(busName, busStopTail, busStopHead);
+                        if (existentEdge == null) {
+                            Route route = new Route(bus, distance);
+                            this.routeGraph.insertWEdgeNDG(tailIndex, headIndex, route);
+                        } else {
+                            ((Route) ((WeightedEdge) existentEdge).getWeight()).setDistance(distance);
+                        }
                     } else throw new InvalidParameterException("busStopHead not found: " + busStopHead);
                 } else throw new InvalidParameterException("busStopTail not found: " + busStopTail);
             } else throw new InvalidParameterException("distance(walking route): " + distance);
         } else throw new InvalidParameterException("distance: " + distance);
     }
+
 
     /**
      * Removes the <strong>weighted edge</strong> that points from tail to head
@@ -203,7 +209,7 @@ public class City {
         if (tailVertex == null) throw new InvalidParameterException("tail not found: " + tail);
         Vertex headVertex = getVertex(head);
         if (headVertex == null) throw new InvalidParameterException("head not found: " + head);
-        WeightedEdge wEdge = getEdge(tailVertex, busName);
+        WeightedEdge wEdge = getEdge(busName, tail, head);
         Iterator<Edge> edgeIterator = tailVertex.getEdgeList().iterator();
         boolean removedFromTail = false;
         boolean removedFromHead = false;
@@ -214,7 +220,7 @@ public class City {
                 edgeIterator.remove();
                 removedFromTail = true;
                 edgeIterator = headVertex.getEdgeList().iterator();
-                wEdge = getEdge(headVertex, busName);
+                wEdge = getEdge(busName, head, tail);
                 while (!removedFromHead && edgeIterator.hasNext()) {
                     currentWEdge = (WeightedEdge) edgeIterator.next();
                     if (currentWEdge.getVertex().equals(tailVertex) && wEdge == currentWEdge) {
@@ -238,7 +244,7 @@ public class City {
         Bus current = null;
         while (i.hasNext() && !removed) {
             current = i.next();
-            if (current.getName().equals(name)) {
+            if (current.getName().equalsIgnoreCase(name)) {
                 removeConnections(current);
                 i.remove();
                 removed = true;
@@ -300,12 +306,11 @@ public class City {
         if (stop1 != null) {
             Vertex stop2 = getVertex(head);
             if (stop2 != null) {
-                WeightedEdge edge = getEdge(stop1, bus);
+                WeightedEdge edge = getEdge(bus, tail, head);
                 if (edge != null) {
                     ((Route) edge.getWeight()).setDistance(newDistance);
-                    edge = getEdge(stop2, bus);
-                    ((Route) edge.getWeight()).setDistance(newDistance);
-                } else throw new InvalidParameterException("bus:" + bus);
+                } else
+                    throw new InvalidParameterException("no route from tail to head with that bus: tail:" + tail + " head:" + head + " bus: " + bus);
             } else throw new InvalidParameterException("head:" + head);
         } else throw new InvalidParameterException("tail:" + tail);
 
@@ -313,24 +318,34 @@ public class City {
     }
 
     /**
-     * Gets the edge that represents the route
+     * Get the WeightedEdge instance that goes from tail to head, using the given bus
      *
-     * @param stop1 Departure vertex
-     * @param bus   Bus name
-     * @return The WeightedEdge
+     * @param busName the name of the bus that represents the route
+     * @param tail    a bus stop name
+     * @param head    another bus stop name
+     * @return The WeightedEdge that connects tail and head through the bus, null if it doesn't exist
      */
-    public WeightedEdge getEdge(Vertex stop1, String bus) {
-        WeightedEdge result = null;
-        boolean found = false;
-        Iterator<Edge> it = stop1.getEdgeList().iterator();
-        while (it.hasNext() && !found) {
-            WeightedEdge aux = (WeightedEdge) it.next();
-            //FIXME: .getBus() can return null if is a walking route, throwing an exception when doing null.getName()
-            if (((Route) aux.getWeight()).getBus().getName().equals(bus)) {
-                result = aux;
-                found = true;
+    private WeightedEdge getEdge(String busName, String tail, String head) {
+        Vertex t = getVertex(tail);
+        Vertex h = getVertex(head);
+        WeightedEdge found = null;
+        WeightedEdge current = null;
+        Route currentRoute = null;
+        Bus b = getBus(busName);
+        for (Edge e : t.getEdgeList()) {
+            current = (WeightedEdge) e;
+            currentRoute = (Route) current.getWeight();
+            if (e.getVertex().equals(h)) {
+                if (b == null) {
+                    if (currentRoute.getBus() == null) {
+                        found = current;
+                    }
+                } else if (currentRoute.getBus() != null) {
+                    if (currentRoute.getBus().getName().equalsIgnoreCase(b.getName()))
+                        found = current;
+                }
             }
         }
-        return result;
+        return found;
     }
 }
