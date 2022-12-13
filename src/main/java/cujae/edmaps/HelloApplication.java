@@ -2,10 +2,7 @@ package cujae.edmaps;
 
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
-import cujae.edmaps.core.BusStop;
-import cujae.edmaps.core.City;
-import cujae.edmaps.core.FileManager;
-import cujae.edmaps.core.Route;
+import cujae.edmaps.core.*;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
 import javafx.application.Application;
@@ -52,6 +49,7 @@ public class HelloApplication extends Application {
         madrid.insertRoute("Train Station", "Old town", "Route-3", 1.0f);
         try {
             CompletePath path = madrid.getPathBetween("Airport", "Old town");
+            System.out.println("consult file created...");
             for (Path p : path.getPaths()) {
                 System.out.println(p.getBus() != null ? p.getBus().getName() : null);
                 System.out.println(p.getDistance());
@@ -81,6 +79,7 @@ public class HelloApplication extends Application {
          e.printStackTrace();
          } **/
 
+
         //user story 4: modify route distance
         System.out.println("user story 4: modify route distance");
         WeightedEdge wEdge = madrid.getEdge(madrid.getVertex("Airport"), "Route-1");
@@ -101,10 +100,9 @@ public class HelloApplication extends Application {
         System.out.println("user story 5: set a walking route(no output)");
         madrid.insertRoute("Airport", "Train Station", null, 450f);
 
-        File madridFile = fm.saveCity(madrid);
+        File madridFile = fm.saveCity();
         System.out.println(madrid.getName() + " city saved at: " + madridFile.getAbsolutePath());
     }
-
 
     public static void main(String[] args) throws Exception {
         userHistoryCityCreation();
