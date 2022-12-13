@@ -8,8 +8,9 @@ import cujae.edmaps.core.City;
 import cujae.edmaps.core.Route;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -21,8 +22,9 @@ import javafx.stage.Stage;
 import java.util.*;
 
 public class Drawer {
+    private final String ASSETS_LOCATION = "file:./src/main/resources/cujae/edmaps/ui/assets/location.png";
     private final double NODE_RADIUS = 10d;
-    private HashMap<Vertex, Circle> nodes;
+    private HashMap<Vertex, ImageView> nodes;
     private Group root;
     private ArrayList<Route> addedEdges;
     private HashMap<WeightedEdge, Segment> edges;
@@ -37,27 +39,26 @@ public class Drawer {
     }
 
     public Group draw() {
-        LinkedList<Circle> circles = addNodes();
+        LinkedList<ImageView> circles = addNodes();
         LinkedList<Text> labels = addLabelToNodes();
         LinkedList<Path> connections = addConnections();
         LinkedList<Text> weights = addWeightToEdges();
+        Text cityName = addCityName();
         root.getChildren().addAll(connections);
         root.getChildren().addAll(weights);
         root.getChildren().addAll(circles);
         root.getChildren().addAll(labels);
+        root.getChildren().add(cityName);
         return this.root;
     }
 
-    private LinkedList<Circle> addNodes() {
-        LinkedList<Circle> circles = new LinkedList<>();
-        Text city = new Text(50, 50, City.getInstance().getName());
-        city.setFont(Font.font("Arial", FontWeight.BOLD, 30));
-        root.getChildren().add(city);
+    private LinkedList<ImageView> addNodes() {
+        LinkedList<ImageView> locations = new LinkedList<>();
         LinkedList<Vertex> vertices = City.getInstance().getRouteGraph().getVerticesList();
         final int NODES = vertices.size();
         final double RADIUS = stage.getHeight() / 2 - 50;
         final double CENTER_X = stage.getWidth() / 2;
-        final double CENTER_Y = stage.getHeight() / 2 - 20f;
+        final double CENTER_Y = stage.getHeight() / 2;
         Iterator<Vertex> iterator = vertices.iterator();
         int i = 0;
         Vertex current = null;
@@ -66,46 +67,49 @@ public class Drawer {
             double angle = Math.toRadians(((double) i++ / NODES) * 360d);
             double centerX = (Math.cos(angle) * RADIUS) + CENTER_X;
             double centerY = (Math.sin(angle) * RADIUS) + CENTER_Y;
-            Circle c = new Circle(centerX, centerY, NODE_RADIUS);
-            circles.add(c);
-            nodes.put(current, c);
+            ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
+            location.setX(centerX);
+            location.setY(centerY - 30d);
+            locations.add(location);
+            nodes.put(current, location);
         }
-        return circles;
+        return locations;
     }
 
     private LinkedList<Text> addLabelToNodes() {
         LinkedList<Text> labels = new LinkedList<>();
-        for (Map.Entry<Vertex, Circle> entry : nodes.entrySet()) {
-            double posX = entry.getValue().getCenterX();
-            double posY = entry.getValue().getCenterY() - NODE_RADIUS - 10;
+        for (Map.Entry<Vertex, ImageView> entry : nodes.entrySet()) {
+            double posX = entry.getValue().getX();
+            double posY = entry.getValue().getY() - 5d;
             String stopName = ((BusStop) entry.getKey().getInfo()).getName();
             Text text = new Text(posX, posY, stopName);
+            text.setFont(Font.font("Ubuntu", FontWeight.BOLD, 14));
             labels.add(text);
         }
         return labels;
     }
 
     private LinkedList<Path> addConnections() {
-        Vertex v = null;
-        Circle c = null;
+        Vertex vertex = null;
+        ImageView iView = null;
         LinkedList<Path> paths = new LinkedList<>();
         ArrayList<Edge> added = new ArrayList<>();
-        for (Map.Entry<Vertex, Circle> entry : nodes.entrySet()) {
+        for (Map.Entry<Vertex, ImageView> entry : nodes.entrySet()) {
             Path path = new Path();
-            v = entry.getKey();
-            c = entry.getValue();
-            Point2D tail = new Point2D(c.getCenterX(), c.getCenterY());
+            vertex = entry.getKey();
+            iView = entry.getValue();
+            Point2D tail = new Point2D(iView.getX() + iView.getFitWidth() + 13d, iView.getY() + iView.getFitHeight() + 24d);
             MoveTo mt = new MoveTo(tail.getX(), tail.getY());
             path.getElements().add(mt);
-            LinkedList<Edge> edges = v.getEdgeList();
+            LinkedList<Edge> edges = vertex.getEdgeList();
             Point2D head = null;
             WeightedEdge wEdge = null;
             for (Edge e : edges) {
                 wEdge = (WeightedEdge) e;
                 if (addedEdges.contains((Route) wEdge.getWeight())) continue;
                 Vertex headVertex = e.getVertex();
-                Circle circleHead = getNodeOfVertex(headVertex);
-                head = new Point2D(circleHead.getCenterX(), circleHead.getCenterY());
+                ImageView ivHead = nodes.get(headVertex);
+                head = new Point2D(ivHead.getX() + ivHead.getFitWidth() + 13d, ivHead.getY() + ivHead.getFitHeight() + 24d);
                 LineTo line = new LineTo(head.getX(), head.getY());
                 path.getElements().add(line);
                 path.getElements().add(mt);
@@ -135,16 +139,15 @@ public class Drawer {
         Route weight = (Route) edge.getWeight();
         String busName = "Walking";
         if (weight.getBus() != null) busName = weight.getBus().getName();
-        return new Text(middle.getX() - 20d, middle.getY(), busName + " [" + weight.getDistance() + "]");
+        Text wText = new Text(middle.getX() - 20d, middle.getY(), busName + " [" + weight.getDistance() + "]");
+        wText.setFont(Font.font("Ubuntu", FontWeight.BOLD, 13d));
+        return wText;
     }
 
-    private Circle getNodeOfVertex(Vertex v) {
-        Circle result = null;
-        for (Map.Entry<Vertex, Circle> entry : nodes.entrySet()) {
-            if (((BusStop) entry.getKey().getInfo()).getName().equalsIgnoreCase(((BusStop) v.getInfo()).getName()))
-                result = entry.getValue();
-        }
-        return result;
+    private Text addCityName() {
+        Text city = new Text(50, 50, City.getInstance().getName());
+        city.setFont(Font.font("Ubuntu", FontWeight.BOLD, 30d));
+        return city;
     }
 
     private boolean textOverlaps(LinkedList<Text> texts, Text text) {
