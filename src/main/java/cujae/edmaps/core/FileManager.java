@@ -161,7 +161,14 @@ public class FileManager {
      */
     public void deleteCity(boolean deleteConsultsToo) {
         loadCityFile(City.getInstance().getName()).delete();
-        if (deleteConsultsToo) getCityConsultsDirectory().delete();
+        if (deleteConsultsToo) {
+            File consultsDirectory = getCityConsultsDirectory();
+            File[] consults = consultsDirectory.listFiles();
+            if (consults != null)
+                for (File consult : consults)
+                    consult.delete();
+            consultsDirectory.delete();
+        }
     }
 
 
