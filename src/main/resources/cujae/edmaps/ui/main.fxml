@@ -13,6 +13,7 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onRefresh" text="Refresh" />
             <MenuItem mnemonicParsing="false" text="Load City From File" />
             <MenuItem mnemonicParsing="false" text="Save City To File" />
                   <SeparatorMenuItem mnemonicParsing="false" />
@@ -36,6 +37,6 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
+      <AnchorPane fx:id="graphContainer" VBox.vgrow="ALWAYS" />
   </children>
 </VBox>
