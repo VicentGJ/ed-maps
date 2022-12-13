@@ -147,7 +147,9 @@ public class City {
         if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equals(start)) {
             dijsktraShortestPath = new DijkstraShortestPath(tail);
         }
-        return dijsktraShortestPath.getShortestPathTo(head);
+        CompletePath consult = dijsktraShortestPath.getShortestPathTo(head);
+        consult.save();
+        return consult;
     }
 
     /**
