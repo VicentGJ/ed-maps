@@ -42,7 +42,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void onRefresh(ActionEvent event) {
-        Group graph = new Drawer().draw(stage);
+        Group graph = new Drawer(stage).draw();
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
         this.graphContainer.getChildren().add(graph);
