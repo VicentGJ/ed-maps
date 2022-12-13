@@ -5,7 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.SpinnerValueFactory?>
+<?import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory?>
 
+<?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0"
             prefWidth="353.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="cujae.edmaps.ui.ConnectionAddController">
@@ -37,7 +39,7 @@
                         <Label text="Distance: "/>
                         <Spinner fx:id="distanceSpinner" editable="true">
                             <valueFactory>
-                                <SpinnerValueFactory.DoubleSpinnerValueFactory max="Infinity" min="0"/>
+                                <SpinnerValueFactory.DoubleSpinnerValueFactory max="99999999999999999999" min="0"/>
                             </valueFactory>
                         </Spinner>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="meters"/>
