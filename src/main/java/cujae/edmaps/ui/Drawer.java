@@ -18,6 +18,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -45,6 +47,9 @@ public class Drawer {
     }
 
     private void addNodes(Stage stage) {
+        Text city = new Text(50, 50, City.getInstance().getName());
+        city.setFont(Font.font("Arial", FontWeight.BOLD, 30));
+        root.getChildren().add(city);
         LinkedList<Vertex> vertices = City.getInstance().getRouteGraph().getVerticesList();
         final int NODES = vertices.size();
         final double RADIUS = stage.getHeight() / 2 - 50;
@@ -121,7 +126,7 @@ public class Drawer {
         Route weight = (Route) edge.getWeight();
         String busName = "Walking";
         if (weight.getBus() != null) busName = weight.getBus().getName();
-        Text text = new Text(middle.getX()-20d, middle.getY(), busName + " [" + weight.getDistance() + "]");
+        Text text = new Text(middle.getX() - 20d, middle.getY(), busName + " [" + weight.getDistance() + "]");
         while (textOverlaps(text)) {
             text.setY(text.getY() - 15d);
         }
