@@ -58,8 +58,8 @@ public class Drawer {
         final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
         final double CENTER_Y = stage.getHeight() / 2;
-        Iterator<Vertex> iterator = vertices.iterator();
-        int i = 0;
+        Iterator<Vertex> iterator = vertices.descendingIterator();
+        double i = 0;
         Vertex current = null;
         if (vertices.size() == 1) {
             ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
@@ -69,7 +69,7 @@ public class Drawer {
             nodes.put(vertices.get(0), location);
         } else while (iterator.hasNext()) {
             current = iterator.next();
-            double angle = Math.toRadians(((double) i++ / NODES) * 360d);
+            double angle = Math.toRadians((++i / NODES) * 360d);
             double centerX = (Math.cos(angle) * RADIUS) + CENTER_X;
             double centerY = (Math.sin(angle) * RADIUS) + CENTER_Y;
             ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
@@ -103,7 +103,7 @@ public class Drawer {
             Path path = new Path();
             vertex = entry.getKey();
             iView = entry.getValue();
-            Point2D tail = new Point2D(iView.getX() + iView.getFitWidth() + 13d, iView.getY() + iView.getFitHeight() + 24d);
+            Point2D tail = new Point2D(iView.getX() + iView.getFitWidth() + 13.5d, iView.getY() + iView.getFitHeight() + 24d);
             MoveTo mt = new MoveTo(tail.getX(), tail.getY());
             path.getElements().add(mt);
             LinkedList<Edge> edges = vertex.getEdgeList();
@@ -114,7 +114,7 @@ public class Drawer {
                 if (addedEdges.contains((Route) wEdge.getWeight())) continue;
                 Vertex headVertex = e.getVertex();
                 ImageView ivHead = nodes.get(headVertex);
-                head = new Point2D(ivHead.getX() + ivHead.getFitWidth() + 13d, ivHead.getY() + ivHead.getFitHeight() + 24d);
+                head = new Point2D(ivHead.getX() + ivHead.getFitWidth() + 13.5d, ivHead.getY() + ivHead.getFitHeight() + 24d);
                 LineTo line = new LineTo(head.getX(), head.getY());
                 path.getElements().add(line);
                 path.getElements().add(mt);
