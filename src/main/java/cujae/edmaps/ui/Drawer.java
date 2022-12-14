@@ -2,7 +2,6 @@ package cujae.edmaps.ui;
 
 import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
-import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
@@ -24,7 +23,7 @@ import java.util.*;
 
 public class Drawer {
     private final String ASSETS_LOCATION = "file:./src/main/resources/cujae/edmaps/ui/assets/location.png";
-    private HashMap<Vertex, ImageView> nodes;
+    private HashMap<Integer, Location> nodes;
     private ArrayList<Route> addedEdges;
     private HashMap<WeightedEdge, Segment> edges;
     private final Stage stage;
@@ -33,16 +32,16 @@ public class Drawer {
 
     public Drawer(Stage stage) {
         this.stage = stage;
-        totalDistance = 0f;
     }
 
     public Group draw(LinkedList<Vertex> subgraph) {
         Group graph = new Group();
+        totalDistance = 0f;
         nodes = new HashMap<>();
         addedEdges = new ArrayList<>();
         edges = new HashMap<>();
         LinkedList<ImageView> locations = addLocations(subgraph);
-        LinkedList<Text> labels = addLabelToLocations();
+        LinkedList<Text> labels = addLabelToLocations(subgraph);
         LinkedList<Path> connections = addConnections();
         LinkedList<Text> weights = addWeightToEdges();
         graph.getChildren().addAll(connections);
@@ -66,16 +65,17 @@ public class Drawer {
         final int NODES = vertices.size();
         final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
-        final double CENTER_Y = stage.getHeight() / 2 - 20d;
+        final double CENTER_Y = stage.getHeight() / 2 - 50d;
         Iterator<Vertex> iterator = vertices.descendingIterator();
         double i = 0;
         Vertex current = null;
+        int pos = NODES;
         if (vertices.size() == 1) {
             ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
             location.setX(CENTER_X);
             location.setY(CENTER_Y);
             locations.add(location);
-            nodes.put(vertices.get(0), location);
+            nodes.put(1, new Location(vertices.getFirst(), location));
         } else while (iterator.hasNext()) {
             current = iterator.next();
             double angle = Math.toRadians((++i / NODES) * 360d);
@@ -83,20 +83,21 @@ public class Drawer {
             double centerY = (Math.sin(angle) * RADIUS) + CENTER_Y;
             ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
             location.setX(centerX);
-            location.setY(centerY - 30d);
+            location.setY(centerY);
             locations.add(location);
-            nodes.put(current, location);
+            System.out.println(((BusStop) current.getInfo()).getName());
+            nodes.put(pos--, new Location(current, location));
         }
         return locations;
     }
 
-    private LinkedList<Text> addLabelToLocations() {
+    private LinkedList<Text> addLabelToLocations(LinkedList<Vertex> subgraph) {
         LinkedList<Text> labels = new LinkedList<>();
-        for (Map.Entry<Vertex, ImageView> entry : nodes.entrySet()) {
-            double posX = entry.getValue().getX();
-            double posY = entry.getValue().getY() - 5d;
-            String stopName = ((BusStop) entry.getKey().getInfo()).getName();
-            Text text = new Text(posX, posY, stopName);
+        for (Map.Entry<Integer, Location> entry : nodes.entrySet()) {
+            double posX = entry.getValue().location.getX();
+            double posY = entry.getValue().location.getY();
+            String stopName = ((BusStop) entry.getValue().vertex.getInfo()).getName();
+            Text text = new Text(posX, posY, stopName + (subgraph == null ? "" : " [" + entry.getKey() + "]"));
             text.setFont(Font.font("Ubuntu", FontWeight.BOLD, 14));
             labels.add(text);
         }
@@ -107,10 +108,10 @@ public class Drawer {
         Vertex vertex = null;
         ImageView iView = null;
         LinkedList<Path> paths = new LinkedList<>();
-        for (Map.Entry<Vertex, ImageView> entry : nodes.entrySet()) {
+        for (Map.Entry<Integer, Location> entry : nodes.entrySet()) {
             Path path = new Path();
-            vertex = entry.getKey();
-            iView = entry.getValue();
+            vertex = entry.getValue().vertex();
+            iView = entry.getValue().location();
             Point2D tail = new Point2D(iView.getX() + iView.getFitWidth() + 13.5d, iView.getY() + iView.getFitHeight() + 24d);
             MoveTo mt = new MoveTo(tail.getX(), tail.getY());
             path.getElements().add(mt);
@@ -121,7 +122,7 @@ public class Drawer {
                 wEdge = (WeightedEdge) e;
                 if (addedEdges.contains((Route) wEdge.getWeight())) continue;
                 Vertex headVertex = e.getVertex();
-                ImageView ivHead = nodes.get(headVertex);
+                ImageView ivHead = getLocationOfVertex(headVertex);
                 head = new Point2D(ivHead.getX() + ivHead.getFitWidth() + 13.5d, ivHead.getY() + ivHead.getFitHeight() + 24d);
                 LineTo line = new LineTo(head.getX(), head.getY());
                 path.getElements().add(line);
@@ -133,6 +134,17 @@ public class Drawer {
             paths.add(path);
         }
         return paths;
+    }
+
+    private ImageView getLocationOfVertex(Vertex v) {
+        ImageView result = null;
+        for (Map.Entry<Integer, Location> entry : nodes.entrySet()) {
+            if (entry.getValue().vertex().equals(v)) {
+                result = entry.getValue().location();
+                break;
+            }
+        }
+        return result;
     }
 
     private LinkedList<Text> addWeightToEdges() {
@@ -188,6 +200,9 @@ public class Drawer {
         return fromTo;
     }
 
-    public record Segment(Point2D tail, Point2D head) {
+    private record Segment(Point2D tail, Point2D head) {
+    }
+
+    private record Location(Vertex vertex, ImageView location) {
     }
 }
