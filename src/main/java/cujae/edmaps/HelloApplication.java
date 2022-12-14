@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 
 public class HelloApplication extends Application {
     @Override
@@ -27,7 +26,7 @@ public class HelloApplication extends Application {
         stage.setMaximized(true);
     }
 
-    public static void userHistoryCityCreation() throws Exception {
+    public static void userHistoryCityCreation() {
         FileManager fm = FileManager.getInstance();
         //user story 1: create city and get the shortest path between 2 bus stops
         System.out.println("User story 1: shortest path");
@@ -85,7 +84,7 @@ public class HelloApplication extends Application {
 
         //user story 4: modify route distance
         System.out.println("user story 4: modify route distance");
-        WeightedEdge wEdge = madrid.getEdge(madrid.getVertex("Airport"), "Route-1");
+        WeightedEdge wEdge = madrid.getEdge("Route-1", "Airport", "Train Station");
         Route route = (Route) wEdge.getWeight();
         System.out.println(route.getDistance());
         madrid.modifyDistanceBetween("Airport", "Train Station", "Route-1", 600.0f);
