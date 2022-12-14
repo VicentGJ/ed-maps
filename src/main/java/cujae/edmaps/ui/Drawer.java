@@ -23,7 +23,6 @@ import java.util.*;
 
 public class Drawer {
     private final String ASSETS_LOCATION = "file:./src/main/resources/cujae/edmaps/ui/assets/location.png";
-    private final double NODE_RADIUS = 10d;
     private HashMap<Vertex, ImageView> nodes;
     private Group root;
     private ArrayList<Route> addedEdges;
@@ -56,7 +55,7 @@ public class Drawer {
         LinkedList<ImageView> locations = new LinkedList<>();
         LinkedList<Vertex> vertices = City.getInstance().getRouteGraph().getVerticesList();
         final int NODES = vertices.size();
-        final double RADIUS = stage.getHeight() / 2 - 50;
+        final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
         final double CENTER_Y = stage.getHeight() / 2;
         Iterator<Vertex> iterator = vertices.iterator();
@@ -159,7 +158,7 @@ public class Drawer {
         return false;
     }
 
-    private class Segment {
+    public static class Segment {
         private Point2D head;
         private Point2D tail;
 

@@ -291,6 +291,15 @@ public class City {
         } else throw new InvalidParameterException("oldName not found: " + oldName);
     }
 
+    public void renameBus(String oldName, String newName) {
+        Bus bus = getBus(oldName);
+        if (bus != null) {
+            if (!existBus(newName)) {
+                bus.setName(newName);
+            } else throw new InvalidParameterException("newName already exist: " + newName);
+        } else throw new InvalidParameterException("oldName not found: " + oldName);
+    }
+
     /**
      * Modify the distance of a route between two busStops
      *
@@ -346,5 +355,28 @@ public class City {
             }
         }
         return found;
+    }
+
+    public void removeBusStop(String name) {
+        Vertex busStopVertex = getVertex(name);
+        if (busStopVertex == null) throw new InvalidParameterException("name not found: " + name);
+        Vertex currentVertex = null;
+        Iterator<Vertex> vertexIterator = this.routeGraph.getVerticesList().iterator();
+        while (vertexIterator.hasNext()) {
+            currentVertex = vertexIterator.next();
+            Edge currentEdge = null;
+            if (currentVertex.equals(busStopVertex)) {
+                currentVertex.getEdgeList().clear();
+                vertexIterator.remove();
+            } else {
+                Iterator<Edge> edgeIterator = currentVertex.getEdgeList().iterator();
+                while (edgeIterator.hasNext()) {
+                    currentEdge = edgeIterator.next();
+                    if (currentEdge.getVertex().equals(busStopVertex)) {
+                        edgeIterator.remove();
+                    }
+                }
+            }
+        }
     }
 }
