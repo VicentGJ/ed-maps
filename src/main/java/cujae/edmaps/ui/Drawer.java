@@ -24,34 +24,34 @@ import java.util.*;
 public class Drawer {
     private final String ASSETS_LOCATION = "file:./src/main/resources/cujae/edmaps/ui/assets/location.png";
     private HashMap<Vertex, ImageView> nodes;
-    private Group root;
     private ArrayList<Route> addedEdges;
     private HashMap<WeightedEdge, Segment> edges;
-    private Stage stage;
+    private final Stage stage;
+
 
     public Drawer(Stage stage) {
-        root = new Group();
-        nodes = new HashMap<>();
-        addedEdges = new ArrayList<>();
-        edges = new HashMap<>();
         this.stage = stage;
     }
 
     public Group draw() {
-        LinkedList<ImageView> circles = addNodes();
-        LinkedList<Text> labels = addLabelToNodes();
+        Group graph = new Group();
+        nodes = new HashMap<>();
+        addedEdges = new ArrayList<>();
+        edges = new HashMap<>();
+        LinkedList<ImageView> locations = addLocations();
+        LinkedList<Text> labels = addLabelToLocations();
         LinkedList<Path> connections = addConnections();
         LinkedList<Text> weights = addWeightToEdges();
         Text cityName = addCityName();
-        root.getChildren().addAll(connections);
-        root.getChildren().addAll(weights);
-        root.getChildren().addAll(circles);
-        root.getChildren().addAll(labels);
-        root.getChildren().add(cityName);
-        return this.root;
+        graph.getChildren().addAll(connections);
+        graph.getChildren().addAll(weights);
+        graph.getChildren().addAll(locations);
+        graph.getChildren().addAll(labels);
+        graph.getChildren().add(cityName);
+        return graph;
     }
 
-    private LinkedList<ImageView> addNodes() {
+    private LinkedList<ImageView> addLocations() {
         LinkedList<ImageView> locations = new LinkedList<>();
         LinkedList<Vertex> vertices = City.getInstance().getRouteGraph().getVerticesList();
         final int NODES = vertices.size();
@@ -75,7 +75,7 @@ public class Drawer {
         return locations;
     }
 
-    private LinkedList<Text> addLabelToNodes() {
+    private LinkedList<Text> addLabelToLocations() {
         LinkedList<Text> labels = new LinkedList<>();
         for (Map.Entry<Vertex, ImageView> entry : nodes.entrySet()) {
             double posX = entry.getValue().getX();
@@ -124,7 +124,7 @@ public class Drawer {
     private LinkedList<Text> addWeightToEdges() {
         LinkedList<Text> weights = new LinkedList<>();
         for (Map.Entry<WeightedEdge, Segment> entry : edges.entrySet()) {
-            Text weight = addWeightToEdge(entry.getKey(), entry.getValue().getTail(), entry.getValue().getHead());
+            Text weight = addWeightToEdge(entry.getKey(), entry.getValue().tail(), entry.getValue().head());
             while (textOverlaps(weights, weight)) {
                 weight.setY(weight.getY() - 15d);
             }
@@ -158,21 +158,6 @@ public class Drawer {
         return false;
     }
 
-    public static class Segment {
-        private Point2D head;
-        private Point2D tail;
-
-        public Segment(Point2D tail, Point2D head) {
-            this.tail = tail;
-            this.head = head;
-        }
-
-        public Point2D getTail() {
-            return tail;
-        }
-
-        public Point2D getHead() {
-            return head;
-        }
+    public record Segment(Point2D tail, Point2D head) {
     }
 }
