@@ -61,7 +61,13 @@ public class Drawer {
         Iterator<Vertex> iterator = vertices.iterator();
         int i = 0;
         Vertex current = null;
-        while (iterator.hasNext()) {
+        if (vertices.size() == 1) {
+            ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
+            location.setX(CENTER_X);
+            location.setY(CENTER_Y - 30d);
+            locations.add(location);
+            nodes.put(vertices.get(0), location);
+        } else while (iterator.hasNext()) {
             current = iterator.next();
             double angle = Math.toRadians(((double) i++ / NODES) * 360d);
             double centerX = (Math.cos(angle) * RADIUS) + CENTER_X;
