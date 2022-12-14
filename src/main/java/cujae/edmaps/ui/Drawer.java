@@ -36,24 +36,6 @@ public class Drawer {
         totalDistance = 0f;
     }
 
-    public Group draw() {
-        Group graph = new Group();
-        nodes = new HashMap<>();
-        addedEdges = new ArrayList<>();
-        edges = new HashMap<>();
-        LinkedList<ImageView> locations = addLocations();
-        LinkedList<Text> labels = addLabelToLocations();
-        LinkedList<Path> connections = addConnections();
-        LinkedList<Text> weights = addWeightToEdges();
-        Text cityName = addCityName();
-        graph.getChildren().addAll(connections);
-        graph.getChildren().addAll(weights);
-        graph.getChildren().addAll(locations);
-        graph.getChildren().addAll(labels);
-        graph.getChildren().add(cityName);
-        return graph;
-    }
-
     public Group draw(LinkedList<Vertex> subgraph) {
         Group graph = new Group();
         nodes = new HashMap<>();
@@ -63,33 +45,35 @@ public class Drawer {
         LinkedList<Text> labels = addLabelToLocations();
         LinkedList<Path> connections = addConnections();
         LinkedList<Text> weights = addWeightToEdges();
-        Text cityName = addCityName();
-        Text distance = addTotalDistance();
-        Text fromTo = addFromTo(subgraph);
         graph.getChildren().addAll(connections);
         graph.getChildren().addAll(weights);
         graph.getChildren().addAll(locations);
         graph.getChildren().addAll(labels);
-        graph.getChildren().add(cityName);
-        graph.getChildren().add(distance);
-        graph.getChildren().add(fromTo);
+        if (subgraph != null) {
+            Text cityName = addCityName();
+            Text distance = addTotalDistance();
+            Text fromTo = addFromTo(subgraph);
+            graph.getChildren().add(cityName);
+            graph.getChildren().add(distance);
+            graph.getChildren().add(fromTo);
+        }
         return graph;
     }
 
-    private LinkedList<ImageView> addLocations() {
+    private LinkedList<ImageView> addLocations(LinkedList<Vertex> vertexList) {
         LinkedList<ImageView> locations = new LinkedList<>();
-        LinkedList<Vertex> vertices = City.getInstance().getRouteGraph().getVerticesList();
+        LinkedList<Vertex> vertices = vertexList == null ? City.getInstance().getRouteGraph().getVerticesList() : vertexList;
         final int NODES = vertices.size();
         final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
-        final double CENTER_Y = stage.getHeight() / 2;
+        final double CENTER_Y = stage.getHeight() / 2 - 20d;
         Iterator<Vertex> iterator = vertices.descendingIterator();
         double i = 0;
         Vertex current = null;
         if (vertices.size() == 1) {
             ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
             location.setX(CENTER_X);
-            location.setY(CENTER_Y - 30d);
+            location.setY(CENTER_Y);
             locations.add(location);
             nodes.put(vertices.get(0), location);
         } else while (iterator.hasNext()) {
@@ -100,34 +84,6 @@ public class Drawer {
             ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
             location.setX(centerX);
             location.setY(centerY - 30d);
-            locations.add(location);
-            nodes.put(current, location);
-        }
-        return locations;
-    }
-
-    private LinkedList<ImageView> addLocations(LinkedList<Vertex> vertices) {
-        LinkedList<ImageView> locations = new LinkedList<>();
-        final int NODES = vertices.size();
-        final double SEPARATION = stage.getWidth() / NODES;
-        final double START_X = SEPARATION / 2.4d;
-        final double CENTER_Y = (stage.getHeight() / 2) - 30d;
-        Iterator<Vertex> iterator = vertices.iterator();
-        Vertex current = null;
-        double centerX = START_X;
-        if (vertices.size() == 1) {
-            final double CENTER_X = stage.getWidth() / 2;
-            ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
-            location.setX(CENTER_X);
-            location.setY(CENTER_Y);
-            locations.add(location);
-            nodes.put(vertices.get(0), location);
-        } else while (iterator.hasNext()) {
-            current = iterator.next();
-            ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
-            location.setX(centerX);
-            centerX += SEPARATION;
-            location.setY(CENTER_Y);
             locations.add(location);
             nodes.put(current, location);
         }
@@ -197,7 +153,7 @@ public class Drawer {
         String busName = "Walking";
         this.totalDistance += weight.getDistance();
         if (weight.getBus() != null) busName = weight.getBus().getName();
-        Text wText = new Text(middle.getX() - 20d, middle.getY() - 5d, busName + " [" + weight.getDistance() + "]");
+        Text wText = new Text(middle.getX() - 30d, middle.getY() - 5d, busName + "[" + weight.getDistance() + "]");
         wText.setFont(Font.font("Ubuntu", FontWeight.BOLD, 13d));
         return wText;
     }
