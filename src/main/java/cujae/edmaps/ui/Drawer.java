@@ -2,6 +2,7 @@ package cujae.edmaps.ui;
 
 import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
+import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
@@ -27,10 +28,12 @@ public class Drawer {
     private ArrayList<Route> addedEdges;
     private HashMap<WeightedEdge, Segment> edges;
     private final Stage stage;
+    private Float totalDistance;
 
 
     public Drawer(Stage stage) {
         this.stage = stage;
+        totalDistance = 0f;
     }
 
     public Group draw() {
@@ -48,6 +51,28 @@ public class Drawer {
         graph.getChildren().addAll(locations);
         graph.getChildren().addAll(labels);
         graph.getChildren().add(cityName);
+        return graph;
+    }
+
+    public Group draw(LinkedList<Vertex> subgraph) {
+        Group graph = new Group();
+        nodes = new HashMap<>();
+        addedEdges = new ArrayList<>();
+        edges = new HashMap<>();
+        LinkedList<ImageView> locations = addLocations(subgraph);
+        LinkedList<Text> labels = addLabelToLocations();
+        LinkedList<Path> connections = addConnections();
+        LinkedList<Text> weights = addWeightToEdges();
+        Text cityName = addCityName();
+        Text distance = addTotalDistance();
+        Text fromTo = addFromTo(subgraph);
+        graph.getChildren().addAll(connections);
+        graph.getChildren().addAll(weights);
+        graph.getChildren().addAll(locations);
+        graph.getChildren().addAll(labels);
+        graph.getChildren().add(cityName);
+        graph.getChildren().add(distance);
+        graph.getChildren().add(fromTo);
         return graph;
     }
 
@@ -81,6 +106,34 @@ public class Drawer {
         return locations;
     }
 
+    private LinkedList<ImageView> addLocations(LinkedList<Vertex> vertices) {
+        LinkedList<ImageView> locations = new LinkedList<>();
+        final int NODES = vertices.size();
+        final double SEPARATION = stage.getWidth() / NODES;
+        final double START_X = SEPARATION / 2.4d;
+        final double CENTER_Y = (stage.getHeight() / 2) - 30d;
+        Iterator<Vertex> iterator = vertices.iterator();
+        Vertex current = null;
+        double centerX = START_X;
+        if (vertices.size() == 1) {
+            final double CENTER_X = stage.getWidth() / 2;
+            ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
+            location.setX(CENTER_X);
+            location.setY(CENTER_Y);
+            locations.add(location);
+            nodes.put(vertices.get(0), location);
+        } else while (iterator.hasNext()) {
+            current = iterator.next();
+            ImageView location = new ImageView(new Image(ASSETS_LOCATION, 25d, 25d, false, true));
+            location.setX(centerX);
+            centerX += SEPARATION;
+            location.setY(CENTER_Y);
+            locations.add(location);
+            nodes.put(current, location);
+        }
+        return locations;
+    }
+
     private LinkedList<Text> addLabelToLocations() {
         LinkedList<Text> labels = new LinkedList<>();
         for (Map.Entry<Vertex, ImageView> entry : nodes.entrySet()) {
@@ -98,7 +151,6 @@ public class Drawer {
         Vertex vertex = null;
         ImageView iView = null;
         LinkedList<Path> paths = new LinkedList<>();
-        ArrayList<Edge> added = new ArrayList<>();
         for (Map.Entry<Vertex, ImageView> entry : nodes.entrySet()) {
             Path path = new Path();
             vertex = entry.getKey();
@@ -143,14 +195,15 @@ public class Drawer {
         Point2D middle = new Point2D((tail.getX() + head.getX()) / 2, (tail.getY() + head.getY()) / 2);
         Route weight = (Route) edge.getWeight();
         String busName = "Walking";
+        this.totalDistance += weight.getDistance();
         if (weight.getBus() != null) busName = weight.getBus().getName();
-        Text wText = new Text(middle.getX() - 20d, middle.getY(), busName + " [" + weight.getDistance() + "]");
+        Text wText = new Text(middle.getX() - 20d, middle.getY() - 5d, busName + " [" + weight.getDistance() + "]");
         wText.setFont(Font.font("Ubuntu", FontWeight.BOLD, 13d));
         return wText;
     }
 
     private Text addCityName() {
-        Text city = new Text(50, 50, City.getInstance().getName());
+        Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, City.getInstance().getName());
         city.setFont(Font.font("Ubuntu", FontWeight.BOLD, 30d));
         return city;
     }
@@ -162,6 +215,21 @@ public class Drawer {
             }
         }
         return false;
+    }
+
+    private Text addTotalDistance() {
+        Text distance = new Text(40d, stage.getHeight() - stage.getHeight() / 3, "Total distance: " + this.totalDistance + "m");
+        distance.setFont(Font.font("Ubuntu", FontWeight.BOLD, 18));
+        return distance;
+    }
+
+    private Text addFromTo(LinkedList<Vertex> vertices) {
+        String text = "From: ";
+        text += ((BusStop) vertices.getFirst().getInfo()).getName() + "\nTo: ";
+        text += ((BusStop) vertices.getLast().getInfo()).getName();
+        Text fromTo = new Text(40d, stage.getHeight() - stage.getHeight() / 4, text);
+        fromTo.setFont(Font.font("Ubuntu", FontWeight.BOLD, 18));
+        return fromTo;
     }
 
     public record Segment(Point2D tail, Point2D head) {
