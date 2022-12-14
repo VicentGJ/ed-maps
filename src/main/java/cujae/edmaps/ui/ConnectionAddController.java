@@ -29,7 +29,9 @@ public class ConnectionAddController implements Initializable {
     @FXML
     public void onOkButton() {
         Float distance = Float.parseFloat(String.valueOf(distanceSpinner.getValueFactory().getValue()));
-        city.insertRoute(stop1ComboBox.getValue(), stop2ComboBox.getValue(), busComboBox.getValue(), distance);
+        String bus = null;
+        if (!busComboBox.getValue().equalsIgnoreCase("Walking")) bus = busComboBox.getValue();
+        city.insertRoute(stop1ComboBox.getValue(), stop2ComboBox.getValue(), bus, distance);
         ViewLoader.getStage().close();
     }
 
@@ -40,9 +42,11 @@ public class ConnectionAddController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         for (BusStop stop : city.getBusStopList()) {
             stopList.add(stop.getName());
         }
+        busList.add("Walking");
         for (Bus bus : city.getBusList()) {
             busList.add(bus.getName());
         }

@@ -183,12 +183,12 @@ public class City {
                 if (tailIndex != -1) {
                     int headIndex = getBusStopIndex(busStopHead);
                     if (headIndex != -1) {
-                        Edge existentEdge = getEdge(busName, busStopTail, busStopHead);
-                        if (existentEdge == null) {
+                        WeightedEdge existentEdge = getEdge(busName, busStopTail, busStopHead);
+                        if (existentEdge != null) {
+                            ((Route) existentEdge.getWeight()).setDistance(distance);
+                        } else {
                             Route route = new Route(bus, distance);
                             this.routeGraph.insertWEdgeNDG(tailIndex, headIndex, route);
-                        } else {
-                            ((Route) ((WeightedEdge) existentEdge).getWeight()).setDistance(distance);
                         }
                     } else throw new InvalidParameterException("busStopHead not found: " + busStopHead);
                 } else throw new InvalidParameterException("busStopTail not found: " + busStopTail);
@@ -322,10 +322,9 @@ public class City {
      *
      * @param busName the name of the bus that represents the route
      * @param tail    a bus stop name
-     * @param head    another bus stop name
      * @return The WeightedEdge that connects tail and head through the bus, null if it doesn't exist
      */
-    private WeightedEdge getEdge(String busName, String tail, String head) {
+    public WeightedEdge getEdge(String busName, String tail, String head) {
         Vertex t = getVertex(tail);
         Vertex h = getVertex(head);
         WeightedEdge found = null;
