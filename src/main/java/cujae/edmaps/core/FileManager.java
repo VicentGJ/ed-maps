@@ -24,19 +24,14 @@ public class FileManager {
     public FileManager() {
         File filesDirectory = new File(FILES_DIRECTORY);
         filesDirectory.mkdir();
-        File gitignore = new File(filesDirectory, ".gitignore");
         File cities = new File(CITIES_DIRECTORY);
         cities.mkdir();
         File consults = new File(CONSULTS_DIRECTORY);
         consults.mkdir();
         File readme = new File(consults, "README.txt");
         try {
-            gitignore.createNewFile();
             readme.createNewFile();
-            FileWriter fw = new FileWriter(gitignore);
-            fw.write("*\n!.gitignore");
-            fw.close();
-            fw = new FileWriter(readme);
+            FileWriter fw = new FileWriter(readme);
             fw.write("DO NOT DELETE ANY FILES FROM HERE MANUALLY!\nThank you.");
             fw.close();
         } catch (IOException e) {
