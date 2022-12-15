@@ -20,15 +20,6 @@ public class City {
     private List<Bus> busList;
     private DijkstraShortestPath dijsktraShortestPath;
 
-    private static City city;
-
-    public static City getInstance() {//FIXME: every instance cant be called Madrid
-        if (city == null) {
-            city = new City("Madrid");
-        }
-        return city;
-    }
-
     private City(String name) {
         setName(name);
         this.routeGraph = new LinkedGraph();
