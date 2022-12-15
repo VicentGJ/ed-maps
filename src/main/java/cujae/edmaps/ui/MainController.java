@@ -1,5 +1,6 @@
 package cujae.edmaps.ui;
 
+import cujae.edmaps.core.City;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,7 +43,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void onRefresh(ActionEvent event) {
-        Group graph = new Drawer(stage).draw();
+        Group graph = new Drawer(stage).draw(null);
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
         this.graphContainer.getChildren().add(graph);
