@@ -34,7 +34,7 @@ public class Drawer {
         this.stage = stage;
     }
 
-    public Group draw(LinkedList<Vertex> subgraph) {
+    public Group draw(LinkedList<Vertex> subgraph, String name) {
         Group graph = new Group();
         totalDistance = 0f;
         nodes = new HashMap<>();
@@ -44,7 +44,7 @@ public class Drawer {
         LinkedList<Text> labels = addLabelToLocations(subgraph);
         LinkedList<Path> connections = addConnections();
         LinkedList<Text> weights = addWeightToEdges();
-        Text cityName = addCityName();
+        Text cityName = addCityName(name);
         graph.getChildren().addAll(connections);
         graph.getChildren().addAll(weights);
         graph.getChildren().addAll(locations);
@@ -173,10 +173,9 @@ public class Drawer {
         return wText;
     }
 
-    private Text addCityName() {
-        System.out.println(MapsManager.getInstance().getActualCity().getName());
-        System.out.println("hello");
-        Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, MapsManager.getInstance().getActualCity().getName());
+    private Text addCityName(String cityName) {
+        String name = cityName == null ? MapsManager.getInstance().getActualCity().getName() : cityName;
+        Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, name);
         city.setFont(Font.font("Ubuntu", FontWeight.BOLD, 30d));
         return city;
     }

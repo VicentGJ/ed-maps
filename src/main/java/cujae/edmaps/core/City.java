@@ -206,7 +206,7 @@ public class City {
                 while (it2.hasNext() && !insertable) {
                     WeightedEdge edge = (WeightedEdge) it2.next();
                         Route route = (Route) edge.getWeight();
-                        if (route.getBus().equals(bus)) {
+                        if (Objects.equals(route.getBus(),bus)) {
                             if (aux.equals(tail) || aux.equals(head) ||
                                     edge.getVertex().equals(tail) || edge.getVertex().equals(head)) {
                                 insertable = true;
