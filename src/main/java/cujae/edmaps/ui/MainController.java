@@ -36,6 +36,10 @@ public class MainController implements Initializable {
     private void onAddBus() throws IOException {
         ViewLoader.newWindow(getClass().getResource("add-form.fxml"), "Add Bus", null);
     }
+    @FXML
+    private void onCreateCity() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("add-form.fxml"), "Add City", null);
+    }
 
     @FXML
     private void onAddStop() throws IOException {

@@ -3,7 +3,6 @@ package cujae.edmaps.ui;
 import cujae.edmaps.core.City;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.ViewLoader;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -16,32 +15,36 @@ public class SimpleAddController implements Initializable {
 
     @FXML
     private TextField nameField;
-    private boolean isBus = false;
+    private AddType type = AddType.STOP;
     private final City city = MapsManager.getInstance().getActualCity();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Stage stage = ViewLoader.getStage();
-        if (stage.getTitle().equals("Add Bus")) {
-            isBus = true;
+        switch (stage.getTitle()) {
+            case "Add Bus" -> type = AddType.BUS;
+            case "Add Stop" -> type = AddType.STOP;
+            case "Add City" -> type = AddType.CITY;
         }
-        System.out.println(stage.getTitle());
     }
 
     @FXML
     public void onOkButton() {
-        if (isBus) {
-            city.addBus(nameField.getText());
-        }
-        else {
-            city.addBusStop(nameField.getText());
-        }
+       switch (type){
+           case BUS -> city.addBus(nameField.getText());
+           case STOP -> city.addBusStop(nameField.getText());
+           case CITY -> MapsManager.getInstance().createCity(nameField.getText());
+       }
         ViewLoader.getStage().close();
     }
 
     @FXML
-    public  void onCancelButton() {
+    public void onCancelButton() {
         ViewLoader.getStage().close();
     }
+}
+
+enum AddType {
+    CITY, BUS, STOP
 }
