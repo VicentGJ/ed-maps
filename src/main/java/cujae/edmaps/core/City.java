@@ -9,10 +9,7 @@ import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.DijkstraShortestPath;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class City {
     private String name;
@@ -178,14 +175,51 @@ public class City {
                         WeightedEdge existentEdge = getEdge(busName, busStopTail, busStopHead);
                         if (existentEdge != null) {
                             ((Route) existentEdge.getWeight()).setDistance(distance);
-                        } else {
+                        } else if(canInsertRoute(tailIndex, headIndex, bus)){
                             Route route = new Route(bus, distance);
                             this.routeGraph.insertWEdgeNDG(tailIndex, headIndex, route);
                         }
+                        else throw new InvalidParameterException("busName: " + busName);
                     } else throw new InvalidParameterException("busStopHead not found: " + busStopHead);
                 } else throw new InvalidParameterException("busStopTail not found: " + busStopTail);
             } else throw new InvalidParameterException("distance(walking route): " + distance);
         } else throw new InvalidParameterException("distance: " + distance);
+    }
+
+    /**
+     *
+     * @param stop1Index the BusStop's index from the graph
+     * @param stop2Index the BusStop's index from the graph
+     * @param bus the route you want to check
+     * @return true if the route can be inserted or false if not
+     */
+    public boolean canInsertRoute(int stop1Index, int stop2Index, Bus bus){
+        if(bus != null) {
+            boolean insertable = false;
+            Vertex tail = routeGraph.getVerticesList().get(stop1Index);
+            Vertex head = routeGraph.getVerticesList().get(stop2Index);
+            Iterator<Vertex> it = routeGraph.getVerticesList().iterator();
+            int stops = 0;
+            while (it.hasNext() && !insertable){
+                Vertex aux = it.next();
+                Iterator<Edge> it2 = aux.getEdgeList().iterator();
+                while (it2.hasNext() && !insertable) {
+                    WeightedEdge edge = (WeightedEdge) it2.next();
+                        Route route = (Route) edge.getWeight();
+                        if (route.getBus().equals(bus)) {
+                            if (aux.equals(tail) || aux.equals(head) ||
+                                    edge.getVertex().equals(tail) || edge.getVertex().equals(head)) {
+                                insertable = true;
+                            }
+                            else stops++;
+                    }
+                }
+            }
+            if(!insertable && stops == 0)
+                insertable = true;
+            return insertable;
+        }
+        return true;
     }
 
 
