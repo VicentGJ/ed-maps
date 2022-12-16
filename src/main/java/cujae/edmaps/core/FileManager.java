@@ -119,17 +119,16 @@ public class FileManager {
             throw new InvalidParameterException("cityName: " + cityName);
         }
         City city = new City(cityName);
-        if (sc.hasNext()) {
-            String[] vertices = sc.next().split(",");
+        if (sc.hasNextLine()) {
+            String[] vertices = sc.nextLine().split(",");
             for (String s : vertices) {
                 city.addBusStop(s);
             }
             int i = 0;
             int j = 0;
-            while (sc.hasNext()) {
-                String[] conections = sc.next().split(",");
+            while (sc.hasNextLine()) {
+                String[] conections = sc.nextLine().split(",");
                 for (String s : conections) {
-                    ;
                     if (!s.equals("0")) {
                         String[] route = s.split(";");
                         String busName = route[0];
@@ -143,6 +142,7 @@ public class FileManager {
             }
 
         }
+        sc.close();
         return city;
     }
 
