@@ -62,13 +62,13 @@ public class FileManager {
     public static File loadCityFile(String cityName) {
         File city = new File(CITIES_DIRECTORY + cityName + ".csv");
         if (city.exists()) return city;
-        throw new InvalidParameterException("cityName: " + cityName);
+        return null;
     }
 
     public static File saveCity(City city) {
         File file = loadCityFile(city.getName());
         try {
-            file.delete();
+            if(file!=null)file.delete();
             file = new File(CITIES_DIRECTORY + city.getName() + ".csv");
             file.createNewFile();
             FileWriter fileWriter = new FileWriter(file);
@@ -127,12 +127,13 @@ public class FileManager {
             int i = 0;
             int j = 0;
             while (sc.hasNextLine()) {
-                String[] conections = sc.nextLine().split(",");
-                for (String s : conections) {
+                String[] connections = sc.nextLine().split(",");
+                for (String s : connections) {
                     if (!s.equals("0")) {
                         String[] route = s.split(";");
                         String busName = route[0];
                         Float distance = Float.parseFloat(route[1]);
+                        city.addBus(busName);//TODO: decide how you are going to save walking routes in .saveCity() and skip this line if is a walking route
                         city.insertRoute(vertices[i], vertices[j], busName, distance);
                     }
                     j++;
