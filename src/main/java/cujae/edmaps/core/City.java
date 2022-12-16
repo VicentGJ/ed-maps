@@ -43,7 +43,8 @@ public class City {
     }
 
     public void addBus(String name) {
-        this.busList.add(new Bus(name));
+        if (!existBus(name))
+            this.busList.add(new Bus(name));
     }
 
     /**
@@ -369,5 +370,22 @@ public class City {
                 }
             }
         }
+    }
+
+    /**
+     * Get all the edges that directly connect v1 with v2
+     *
+     * @param tail tail vertex
+     * @param head head vertex
+     * @return the list of edges that connect both vertices
+     */
+    public LinkedList<Edge> getEdgesOfAdjacent(Vertex tail, Vertex head) {
+        if (!tail.isAdjacent(head)) throw new InvalidParameterException("vertices are not adjacent");
+
+        LinkedList<Edge> edges = new LinkedList<>();
+        for (Edge e : tail.getEdgeList()) {
+            if (e.getVertex().equals(head)) edges.add(e);
+        }
+        return edges;
     }
 }
