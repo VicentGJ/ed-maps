@@ -126,12 +126,11 @@ public class FileManager {
                 city.addBusStop(s);
             }
             int i = 0;
-            int j = 0;
             while (sc.hasNextLine()) {
                 String[] connections = sc.nextLine().split(",");
-                for (String s : connections) {
-                    if (!s.equals("0")) {
-                        String[] routes = s.split("\\|");
+                for (int j = i + 1; j < connections.length; j++) {
+                    if (!connections[j].equals("0")) {
+                        String[] routes = connections[j].split("\\|");
                         System.out.println(Arrays.toString(routes));
                         for (String route : routes) {
                             String[] r = route.split(";");
@@ -139,12 +138,10 @@ public class FileManager {
                             Float distance = Float.parseFloat(r[1]);
                             if (!busName.equals("null"))
                                 city.addBus(busName);
-                            city.insertRoute(vertices[i], vertices[j], busName, distance);
+                            city.getRouteGraph().insertWEdgeNDG(i, j, new Route(city.getBus(busName), distance));
                         }
                     }
-                    j++;
                 }
-                j = 0;
                 i++;
             }
 
