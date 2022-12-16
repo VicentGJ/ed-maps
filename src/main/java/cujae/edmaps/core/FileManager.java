@@ -2,11 +2,14 @@ package cujae.edmaps.core;
 
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.CompletePath;
+import cujae.edmaps.core.dijkstra.Path;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.InvalidParameterException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -174,10 +177,10 @@ public class FileManager {
     /**
      *
      * @param cityName the City's name of the consult you want to get
-     * @param path the path of the consult you want to save
+     * @param paths the path of the consult you want to save
      * @return the file of the city consult
      */
-    public static File saveConsult(String cityName, CompletePath path) {
+    public static File saveConsult(String cityName, LinkedList<Path> paths) {
         File ccd = getCityConsultsDirectory(cityName);
         File consult = null;
         boolean consultFileExists;
@@ -189,9 +192,21 @@ public class FileManager {
                 consultFileExists = !consult.createNewFile();
             } while (consultFileExists);
             RandomAccessFile raf = new RandomAccessFile(consult, "rw");
-            byte[] pathByte = Convert.toBytes(path);
-            raf.write(pathByte.length);
-            raf.write(pathByte);
+            int counter = 0;
+            for (Path path : paths) {
+                String busName = "Walking";
+                if (counter++ == 0) busName = "Start";
+                else if (path.getBus() != null) busName = path.getBus().getName();
+                Float distance = path.getDistance();
+                String stopName = ((BusStop) path.getStop().getInfo()).getName();
+                byte[] busNameBytes = Convert.toBytes(busName);
+                byte[] stopNameBytes = Convert.toBytes(stopName);
+                raf.writeInt(busNameBytes.length);
+                raf.write(busNameBytes);
+                raf.writeInt(stopNameBytes.length);
+                raf.write(stopNameBytes);
+                raf.writeFloat(distance);
+            }
             raf.close();
         } catch (IOException e) {
             e.printStackTrace();

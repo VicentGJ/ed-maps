@@ -5,10 +5,7 @@ import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
-import cujae.edmaps.core.Bus;
-import cujae.edmaps.core.BusStop;
-import cujae.edmaps.core.FileManager;
-import cujae.edmaps.core.Route;
+import cujae.edmaps.core.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,7 +27,7 @@ public class CompletePath {
     }
 
     public void save() {
-        FileManager.getInstance().saveConsult(paths);
+        MapsManager.getInstance().saveConsult(this);
     }
 
     /**
