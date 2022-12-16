@@ -2,6 +2,7 @@ package cujae.edmaps.ui;
 
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
+import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
 import cujae.edmaps.utils.ViewLoader;
@@ -31,7 +32,7 @@ public class ConsultController implements Initializable {
     private TableColumn stopColumn, busColumn;
 
     private final ObservableList<String> stopList = FXCollections.observableArrayList();
-    private final City city = City.getInstance();
+    private final City city = MapsManager.getInstance().getActualCity();
 
     public static class PathHelper {
          private final SimpleStringProperty stopName;

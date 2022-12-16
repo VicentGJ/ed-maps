@@ -1,6 +1,7 @@
 package cujae.edmaps.ui;
 
 import cujae.edmaps.core.City;
+import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +17,7 @@ public class SimpleAddController implements Initializable {
     @FXML
     private TextField nameField;
     private boolean isBus = false;
-    private final City city = City.getInstance();
+    private final City city = MapsManager.getInstance().getActualCity();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

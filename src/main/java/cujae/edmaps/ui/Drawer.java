@@ -5,6 +5,7 @@ import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
+import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.core.Route;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -61,7 +62,7 @@ public class Drawer {
 
     private LinkedList<ImageView> addLocations(LinkedList<Vertex> vertexList) {
         LinkedList<ImageView> locations = new LinkedList<>();
-        LinkedList<Vertex> vertices = vertexList == null ? City.getInstance().getRouteGraph().getVerticesList() : vertexList;
+        LinkedList<Vertex> vertices = vertexList == null ? MapsManager.getInstance().getActualCity().getRouteGraph().getVerticesList() : vertexList;
         final int NODES = vertices.size();
         final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
@@ -171,7 +172,7 @@ public class Drawer {
     }
 
     private Text addCityName() {
-        Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, City.getInstance().getName());
+        Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, MapsManager.getInstance().getActualCity().getName());
         city.setFont(Font.font("Ubuntu", FontWeight.BOLD, 30d));
         return city;
     }
