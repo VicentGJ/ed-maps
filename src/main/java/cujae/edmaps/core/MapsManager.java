@@ -25,6 +25,7 @@ public class MapsManager {
     }
     public void createCity(String cityName){
         actualCity = new City(cityName);
+        FileManager.saveCity(actualCity);
     }
     
 
