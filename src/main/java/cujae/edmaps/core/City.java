@@ -386,4 +386,7 @@ public class City {
         }
         return edges;
     }
+    public void restartDijkstra() {
+        this.dijsktraShortestPath = null;
+    }
 }

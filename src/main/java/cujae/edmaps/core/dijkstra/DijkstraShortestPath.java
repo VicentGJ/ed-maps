@@ -38,6 +38,8 @@ public class DijkstraShortestPath {
     public void dijkstraAlgorithm(Set<Vertex> alreadyUnlocked, Map<Vertex, WayToArrive> toUnlock) {
         Vertex vertex = getShortest(toUnlock);
         while (vertex != null) {
+            alreadyUnlocked.add(vertex);
+            toUnlock.remove(vertex);
             Float distance = nodes.get(vertex).distance;
             for (Edge e : vertex.getEdgeList()) {
                 Route weight = (Route) ((WeightedEdge) e).getWeight();
@@ -49,17 +51,16 @@ public class DijkstraShortestPath {
                     if (wayToArrive.distance > actualDistance) {
                         wayToArrive.distance = actualDistance;
                         wayToArrive.bus = weight.getBus();
+                        wayToArrive.previous = vertex;
                     }
                 } else {
                     wayToArrive = new WayToArrive(vertex, actualDistance, weight.getBus());
                     nodes.put(target, wayToArrive);
                 }
                 if (!alreadyUnlocked.contains(target)) {
-                    alreadyUnlocked.add(target);
                     toUnlock.put(target, wayToArrive);
                 }
             }
-            toUnlock.remove(vertex);
             vertex = getShortest(toUnlock);
         }
 

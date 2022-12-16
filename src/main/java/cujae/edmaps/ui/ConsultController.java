@@ -60,6 +60,7 @@ public class ConsultController implements Initializable {
         }
         startComboBox.setItems(stopList);
         destinationComboBox.setItems(stopList);
+        city.restartDijkstra();
     }
 
     @FXML
