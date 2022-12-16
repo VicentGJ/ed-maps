@@ -122,29 +122,30 @@ public class FileManager {
         City city = new City(cityName);
         if (sc.hasNextLine()) {
             String[] vertices = sc.nextLine().split(",");
-            for (String s : vertices) {
-                city.addBusStop(s);
-            }
-            int i = 0;
-            while (sc.hasNextLine()) {
-                String[] connections = sc.nextLine().split(",");
-                for (int j = i + 1; j < connections.length; j++) {
-                    if (!connections[j].equals("0")) {
-                        String[] routes = connections[j].split("\\|");
-                        System.out.println(Arrays.toString(routes));
-                        for (String route : routes) {
-                            String[] r = route.split(";");
-                            String busName = r[0];
-                            Float distance = Float.parseFloat(r[1]);
-                            if (!busName.equals("null"))
-                                city.addBus(busName);
-                            city.getRouteGraph().insertWEdgeNDG(i, j, new Route(city.getBus(busName), distance));
+            if(!vertices[0].isBlank()) {
+                for (String s : vertices) {
+                    city.addBusStop(s);
+                }
+                int i = 0;
+                while (sc.hasNextLine()) {
+                    String[] connections = sc.nextLine().split(",");
+                    for (int j = i + 1; j < connections.length; j++) {
+                        if (!connections[j].equals("0")) {
+                            String[] routes = connections[j].split("\\|");
+                            System.out.println(Arrays.toString(routes));
+                            for (String route : routes) {
+                                String[] r = route.split(";");
+                                String busName = r[0];
+                                Float distance = Float.parseFloat(r[1]);
+                                if (!busName.equals("null"))
+                                    city.addBus(busName);
+                                city.getRouteGraph().insertWEdgeNDG(i, j, new Route(city.getBus(busName), distance));
+                            }
                         }
                     }
+                    i++;
                 }
-                i++;
             }
-
         }
         sc.close();
         return city;
