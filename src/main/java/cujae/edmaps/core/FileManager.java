@@ -222,8 +222,6 @@ public class FileManager {
      * @param cityName    the City's name of the consult you want to get
      * @param consultName the name of the specific consult you want to get
      * @return the path save on consult file
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     public static CompletePath loadConsult(String cityName, String consultName) {
         try {
@@ -251,7 +249,7 @@ public class FileManager {
         int id = ccd.listFiles().length;
         try {
             do {
-                String newConsultName = "consult-" + id++ + ".txt";
+                String newConsultName = "[" + ++id + "] " + ((BusStop) paths.getFirst().getStop().getInfo()).getName() + "-" + ((BusStop) paths.getLast().getStop().getInfo()).getName() + ".txt";
                 consult = new File(ccd.getPath(), newConsultName);
                 consultFileExists = !consult.createNewFile();
             } while (consultFileExists);
