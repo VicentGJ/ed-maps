@@ -1,5 +1,7 @@
 package cujae.edmaps.core;
 
+import cu.edu.cujae.ceis.graph.edge.Edge;
+import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
@@ -9,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.InvalidParameterException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -78,9 +81,19 @@ public class FileManager {
             fileWriter.write("\n");
             for (Vertex vertex : verticesList) {
                 for (Vertex vertex2 : verticesList) {
-                    if (vertex.isAdjacent(vertex2)) {
-                        fileWriter.write("1");
-                    } else fileWriter.write("0");
+                    Iterator<Edge> it = vertex.getEdgeList().iterator();
+                    boolean isAdjacent = false;
+                    while(it.hasNext() && !isAdjacent){
+                        WeightedEdge edge = (WeightedEdge) it.next();
+                        if(edge.getVertex().equals(vertex2)){
+                            Route route = (Route) edge.getWeight();
+                            fileWriter.write(route.getBus().getName());
+                            fileWriter.write(";");
+                            fileWriter.write(route.getDistance().toString());
+                            isAdjacent = true;
+                        }
+                    }
+                    if(!isAdjacent) fileWriter.write("0");
                     fileWriter.write(",");
                 }
                 fileWriter.write("\n");
