@@ -29,6 +29,7 @@ public class HelloApplication extends Application {
     public static void userHistoryCityCreation() {
         //user story 1: create city and get the shortest path between 2 bus stops
         System.out.println("User story 1: shortest path");
+        MapsManager.getInstance().createCity("Madrid");
         City madrid = MapsManager.getInstance().getActualCity();
         madrid.addBus("Route-1");
         madrid.addBus("Route-2");

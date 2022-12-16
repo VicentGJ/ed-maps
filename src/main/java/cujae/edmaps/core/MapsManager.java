@@ -23,6 +23,9 @@ public class MapsManager {
     public void setActualCity(String cityName){
         actualCity = FileManager.getCity(cityName);
     }
+    public void createCity(String cityName){
+        actualCity = new City(cityName);
+    }
     
 
 }
