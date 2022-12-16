@@ -8,10 +8,7 @@ import cujae.edmaps.core.dijkstra.Path;
 
 import java.io.*;
 import java.security.InvalidParameterException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * FileManager class is a singleton class for this project files management.
@@ -68,7 +65,7 @@ public class FileManager {
     public static File saveCity(City city) {
         File file = loadCityFile(city.getName());
         try {
-            if(file!=null)file.delete();
+            if (file != null) file.delete();
             file = new File(CITIES_DIRECTORY + city.getName() + ".csv");
             file.createNewFile();
             FileWriter fileWriter = new FileWriter(file);
@@ -80,17 +77,21 @@ public class FileManager {
             fileWriter.write("\n");
             for (Vertex vertex : verticesList) {
                 for (Vertex vertex2 : verticesList) {
-                    Iterator<Edge> it = vertex.getEdgeList().iterator();
                     boolean isAdjacent = false;
-                    while (it.hasNext() && !isAdjacent) {
-                        WeightedEdge edge = (WeightedEdge) it.next();
-                        if (edge.getVertex().equals(vertex2)) {
-                            Route route = (Route) edge.getWeight();
+                    LinkedList<Edge> edgesOfAdjacent = city.getEdgesOfAdjacent(vertex, vertex2);
+                    int counter = edgesOfAdjacent.size();
+                    for (Edge e : edgesOfAdjacent) {
+                        WeightedEdge wE = (WeightedEdge) e;
+                        Route route = (Route) wE.getWeight();
+                        if (route.getBus() != null)
                             fileWriter.write(route.getBus().getName());
-                            fileWriter.write(";");
-                            fileWriter.write(route.getDistance().toString());
-                            isAdjacent = true;
-                        }
+                        else
+                            fileWriter.write("null");
+                        fileWriter.write(";");
+                        fileWriter.write(route.getDistance().toString());
+                        isAdjacent = true;
+                        if (counter-- > 1)
+                            fileWriter.write("|");
                     }
                     if (!isAdjacent) fileWriter.write("0");
                     fileWriter.write(",");
@@ -130,11 +131,16 @@ public class FileManager {
                 String[] connections = sc.nextLine().split(",");
                 for (String s : connections) {
                     if (!s.equals("0")) {
-                        String[] route = s.split(";");
-                        String busName = route[0];
-                        Float distance = Float.parseFloat(route[1]);
-                        city.addBus(busName);//TODO: decide how you are going to save walking routes in .saveCity() and skip this line if is a walking route
-                        city.insertRoute(vertices[i], vertices[j], busName, distance);
+                        String[] routes = s.split("\\|");
+                        System.out.println(Arrays.toString(routes));
+                        for (String route : routes) {
+                            String[] r = route.split(";");
+                            String busName = r[0];
+                            Float distance = Float.parseFloat(r[1]);
+                            if (!busName.equals("null"))
+                                city.addBus(busName);
+                            city.insertRoute(vertices[i], vertices[j], busName, distance);
+                        }
                     }
                     j++;
                 }
