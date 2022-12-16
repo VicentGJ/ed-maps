@@ -44,15 +44,15 @@ public class Drawer {
         LinkedList<Text> labels = addLabelToLocations(subgraph);
         LinkedList<Path> connections = addConnections();
         LinkedList<Text> weights = addWeightToEdges();
+        Text cityName = addCityName();
         graph.getChildren().addAll(connections);
         graph.getChildren().addAll(weights);
         graph.getChildren().addAll(locations);
         graph.getChildren().addAll(labels);
+        graph.getChildren().add(cityName);
         if (subgraph != null) {
-            Text cityName = addCityName();
             Text distance = addTotalDistance();
             Text fromTo = addFromTo(subgraph);
-            graph.getChildren().add(cityName);
             graph.getChildren().add(distance);
             graph.getChildren().add(fromTo);
         }
@@ -174,6 +174,8 @@ public class Drawer {
     }
 
     private Text addCityName() {
+        System.out.println(MapsManager.getInstance().getActualCity().getName());
+        System.out.println("hello");
         Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, MapsManager.getInstance().getActualCity().getName());
         city.setFont(Font.font("Ubuntu", FontWeight.BOLD, 30d));
         return city;
