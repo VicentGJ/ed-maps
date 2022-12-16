@@ -73,7 +73,7 @@ public class MainController implements Initializable {
                 Arrays.sort(consults);
                 Menu submenu = new Menu(city.getName());
                 for (String consult : consults) {
-                    MenuItem c = new MenuItem(consult);
+                    MenuItem c = new MenuItem(consult.split("\\.")[0]);
                     c.setOnAction(event1 -> {
                         //TODO: trigger load consult
                     });
@@ -92,7 +92,7 @@ public class MainController implements Initializable {
         if (cities != null) {
             Arrays.sort(cities);
             for (File city : cities) {
-                MenuItem c = new MenuItem(city.getName());
+                MenuItem c = new MenuItem(city.getName().split("\\.")[0]);
                 c.setOnAction(event -> {
                     //TODO trigger load city
                 });
