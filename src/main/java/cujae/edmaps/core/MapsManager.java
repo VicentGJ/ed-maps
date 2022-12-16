@@ -20,6 +20,9 @@ public class MapsManager {
     public void saveConsult(CompletePath path){
         FileManager.saveConsult(actualCity.getName(), path.getPaths());
     }
+    public void setActualCity(String cityName){
+        actualCity = FileManager.getCity(cityName);
+    }
     
 
 }

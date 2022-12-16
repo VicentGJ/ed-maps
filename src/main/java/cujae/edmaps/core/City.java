@@ -20,7 +20,7 @@ public class City {
     private List<Bus> busList;
     private DijkstraShortestPath dijsktraShortestPath;
 
-    private City(String name) {
+    public City(String name) {
         setName(name);
         this.routeGraph = new LinkedGraph();
         this.busList = new LinkedList<>();

@@ -6,14 +6,12 @@ import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.security.InvalidParameterException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * FileManager class is a singleton class for this project files management.
@@ -104,6 +102,47 @@ public class FileManager {
         }
         getCityConsultsDirectory(city.getName());
         return file;
+    }
+
+    /**
+     *
+     * @param cityName the name of the city to get
+     * @return the city
+     * @throws InvalidParameterException if it can not find the city file
+     */
+    public static City getCity(String cityName) throws InvalidParameterException {
+        File cityFile = loadCityFile(cityName);
+        Scanner sc = null;
+        try {
+            sc = new Scanner(cityFile);
+        }catch(FileNotFoundException e){
+            throw new InvalidParameterException("cityName: " + cityName);
+        }
+        City city = new City(cityName);
+        if(sc.hasNext()){
+            String[] vertices = sc.next().split(",");
+            for(String s : vertices){
+                city.addBusStop(s);
+            }
+            int i = 0;
+            int j = 0;
+            while(sc.hasNext()){
+                String[] conections = sc.next().split(",");
+                for (String s : conections) {;
+                    if (!s.equals("0")) {
+                        String[] route = s.split(";");
+                        String busName = route[0];
+                        Float distance = Float.parseFloat(route[1]);
+                        city.insertRoute(vertices[i], vertices[j], busName, distance);
+                    }
+                    j++;
+                }
+                j = 0;
+                i++;
+            }
+
+        }
+        return city;
     }
 
     /**
