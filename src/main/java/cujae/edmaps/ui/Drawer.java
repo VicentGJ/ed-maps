@@ -4,7 +4,6 @@ import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
-import cujae.edmaps.core.City;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.core.Route;
 import javafx.geometry.Point2D;
@@ -67,7 +66,10 @@ public class Drawer {
         final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
         final double CENTER_Y = stage.getHeight() / 2 - 50d;
-        Iterator<Vertex> iterator = vertices.descendingIterator();
+        Iterator<Vertex> iterator;
+        if (vertexList == null)
+            iterator = vertices.descendingIterator();
+        else iterator = vertices.iterator();
         double i = 0;
         Vertex current = null;
         int pos = NODES;
@@ -194,8 +196,9 @@ public class Drawer {
 
     private Text addFromTo(LinkedList<Vertex> vertices) {
         String text = "From: ";
-        text += ((BusStop) vertices.getFirst().getInfo()).getName() + "\nTo: ";
-        text += ((BusStop) vertices.getLast().getInfo()).getName();
+
+        text += ((BusStop) vertices.getLast().getInfo()).getName() + "\nTo: ";
+        text += ((BusStop) vertices.getFirst().getInfo()).getName();
         Text fromTo = new Text(40d, stage.getHeight() - stage.getHeight() / 4, text);
         fromTo.setFont(Font.font("Ubuntu", FontWeight.BOLD, 18));
         return fromTo;

@@ -1,6 +1,8 @@
 package cujae.edmaps.core;
 
-import cujae.edmaps.core.dijkstra.CompletePath;
+import cujae.edmaps.core.dijkstra.Path;
+
+import java.util.LinkedList;
 
 public class MapsManager {
     private City actualCity;
@@ -17,8 +19,8 @@ public class MapsManager {
     public void saveCity(){
         FileManager.saveCity(actualCity);
     }
-    public void saveConsult(CompletePath path){
-        FileManager.saveConsult(actualCity.getName(), path.getPaths());
+    public void saveConsult(LinkedList<Path> paths){
+        FileManager.saveConsult(actualCity.getName(), paths);
     }
     public void setActualCity(String cityName){
         actualCity = FileManager.getCity(cityName);

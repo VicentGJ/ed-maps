@@ -9,7 +9,6 @@ import cujae.edmaps.core.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Objects;
 
 public class CompletePath {
     private LinkedList<Path> paths;
@@ -27,7 +26,7 @@ public class CompletePath {
     }
 
     public void save() {
-        MapsManager.getInstance().saveConsult(this);
+        MapsManager.getInstance().saveConsult(paths);
     }
 
     /**

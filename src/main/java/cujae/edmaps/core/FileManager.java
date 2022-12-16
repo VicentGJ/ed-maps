@@ -225,12 +225,21 @@ public class FileManager {
      */
     public static CompletePath loadConsult(String cityName, String consultName) {
         try {
+            City actualCity = MapsManager.getInstance().getActualCity();
             File consult = loadConsultFile(cityName, consultName);
             RandomAccessFile raf = new RandomAccessFile(consult, "r");
-            int length = raf.readInt();
-            byte[] pathByte = new byte[length];
-            raf.read(pathByte);
-            return (CompletePath) Convert.toObject(pathByte);
+            CompletePath cp = new CompletePath();
+            do {
+                byte[] busNameB = new byte[raf.readInt()];
+                raf.read(busNameB);
+                String busNameS = (String) Convert.toObject(busNameB);
+                byte[] stopNameB = new byte[raf.readInt()];
+                raf.read(stopNameB);
+                String stopNameS = (String) Convert.toObject(stopNameB);
+                Float distance = raf.readFloat();
+                cp.addPath(actualCity.getVertex(stopNameS), actualCity.getBus(busNameS), distance);
+            } while (raf.getFilePointer() < raf.length());
+            return cp;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
