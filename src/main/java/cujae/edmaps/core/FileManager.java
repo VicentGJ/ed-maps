@@ -64,6 +64,7 @@ public class FileManager {
         if (city.exists()) return city;
         throw new InvalidParameterException("cityName: " + cityName);
     }
+
     public static File saveCity(City city) {
         File file = loadCityFile(city.getName());
         try {
@@ -81,9 +82,9 @@ public class FileManager {
                 for (Vertex vertex2 : verticesList) {
                     Iterator<Edge> it = vertex.getEdgeList().iterator();
                     boolean isAdjacent = false;
-                    while(it.hasNext() && !isAdjacent){
+                    while (it.hasNext() && !isAdjacent) {
                         WeightedEdge edge = (WeightedEdge) it.next();
-                        if(edge.getVertex().equals(vertex2)){
+                        if (edge.getVertex().equals(vertex2)) {
                             Route route = (Route) edge.getWeight();
                             fileWriter.write(route.getBus().getName());
                             fileWriter.write(";");
@@ -91,7 +92,7 @@ public class FileManager {
                             isAdjacent = true;
                         }
                     }
-                    if(!isAdjacent) fileWriter.write("0");
+                    if (!isAdjacent) fileWriter.write("0");
                     fileWriter.write(",");
                 }
                 fileWriter.write("\n");
@@ -105,7 +106,6 @@ public class FileManager {
     }
 
     /**
-     *
      * @param cityName the name of the city to get
      * @return the city
      * @throws InvalidParameterException if it can not find the city file
@@ -115,20 +115,21 @@ public class FileManager {
         Scanner sc = null;
         try {
             sc = new Scanner(cityFile);
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             throw new InvalidParameterException("cityName: " + cityName);
         }
         City city = new City(cityName);
-        if(sc.hasNext()){
+        if (sc.hasNext()) {
             String[] vertices = sc.next().split(",");
-            for(String s : vertices){
+            for (String s : vertices) {
                 city.addBusStop(s);
             }
             int i = 0;
             int j = 0;
-            while(sc.hasNext()){
+            while (sc.hasNext()) {
                 String[] conections = sc.next().split(",");
-                for (String s : conections) {;
+                for (String s : conections) {
+                    ;
                     if (!s.equals("0")) {
                         String[] route = s.split(";");
                         String busName = route[0];
@@ -198,38 +199,42 @@ public class FileManager {
     /**
      * Get a single consult file
      *
-     * @param cityName the City's name of the consult you want to get
+     * @param cityName    the City's name of the consult you want to get
      * @param consultName the name of the specific consult you want to get
      * @return the file of the city's consults or null if file is not found
      */
     public static File loadConsultFile(String cityName, String consultName) {
         File cityFolder = new File(CONSULTS_DIRECTORY + cityName);
-        if (!cityFolder.exists()) throw new InvalidParameterException("cityName: " +cityName);
+        if (!cityFolder.exists()) throw new InvalidParameterException("cityName: " + cityName);
         File consult = new File(cityFolder, consultName);
-        if(!consult.exists()) throw new InvalidParameterException("consultName: " + consultName);
+        if (!consult.exists()) throw new InvalidParameterException("consultName: " + consultName);
         return consult;
     }
+
     /**
-     *
-     * @param cityName the City's name of the consult you want to get
+     * @param cityName    the City's name of the consult you want to get
      * @param consultName the name of the specific consult you want to get
      * @return the path save on consult file
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public static CompletePath loadConsult(String cityName, String consultName) throws IOException, ClassNotFoundException {
-        File consult = loadConsultFile(cityName, consultName);
-        RandomAccessFile raf = new RandomAccessFile(consult, "r");
-        int length = raf.readInt();
-        byte[] pathByte = new byte[length];
-        raf.read(pathByte);
-        return (CompletePath) Convert.toObject(pathByte);
+    public static CompletePath loadConsult(String cityName, String consultName) {
+        try {
+            File consult = loadConsultFile(cityName, consultName);
+            RandomAccessFile raf = new RandomAccessFile(consult, "r");
+            int length = raf.readInt();
+            byte[] pathByte = new byte[length];
+            raf.read(pathByte);
+            return (CompletePath) Convert.toObject(pathByte);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
-     *
      * @param cityName the City's name of the consult you want to get
-     * @param paths the path of the consult you want to save
+     * @param paths    the path of the consult you want to save
      * @return the file of the city consult
      */
     public static File saveConsult(String cityName, LinkedList<Path> paths) {

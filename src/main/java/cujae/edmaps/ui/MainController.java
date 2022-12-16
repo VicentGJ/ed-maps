@@ -1,6 +1,9 @@
 package cujae.edmaps.ui;
 
+import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.FileManager;
+import cujae.edmaps.core.MapsManager;
+import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -15,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -58,14 +62,13 @@ public class MainController implements Initializable {
 
     @FXML
     private void onSaveCity() {
-        FileManager.getInstance().saveCity();
+        MapsManager.getInstance().saveCity();
     }
 
     @FXML
     private void onShowingConsultsMenu() {
         loadCityConsultFileMenu.getItems().clear();
-        FileManager fm = FileManager.getInstance();
-        File[] cities = fm.getAllConsultDirectories();
+        File[] cities = FileManager.getAllConsultDirectories();
         Arrays.sort(cities);
         for (File city : cities) {
             String[] consults = city.list();
@@ -75,7 +78,9 @@ public class MainController implements Initializable {
                 for (String consult : consults) {
                     MenuItem c = new MenuItem(consult.split("\\.")[0]);
                     c.setOnAction(event1 -> {
-                        //TODO: trigger load consult
+                        //TODO: trigger load consult show subgraph
+                        LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult).parseToGraph().getVerticesList();
+                        onRefresh(vertices);
                     });
                     submenu.getItems().add(c);
                 }
@@ -84,17 +89,24 @@ public class MainController implements Initializable {
         }
     }
 
+    private void onRefresh(LinkedList<Vertex> vertices) {
+        Group graph = new Drawer(stage).draw(vertices);
+        if (graphContainer.getChildren().size() > 0)
+            this.graphContainer.getChildren().remove(0);
+        this.graphContainer.getChildren().add(graph);
+    }
+
     @FXML
     private void onShowingFileMenu() {
         loadCityFileMenu.getItems().clear();
-        FileManager fm = FileManager.getInstance();
-        File[] cities = fm.getAllCityFiles();
+        File[] cities = FileManager.getAllCityFiles();
         if (cities != null) {
             Arrays.sort(cities);
             for (File city : cities) {
                 MenuItem c = new MenuItem(city.getName().split("\\.")[0]);
                 c.setOnAction(event -> {
-                    //TODO trigger load city
+                    MapsManager.getInstance().setActualCity(city.getName().split("\\.")[0]);
+                    onRefresh();
                 });
                 loadCityFileMenu.getItems().add(c);
             }
