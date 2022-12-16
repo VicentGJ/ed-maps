@@ -35,27 +35,27 @@ public class ConsultController implements Initializable {
     private final City city = MapsManager.getInstance().getActualCity();
 
     public static class PathHelper {
-         private final SimpleStringProperty stopName;
-         private final SimpleStringProperty busName;
+        private final SimpleStringProperty stopName;
+        private final SimpleStringProperty busName;
 
-         private PathHelper(String stopName, String busName) {
-             this.stopName = new SimpleStringProperty(stopName);
-             this.busName = new SimpleStringProperty(busName);
-         }
+        private PathHelper(String stopName, String busName) {
+            this.stopName = new SimpleStringProperty(stopName);
+            this.busName = new SimpleStringProperty(busName);
+        }
 
-         public String getStopName() {
-             return stopName.get();
-         }
+        public String getStopName() {
+            return stopName.get();
+        }
 
-         public String getBusName() {
-             return busName.get();
-         }
+        public String getBusName() {
+            return busName.get();
+        }
 
-     }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        for (BusStop stop: city.getBusStopList()) {
+        for (BusStop stop : city.getBusStopList()) {
             stopList.add(stop.getName());
         }
         startComboBox.setItems(stopList);
@@ -68,16 +68,18 @@ public class ConsultController implements Initializable {
         try {
             ObservableList<PathHelper> pathList = FXCollections.observableArrayList();
             CompletePath path = city.getPathBetween(startComboBox.getValue(), destinationComboBox.getValue());
+            Path first = path.getPaths().getFirst();
             for (Path p : path.getPaths()) {
                 System.out.println(p.getBus() != null ? p.getBus().getName() : null);
                 System.out.println(p.getDistance());
                 System.out.println(((BusStop) p.getStop().getInfo()).getName());
                 System.out.println(":::::::::::::::::");
                 totalDistanceDisplay.setText(p.getDistance().toString());
-                pathList.add(new PathHelper(((
-                        BusStop) p.getStop().getInfo()).getName(),
-                        p.getBus() != null ? p.getBus().getName() : "Start"
-                ));
+                String busStopName = ((BusStop) p.getStop().getInfo()).getName();
+                String busName = "Walking";
+                if (p.getBus() != null) busName = p.getBus().getName();
+                else if (p.equals(first)) busName = "Start";
+                pathList.add(new PathHelper(busStopName, busName));
             }
             stopColumn.setCellValueFactory(
                     new PropertyValueFactory<PathHelper, String>("stopName"));
