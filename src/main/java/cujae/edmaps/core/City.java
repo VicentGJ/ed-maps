@@ -379,9 +379,7 @@ public class City {
      * @param head head vertex
      * @return the list of edges that connect both vertices
      */
-    public LinkedList<Edge> getEdgesOfAdjacent(Vertex tail, Vertex head) {
-        if (!tail.isAdjacent(head)) throw new InvalidParameterException("vertices are not adjacent");
-
+    public LinkedList<Edge> getConnectingEdges(Vertex tail, Vertex head) {
         LinkedList<Edge> edges = new LinkedList<>();
         for (Edge e : tail.getEdgeList()) {
             if (e.getVertex().equals(head)) edges.add(e);

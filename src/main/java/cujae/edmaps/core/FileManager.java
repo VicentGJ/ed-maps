@@ -78,7 +78,7 @@ public class FileManager {
             for (Vertex vertex : verticesList) {
                 for (Vertex vertex2 : verticesList) {
                     boolean isAdjacent = false;
-                    LinkedList<Edge> edgesOfAdjacent = city.getEdgesOfAdjacent(vertex, vertex2);
+                    LinkedList<Edge> edgesOfAdjacent = city.getConnectingEdges(vertex, vertex2);
                     int counter = edgesOfAdjacent.size();
                     for (Edge e : edgesOfAdjacent) {
                         WeightedEdge wE = (WeightedEdge) e;
