@@ -165,7 +165,7 @@ public class Drawer {
         String busName = "Walking";
         this.totalDistance += weight.getDistance();
         if (weight.getBus() != null) busName = weight.getBus().getName();
-        Text wText = new Text(middle.getX() - 30d, middle.getY() - 5d, busName + "[" + weight.getDistance() + "]");
+        Text wText = new Text(middle.getX() - 30d, middle.getY() - 5d, busName + "[" + weight.getDistance() + "m]");
         wText.setFont(Font.font("Ubuntu", FontWeight.BOLD, 13d));
         return wText;
     }
