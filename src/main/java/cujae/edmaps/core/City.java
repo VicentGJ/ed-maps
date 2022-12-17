@@ -375,7 +375,10 @@ public class City {
         Route route = (Route) edge.getWeight();
         Bus bus = getBus(newBusName);
         if(bus == null) throw new InvalidParameterException("newBusName: " + newBusName);
-        route.setBus(bus);
+        //if aux == null means that there is not another route with the same bus between these vertex
+        WeightedEdge aux = getEdge(newBusName, tail, head);
+        if(aux == null && canInsertRoute(getBusStopIndex(tail), getBusStopIndex(head), bus))
+            route.setBus(bus);
     }
 
     /**
