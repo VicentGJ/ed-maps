@@ -4,7 +4,7 @@ import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
-import cujae.edmaps.core.City;
+import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.core.Route;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -34,7 +34,7 @@ public class Drawer {
         this.stage = stage;
     }
 
-    public Group draw(LinkedList<Vertex> subgraph) {
+    public Group draw(LinkedList<Vertex> subgraph, String name) {
         Group graph = new Group();
         totalDistance = 0f;
         nodes = new HashMap<>();
@@ -44,15 +44,15 @@ public class Drawer {
         LinkedList<Text> labels = addLabelToLocations(subgraph);
         LinkedList<Path> connections = addConnections();
         LinkedList<Text> weights = addWeightToEdges();
+        Text cityName = addCityName(name);
         graph.getChildren().addAll(connections);
         graph.getChildren().addAll(weights);
         graph.getChildren().addAll(locations);
         graph.getChildren().addAll(labels);
+        graph.getChildren().add(cityName);
         if (subgraph != null) {
-            Text cityName = addCityName();
             Text distance = addTotalDistance();
             Text fromTo = addFromTo(subgraph);
-            graph.getChildren().add(cityName);
             graph.getChildren().add(distance);
             graph.getChildren().add(fromTo);
         }
@@ -61,12 +61,12 @@ public class Drawer {
 
     private LinkedList<ImageView> addLocations(LinkedList<Vertex> vertexList) {
         LinkedList<ImageView> locations = new LinkedList<>();
-        LinkedList<Vertex> vertices = vertexList == null ? City.getInstance().getRouteGraph().getVerticesList() : vertexList;
+        LinkedList<Vertex> vertices = vertexList == null ? MapsManager.getInstance().getActualCity().getRouteGraph().getVerticesList() : vertexList;
         final int NODES = vertices.size();
         final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
         final double CENTER_Y = stage.getHeight() / 2 - 50d;
-        Iterator<Vertex> iterator = vertices.descendingIterator();
+        Iterator<Vertex> iterator= vertices.descendingIterator();
         double i = 0;
         Vertex current = null;
         int pos = NODES;
@@ -78,6 +78,7 @@ public class Drawer {
             nodes.put(1, new Location(vertices.getFirst(), location));
         } else while (iterator.hasNext()) {
             current = iterator.next();
+            System.out.println(((BusStop)current.getInfo()).getName());
             double angle = Math.toRadians((++i / NODES) * 360d);
             double centerX = (Math.cos(angle) * RADIUS) + CENTER_X;
             double centerY = (Math.sin(angle) * RADIUS) + CENTER_Y;
@@ -85,7 +86,6 @@ public class Drawer {
             location.setX(centerX);
             location.setY(centerY);
             locations.add(location);
-            System.out.println(((BusStop) current.getInfo()).getName());
             nodes.put(pos--, new Location(current, location));
         }
         return locations;
@@ -165,13 +165,14 @@ public class Drawer {
         String busName = "Walking";
         this.totalDistance += weight.getDistance();
         if (weight.getBus() != null) busName = weight.getBus().getName();
-        Text wText = new Text(middle.getX() - 30d, middle.getY() - 5d, busName + "[" + weight.getDistance() + "]");
+        Text wText = new Text(middle.getX() - 30d, middle.getY() - 5d, busName + "[" + weight.getDistance() + "m]");
         wText.setFont(Font.font("Ubuntu", FontWeight.BOLD, 13d));
         return wText;
     }
 
-    private Text addCityName() {
-        Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, City.getInstance().getName());
+    private Text addCityName(String cityName) {
+        String name = cityName == null ? MapsManager.getInstance().getActualCity().getName() : cityName;
+        Text city = new Text(stage.getWidth() / 15, stage.getHeight() / 10, name);
         city.setFont(Font.font("Ubuntu", FontWeight.BOLD, 30d));
         return city;
     }
@@ -193,6 +194,7 @@ public class Drawer {
 
     private Text addFromTo(LinkedList<Vertex> vertices) {
         String text = "From: ";
+
         text += ((BusStop) vertices.getFirst().getInfo()).getName() + "\nTo: ";
         text += ((BusStop) vertices.getLast().getInfo()).getName();
         Text fromTo = new Text(40d, stage.getHeight() - stage.getHeight() / 4, text);

@@ -14,14 +14,15 @@ public class DijkstraShortestPath {
 
     private class WayToArrive {
         private Vertex previous;
-        private Float distance;
-
         private Bus bus;
+        private Float distanceUpToHere;
+        private Float edgeDistance;
 
-        public WayToArrive(Vertex previous, Float distance, Bus bus) {
+        public WayToArrive(Vertex previous, Bus bus, Float distanceUpToHere, Float edgeDistance) {
             this.previous = previous;
-            this.distance = distance;
             this.bus = bus;
+            this.distanceUpToHere = distanceUpToHere;
+            this.edgeDistance = edgeDistance;
         }
     }
 
@@ -29,7 +30,7 @@ public class DijkstraShortestPath {
         this.start = start;
         nodes = new HashMap<>();
         Map<Vertex, WayToArrive> toUnlock = new HashMap<>();
-        WayToArrive wayToArrive = new WayToArrive(null, 0.0f, null);
+        WayToArrive wayToArrive = new WayToArrive(null, null, 0.0f, 0.0f);
         nodes.put(start, wayToArrive);
         toUnlock.put(start, wayToArrive);
         dijkstraAlgorithm(new HashSet<>(), toUnlock);
@@ -38,7 +39,9 @@ public class DijkstraShortestPath {
     public void dijkstraAlgorithm(Set<Vertex> alreadyUnlocked, Map<Vertex, WayToArrive> toUnlock) {
         Vertex vertex = getShortest(toUnlock);
         while (vertex != null) {
-            Float distance = nodes.get(vertex).distance;
+            alreadyUnlocked.add(vertex);
+            toUnlock.remove(vertex);
+            Float distance = nodes.get(vertex).distanceUpToHere;
             for (Edge e : vertex.getEdgeList()) {
                 Route weight = (Route) ((WeightedEdge) e).getWeight();
                 Vertex target = e.getVertex();
@@ -46,20 +49,20 @@ public class DijkstraShortestPath {
                 WayToArrive wayToArrive = null;
                 if (nodes.containsKey(target)) {
                     wayToArrive = nodes.get(target);
-                    if (wayToArrive.distance > actualDistance) {
-                        wayToArrive.distance = actualDistance;
+                    if (wayToArrive.distanceUpToHere > actualDistance) {
+                        wayToArrive.distanceUpToHere = actualDistance;
                         wayToArrive.bus = weight.getBus();
+                        wayToArrive.previous = vertex;
+                        wayToArrive.edgeDistance = weight.getDistance();
                     }
                 } else {
-                    wayToArrive = new WayToArrive(vertex, actualDistance, weight.getBus());
+                    wayToArrive = new WayToArrive(vertex, weight.getBus(), actualDistance, weight.getDistance());
                     nodes.put(target, wayToArrive);
                 }
                 if (!alreadyUnlocked.contains(target)) {
-                    alreadyUnlocked.add(target);
                     toUnlock.put(target, wayToArrive);
                 }
             }
-            toUnlock.remove(vertex);
             vertex = getShortest(toUnlock);
         }
 
@@ -70,7 +73,7 @@ public class DijkstraShortestPath {
         while (goal != null) {
             if (nodes.containsKey(goal)) {
                 WayToArrive wayToArrive = nodes.get(goal);
-                result.addPath(goal, wayToArrive.bus, wayToArrive.distance);
+                result.addPath(goal, wayToArrive.bus, wayToArrive.edgeDistance);
                 goal = wayToArrive.previous;
             } else throw new Exception();
         }
@@ -83,13 +86,13 @@ public class DijkstraShortestPath {
         Float min = 0.0f;
         if (it.hasNext()) {
             Map.Entry<Vertex, WayToArrive> entry = it.next();
-            min = entry.getValue().distance;
+            min = entry.getValue().distanceUpToHere;
             result = entry.getKey();
         }
         while (it.hasNext()) {
             Map.Entry<Vertex, WayToArrive> entry = it.next();
-            if (min > entry.getValue().distance) {
-                min = entry.getValue().distance;
+            if (min > entry.getValue().distanceUpToHere) {
+                min = entry.getValue().distanceUpToHere;
                 result = entry.getKey();
             }
         }

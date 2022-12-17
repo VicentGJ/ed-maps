@@ -1,12 +1,15 @@
 package cujae.edmaps.core;
 
+import cu.edu.cujae.ceis.graph.LinkedGraph;
+import cu.edu.cujae.ceis.graph.edge.Edge;
+import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
+import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.dijkstra.Path;
 
 import java.io.*;
 import java.security.InvalidParameterException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * FileManager class is a singleton class for this project files management.
@@ -16,12 +19,11 @@ import java.util.List;
  * All these directories and files are only created if they don't already exist
  */
 public class FileManager {
-    private final String FILES_DIRECTORY = "./src/main/java/cujae/edmaps/files/";
-    private final String CITIES_DIRECTORY = FILES_DIRECTORY + "cities/";
-    private final String CONSULTS_DIRECTORY = FILES_DIRECTORY + "consults/";
-    private static FileManager instance;
+    private static final String FILES_DIRECTORY = "./src/main/java/cujae/edmaps/files/";
+    private static final String CITIES_DIRECTORY = FILES_DIRECTORY + "cities/";
+    private static final String CONSULTS_DIRECTORY = FILES_DIRECTORY + "consults/";
 
-    public FileManager() {
+    public static void createFiles() {
         File filesDirectory = new File(FILES_DIRECTORY);
         filesDirectory.mkdir();
         File cities = new File(CITIES_DIRECTORY);
@@ -39,18 +41,12 @@ public class FileManager {
         }
     }
 
-    public static FileManager getInstance() {
-        if (FileManager.instance == null)
-            FileManager.instance = new FileManager();
-        return instance;
-    }
-
 //CITIES
 
     /**
      * @return all the files in the cities/ directory
      */
-    public File[] getAllCityFiles() {
+    public static File[] getAllCityFiles() {
         return new File(CITIES_DIRECTORY).listFiles();
     }
 
@@ -58,45 +54,16 @@ public class FileManager {
      * Get a single city file
      *
      * @param cityName the name of the city to get
-     * @return the File of the wanted city or null if the file is not found
+     * @return the File of the wanted city
+     * @throws InvalidParameterException if it can not find the file
      */
-    public File loadCityFile(String cityName) {
-        File[] cities = new File(CITIES_DIRECTORY).listFiles();
-        File city = null;
-        if (cities != null) {
-            for (File f : cities) {
-                if (f.getName().equalsIgnoreCase(cityName + ".csv")) {
-                    city = f;
-                    break;
-                }
-            }
-        }
-        return city;
+    public static File loadCityFile(String cityName) {
+        File city = new File(CITIES_DIRECTORY + cityName + ".csv");
+        if (city.exists()) return city;
+        return null;
     }
 
-    /**
-     * Get the current loaded city's file
-     *
-     * @return the File of the current city or null if the file is not found
-     */
-    public File loadCityFile() {
-        String cityName = City.getInstance().getName();
-        File[] cities = new File(CITIES_DIRECTORY).listFiles();
-        File city = null;
-        if (cities != null) {
-            for (File f : cities) {
-                if (f.getName().equalsIgnoreCase(cityName + ".csv")) {
-                    city = f;
-                    break;
-                }
-            }
-        }
-        return city;
-    }
-
-
-    public File saveCity() {
-        City city = City.getInstance();
+    public static File saveCity(City city) {
         File file = loadCityFile(city.getName());
         try {
             if (file != null) file.delete();
@@ -111,9 +78,23 @@ public class FileManager {
             fileWriter.write("\n");
             for (Vertex vertex : verticesList) {
                 for (Vertex vertex2 : verticesList) {
-                    if (vertex.isAdjacent(vertex2)) {
-                        fileWriter.write("1");
-                    } else fileWriter.write("0");
+                    boolean isAdjacent = false;
+                    LinkedList<Edge> edgesOfAdjacent = city.getConnectingEdges(vertex, vertex2);
+                    int counter = edgesOfAdjacent.size();
+                    for (Edge e : edgesOfAdjacent) {
+                        WeightedEdge wE = (WeightedEdge) e;
+                        Route route = (Route) wE.getWeight();
+                        if (route.getBus() != null)
+                            fileWriter.write(route.getBus().getName());
+                        else
+                            fileWriter.write("null");
+                        fileWriter.write(";");
+                        fileWriter.write(route.getDistance().toString());
+                        isAdjacent = true;
+                        if (counter-- > 1)
+                            fileWriter.write("|");
+                    }
+                    if (!isAdjacent) fileWriter.write("0");
                     fileWriter.write(",");
                 }
                 fileWriter.write("\n");
@@ -122,17 +103,63 @@ public class FileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        getCityConsultsDirectory();
+        getCityConsultsDirectory(city.getName());
         return file;
+    }
+
+    /**
+     * @param cityName the name of the city to get
+     * @return the city
+     * @throws InvalidParameterException if it can not find the city file
+     */
+    public static City getCity(String cityName) throws InvalidParameterException {
+        File cityFile = loadCityFile(cityName);
+        Scanner sc = null;
+        try {
+            sc = new Scanner(cityFile);
+        } catch (FileNotFoundException e) {
+            throw new InvalidParameterException("cityName: " + cityName);
+        }
+        City city = new City(cityName);
+        if (sc.hasNextLine()) {
+            String[] vertices = sc.nextLine().split(",");
+            if (!vertices[0].isBlank()) {
+                for (String s : vertices) {
+                    city.addBusStop(s);
+                }
+                int i = 0;
+                while (sc.hasNextLine()) {
+                    String[] connections = sc.nextLine().split(",");
+                    for (int j = i + 1; j < connections.length; j++) {
+                        if (!connections[j].equals("0")) {
+                            String[] routes = connections[j].split("\\|");
+                            System.out.println(Arrays.toString(routes));
+                            for (String route : routes) {
+                                String[] r = route.split(";");
+                                String busName = r[0];
+                                Float distance = Float.parseFloat(r[1]);
+                                if (!busName.equals("null"))
+                                    city.addBus(busName);
+                                city.getRouteGraph().insertWEdgeNDG(i, j, new Route(city.getBus(busName), distance));
+                            }
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+        sc.close();
+        return city;
     }
 
     /**
      * If the current city's consults directory doesn't exist, create it and return the File instance, otherwise just return the File instance
      *
+     * @param cityName the name of the consult city
      * @return the File instance of the current city's consults directory
      */
-    private File getCityConsultsDirectory() {
-        File cityConsultsDirectory = new File(CONSULTS_DIRECTORY + "/" + City.getInstance().getName() + "/");
+    private static File getCityConsultsDirectory(String cityName) {
+        File cityConsultsDirectory = new File(CONSULTS_DIRECTORY + "/" + cityName + "/");
         cityConsultsDirectory.mkdir();
         return cityConsultsDirectory;
     }
@@ -145,109 +172,127 @@ public class FileManager {
      * @param deleteConsultsToo true to also delete the city's consults directory, false otherwise
      */
     public void deleteCity(String cityName, boolean deleteConsultsToo) {
-        loadCityFile(cityName).delete();
-        if (deleteConsultsToo) getCityConsultsDirectory().delete();
+        File cityfile = loadCityFile(cityName);
+        if (cityfile != null) {
+            cityfile.delete();
+            if (deleteConsultsToo) {
+                File consultsDirectory = getCityConsultsDirectory(cityName);
+                File[] consults = consultsDirectory.listFiles();
+                if (consults != null)
+                    for (File consult : consults)
+                        consult.delete();
+                consultsDirectory.delete();
+            }
+        } else throw new InvalidParameterException("city name: " + cityName);
     }
-
-    /**
-     * Deletes the city file corresponding to the current city, and it's corresponding consults directory
-     *
-     * @param deleteConsultsToo true to also delete the city's consults directory, false otherwise
-     */
-    public void deleteCity(boolean deleteConsultsToo) {
-        loadCityFile(City.getInstance().getName()).delete();
-        if (deleteConsultsToo) {
-            File consultsDirectory = getCityConsultsDirectory();
-            File[] consults = consultsDirectory.listFiles();
-            if (consults != null)
-                for (File consult : consults)
-                    consult.delete();
-            consultsDirectory.delete();
-        }
-    }
-
-
 //CONSULTS
 
     /**
      * @return all the Directories in the consults/ directory
      */
-    public File[] getAllConsultDirectories() {
+    public static File[] getAllConsultDirectories() {
         return new File(CONSULTS_DIRECTORY).listFiles();
     }
 
     /**
      * Get the consult files of the current city
      *
+     * @param cityName the City's name of the consults you want to get
      * @return an array of File instances of the consult files corresponding to the current city
      */
-    public File[] getAllCityConsultFiles() {
-        return new File(getCityConsultsDirectory().getPath()).listFiles();
+    public static File[] getAllCityConsultFiles(String cityName) {
+        return getCityConsultsDirectory(cityName).listFiles();
     }
 
-    /**
-     * Get the consult files of the given city
-     *
-     * @return an array of File instances of the consult files corresponding to the current city
-     */
-    public File[] getAllCityConsultFiles(String cityName) {
-        File[] consultsDirectory = getAllConsultDirectories();
-        File[] result = null;
-        for (File file : consultsDirectory) {
-            if (file.getName().equalsIgnoreCase(cityName)) {
-                result = file.listFiles();
-                break;
-            }
-        }
-        return result;
-    }
 
     /**
      * Get a single consult file
      *
+     * @param cityName    the City's name of the consult you want to get
+     * @param consultName the name of the specific consult you want to get
      * @return the file of the city's consults or null if file is not found
      */
-    public File loadConsultFile(int id) {
-        File[] cities = new File(getCityConsultsDirectory().getPath()).listFiles();
-        if (id > cities.length - 1) throw new InvalidParameterException("id not found: " + id);
-        File consult = null;
-        for (File f : cities) {
-            if (f.getName().endsWith("-" + id + ".txt")) {
-                consult = f;
-                break;
-            }
-        }
+    public static File loadConsultFile(String cityName, String consultName) {
+        File cityFolder = new File(CONSULTS_DIRECTORY + cityName);
+        if (!cityFolder.exists()) throw new InvalidParameterException("cityName: " + cityName);
+        File consult = new File(cityFolder, consultName);
+        if (!consult.exists()) throw new InvalidParameterException("consultName: " + consultName);
         return consult;
     }
 
-    public File saveConsult(LinkedList<Path> paths) {
-        File ccd = getCityConsultsDirectory();
+    /**
+     * @param cityName    the City's name of the consult you want to get
+     * @param consultName the name of the specific consult you want to get
+     * @return the path save on consult file
+     */
+    public static LinkedList<Vertex> loadConsult(String cityName, String consultName) {
+        try {
+            File consult = loadConsultFile(cityName, consultName);
+            Scanner sc = new Scanner(consult);
+            ILinkedWeightedEdgeNotDirectedGraph subgraph = new LinkedGraph();
+            Vertex previous = null;
+            Vertex current = null;
+            int counter = 0;
+            sc.nextLine();//skip headers
+            do {
+                String[] pathString = sc.nextLine().split(",");
+                String busStopString = pathString[0];
+                String busString = pathString[1];
+                String distanceString = pathString[2];
+                subgraph.insertVertex(new BusStop(busStopString));
+                current = subgraph.getVerticesList().get(counter);
+                if (previous != null) {
+                    Route weight = new Route(new Bus(busString), Float.parseFloat(distanceString));
+                    subgraph.insertWEdgeNDG(counter - 1, counter, weight);
+                }
+                previous = current;
+                counter++;
+            } while (sc.hasNextLine());
+            return subgraph.getVerticesList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * @param cityName the City's name of the consult you want to get
+     * @param paths    the path of the consult you want to save
+     * @return the file of the city consult
+     */
+    public static File saveConsult(String cityName, LinkedList<Path> paths) {
+        File ccd = getCityConsultsDirectory(cityName);
         File consult = null;
         boolean consultFileExists;
         int id = ccd.listFiles().length;
+        String[] headers = {"Bus Stop", "Bus", "Distance"};
         try {
             do {
-                String newConsultName = "consult-" + id++ + ".txt";
+                String newConsultName = "[" + ++id + "] " + ((BusStop) paths.getFirst().getStop().getInfo()).getName() + "-" + ((BusStop) paths.getLast().getStop().getInfo()).getName() + ".csv";
                 consult = new File(ccd.getPath(), newConsultName);
                 consultFileExists = !consult.createNewFile();
             } while (consultFileExists);
-            RandomAccessFile raf = new RandomAccessFile(consult, "rw");
-            int counter = 0;
+            FileWriter fw = new FileWriter(consult);
+            Path first = paths.getFirst();
+            for (String header : headers) {
+                fw.write(header);
+                fw.write(",");
+            }
+            fw.write("\n");
             for (Path path : paths) {
                 String busName = "Walking";
-                if (counter++ == 0) busName = "Start";
+                if (path.equals(first)) busName = "Start";
                 else if (path.getBus() != null) busName = path.getBus().getName();
                 Float distance = path.getDistance();
                 String stopName = ((BusStop) path.getStop().getInfo()).getName();
-                byte[] busNameBytes = Convert.toBytes(busName);
-                byte[] stopNameBytes = Convert.toBytes(stopName);
-                raf.writeInt(busNameBytes.length);
-                raf.write(busNameBytes);
-                raf.writeInt(stopNameBytes.length);
-                raf.write(stopNameBytes);
-                raf.writeFloat(distance);
+                fw.write(stopName);
+                fw.write(",");
+                fw.write(busName);
+                fw.write(",");
+                fw.write(String.valueOf(distance));
+                fw.write("\n");
             }
-            raf.close();
+            fw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

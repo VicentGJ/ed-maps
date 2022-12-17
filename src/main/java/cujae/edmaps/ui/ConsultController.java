@@ -2,6 +2,7 @@ package cujae.edmaps.ui;
 
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
+import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
 import cujae.edmaps.utils.ViewLoader;
@@ -28,60 +29,71 @@ public class ConsultController implements Initializable {
     @FXML
     private TableView<PathHelper> tableView;
     @FXML
-    private TableColumn stopColumn, busColumn;
+    private TableColumn stopColumn, busColumn, distanceColumn;
 
     private final ObservableList<String> stopList = FXCollections.observableArrayList();
-    private final City city = City.getInstance();
+    private final City city = MapsManager.getInstance().getActualCity();
 
     public static class PathHelper {
-         private final SimpleStringProperty stopName;
-         private final SimpleStringProperty busName;
+        private final SimpleStringProperty stopName;
+        private final SimpleStringProperty busName;
+        private final SimpleStringProperty distance;
 
-         private PathHelper(String stopName, String busName) {
-             this.stopName = new SimpleStringProperty(stopName);
-             this.busName = new SimpleStringProperty(busName);
-         }
+        private PathHelper(String stopName, String busName, String distance) {
+            this.stopName = new SimpleStringProperty(stopName);
+            this.busName = new SimpleStringProperty(busName);
+            this.distance = new SimpleStringProperty(distance);
+        }
 
-         public String getStopName() {
-             return stopName.get();
-         }
+        public String getStopName() {
+            return stopName.get();
+        }
 
-         public String getBusName() {
-             return busName.get();
-         }
+        public String getBusName() {
+            return busName.get();
+        }
 
-     }
+        public String getDistance() {
+            return distance.get();
+        }
+
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        for (BusStop stop: city.getBusStopList()) {
+        for (BusStop stop : city.getBusStopList()) {
             stopList.add(stop.getName());
         }
         startComboBox.setItems(stopList);
         destinationComboBox.setItems(stopList);
+        city.restartDijkstra();
     }
 
     @FXML
     public void onOkButton() {
         try {
+            Float totalDistance = 0f;
             ObservableList<PathHelper> pathList = FXCollections.observableArrayList();
             CompletePath path = city.getPathBetween(startComboBox.getValue(), destinationComboBox.getValue());
+            Path first = path.getPaths().getFirst();
             for (Path p : path.getPaths()) {
-                System.out.println(p.getBus() != null ? p.getBus().getName() : null);
-                System.out.println(p.getDistance());
-                System.out.println(((BusStop) p.getStop().getInfo()).getName());
-                System.out.println(":::::::::::::::::");
-                totalDistanceDisplay.setText(p.getDistance().toString());
-                pathList.add(new PathHelper(((
-                        BusStop) p.getStop().getInfo()).getName(),
-                        p.getBus() != null ? p.getBus().getName() : "Start"
-                ));
+//                System.out.println(p.getBus() != null ? p.getBus().getName() : null);
+//                System.out.println(p.getDistance());
+//                System.out.println(((BusStop) p.getStop().getInfo()).getName());
+//                System.out.println(":::::::::::::::::");
+                totalDistance += p.getDistance();
+                String busStopName = ((BusStop) p.getStop().getInfo()).getName();
+                String busName = "Walking";
+                if (p.getBus() != null) busName = p.getBus().getName();
+                else if (p.equals(first)) busName = "Start";
+                String distance = String.valueOf(p.getDistance()) + "m";
+                pathList.add(new PathHelper(busStopName, busName, distance));
             }
-            stopColumn.setCellValueFactory(
-                    new PropertyValueFactory<PathHelper, String>("stopName"));
-            busColumn.setCellValueFactory(
-                    new PropertyValueFactory<PathHelper, String>("busName"));
+            stopColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("stopName"));
+            busColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("busName"));
+            distanceColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("distance"));
             tableView.setItems(pathList);
+            totalDistanceDisplay.setText(String.valueOf(totalDistance));
         } catch (Exception e) {
             e.printStackTrace();
         }

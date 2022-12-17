@@ -3,6 +3,7 @@ package cujae.edmaps.ui;
 import cujae.edmaps.core.Bus;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
+import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -24,7 +25,7 @@ public class ConnectionAddController implements Initializable {
 
     ObservableList<String> stopList = FXCollections.observableArrayList();
     ObservableList<String> busList = FXCollections.observableArrayList();
-    private final City city = City.getInstance();
+    private final City city = MapsManager.getInstance().getActualCity();
 
     @FXML
     public void onOkButton() {
@@ -53,5 +54,6 @@ public class ConnectionAddController implements Initializable {
         stop1ComboBox.setItems(stopList);
         stop2ComboBox.setItems(stopList);
         busComboBox.setItems(busList);
+        busComboBox.setValue("Walking");
     }
 }
