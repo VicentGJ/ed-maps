@@ -66,10 +66,7 @@ public class Drawer {
         final double RADIUS = stage.getHeight() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
         final double CENTER_Y = stage.getHeight() / 2 - 50d;
-        Iterator<Vertex> iterator;
-        if (vertexList == null)
-            iterator = vertices.descendingIterator();
-        else iterator = vertices.iterator();
+        Iterator<Vertex> iterator= vertices.descendingIterator();
         double i = 0;
         Vertex current = null;
         int pos = NODES;
@@ -81,6 +78,7 @@ public class Drawer {
             nodes.put(1, new Location(vertices.getFirst(), location));
         } else while (iterator.hasNext()) {
             current = iterator.next();
+            System.out.println(((BusStop)current.getInfo()).getName());
             double angle = Math.toRadians((++i / NODES) * 360d);
             double centerX = (Math.cos(angle) * RADIUS) + CENTER_X;
             double centerY = (Math.sin(angle) * RADIUS) + CENTER_Y;
@@ -88,7 +86,6 @@ public class Drawer {
             location.setX(centerX);
             location.setY(centerY);
             locations.add(location);
-            System.out.println(((BusStop) current.getInfo()).getName());
             nodes.put(pos--, new Location(current, location));
         }
         return locations;
@@ -198,8 +195,8 @@ public class Drawer {
     private Text addFromTo(LinkedList<Vertex> vertices) {
         String text = "From: ";
 
-        text += ((BusStop) vertices.getLast().getInfo()).getName() + "\nTo: ";
-        text += ((BusStop) vertices.getFirst().getInfo()).getName();
+        text += ((BusStop) vertices.getFirst().getInfo()).getName() + "\nTo: ";
+        text += ((BusStop) vertices.getLast().getInfo()).getName();
         Text fromTo = new Text(40d, stage.getHeight() - stage.getHeight() / 4, text);
         fromTo.setFont(Font.font("Ubuntu", FontWeight.BOLD, 18));
         return fromTo;

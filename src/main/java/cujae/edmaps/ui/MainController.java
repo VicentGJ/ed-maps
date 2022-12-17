@@ -3,10 +3,7 @@ package cujae.edmaps.ui;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.FileManager;
 import cujae.edmaps.core.MapsManager;
-import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.utils.ViewLoader;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -83,7 +80,7 @@ public class MainController implements Initializable {
                     MenuItem c = new MenuItem(consult.split("\\.")[0]);
                     c.setOnAction(event1 -> {
                         //TODO: trigger load consult show subgraph
-                        LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult).parseToGraph().getVerticesList();
+                        LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult);
                         onRefresh(vertices, city.getName());
                     });
                     submenu.getItems().add(c);

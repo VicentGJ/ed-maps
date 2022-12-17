@@ -31,11 +31,11 @@ public class SimpleAddController implements Initializable {
 
     @FXML
     public void onOkButton() {
-       switch (type){
-           case BUS -> city.addBus(nameField.getText());
-           case STOP -> city.addBusStop(nameField.getText());
-           case CITY -> MapsManager.getInstance().createCity(nameField.getText());
-       }
+        switch (type) {
+            case BUS -> city.addBus(nameField.getText());
+            case STOP -> city.addBusStop(nameField.getText());
+            case CITY -> MapsManager.getInstance().createCity(nameField.getText());
+        }
         ViewLoader.getStage().close();
     }
 
