@@ -7,37 +7,37 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="cujae.edmaps.ui.MainController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.MainController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
-                <Menu mnemonicParsing="false" text="File" onShowing="#onShowingFileMenu">
+                <Menu mnemonicParsing="false" onShowing="#onShowingFileMenu" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onRefresh" text="Refresh"/>
-                        <MenuItem mnemonicParsing="false" text="Save City To File" onAction="#onSaveCity"/>
-                        <Menu mnemonicParsing="false" text="Load City File" fx:id="loadCityFileMenu"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Quit" onAction="#onQuit"/>
+                  <MenuItem mnemonicParsing="false" onAction="#onCreateCity" text="Create City" />
+                        <MenuItem mnemonicParsing="false" onAction="#onRefresh" text="Refresh" />
+                        <MenuItem mnemonicParsing="false" onAction="#onSaveCity" text="Save City To File" />
+                        <Menu fx:id="loadCityFileMenu" mnemonicParsing="false" text="Load City File" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#onQuit" text="Quit" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onAddBus" text="Add Bus"/>
-                        <MenuItem mnemonicParsing="false" onAction="#onAddStop" text="Add Stop"/>
-                        <MenuItem mnemonicParsing="false" text="Delete Selection"/>
-                        <MenuItem mnemonicParsing="false" onAction="#onAddConnection" text="Add Connection"/>
-                        <MenuItem mnemonicParsing="false" text="Delete Connection"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onAddBus" text="Add Bus" />
+                        <MenuItem mnemonicParsing="false" onAction="#onAddStop" text="Add Stop" />
+                        <MenuItem mnemonicParsing="false" text="Delete Selection" />
+                        <MenuItem mnemonicParsing="false" onAction="#onAddConnection" text="Add Connection" />
+                        <MenuItem mnemonicParsing="false" text="Delete Connection" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Consult" onShown="#onShowingConsultsMenu">
+                <Menu mnemonicParsing="false" onShown="#onShowingConsultsMenu" text="Consult">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onMakeConsult" text="Make Consult"/>
-                        <Menu mnemonicParsing="false" text="Load Consult From File"  fx:id="loadCityConsultFileMenu"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onMakeConsult" text="Make Consult" />
+                        <Menu fx:id="loadCityConsultFileMenu" mnemonicParsing="false" text="Load Consult From File" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <AnchorPane fx:id="graphContainer" VBox.vgrow="ALWAYS"/>
+        <AnchorPane fx:id="graphContainer" VBox.vgrow="ALWAYS" />
     </children>
 </VBox>

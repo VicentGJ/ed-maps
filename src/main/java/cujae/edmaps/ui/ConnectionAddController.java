@@ -54,5 +54,6 @@ public class ConnectionAddController implements Initializable {
         stop1ComboBox.setItems(stopList);
         stop2ComboBox.setItems(stopList);
         busComboBox.setItems(busList);
+        busComboBox.setValue("Walking");
     }
 }

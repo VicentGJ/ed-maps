@@ -1,9 +1,10 @@
 package cujae.edmaps.core;
 
+import cu.edu.cujae.ceis.graph.LinkedGraph;
 import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
+import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
-import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
 
 import java.io.*;
@@ -122,32 +123,30 @@ public class FileManager {
         City city = new City(cityName);
         if (sc.hasNextLine()) {
             String[] vertices = sc.nextLine().split(",");
-            for (String s : vertices) {
-                city.addBusStop(s);
-            }
-            int i = 0;
-            int j = 0;
-            while (sc.hasNextLine()) {
-                String[] connections = sc.nextLine().split(",");
-                for (String s : connections) {
-                    if (!s.equals("0")) {
-                        String[] routes = s.split("\\|");
-                        System.out.println(Arrays.toString(routes));
-                        for (String route : routes) {
-                            String[] r = route.split(";");
-                            String busName = r[0];
-                            Float distance = Float.parseFloat(r[1]);
-                            if (!busName.equals("null"))
-                                city.addBus(busName);
-                            city.insertRoute(vertices[i], vertices[j], busName, distance);
+            if (!vertices[0].isBlank()) {
+                for (String s : vertices) {
+                    city.addBusStop(s);
+                }
+                int i = 0;
+                while (sc.hasNextLine()) {
+                    String[] connections = sc.nextLine().split(",");
+                    for (int j = i + 1; j < connections.length; j++) {
+                        if (!connections[j].equals("0")) {
+                            String[] routes = connections[j].split("\\|");
+                            System.out.println(Arrays.toString(routes));
+                            for (String route : routes) {
+                                String[] r = route.split(";");
+                                String busName = r[0];
+                                Float distance = Float.parseFloat(r[1]);
+                                if (!busName.equals("null"))
+                                    city.addBus(busName);
+                                city.getRouteGraph().insertWEdgeNDG(i, j, new Route(city.getBus(busName), distance));
+                            }
                         }
                     }
-                    j++;
+                    i++;
                 }
-                j = 0;
-                i++;
             }
-
         }
         sc.close();
         return city;
@@ -173,15 +172,18 @@ public class FileManager {
      * @param deleteConsultsToo true to also delete the city's consults directory, false otherwise
      */
     public void deleteCity(String cityName, boolean deleteConsultsToo) {
-        loadCityFile(cityName).delete();
-        if (deleteConsultsToo) {
-            File consultsDirectory = getCityConsultsDirectory(cityName);
-            File[] consults = consultsDirectory.listFiles();
-            if (consults != null)
-                for (File consult : consults)
-                    consult.delete();
-            consultsDirectory.delete();
-        }
+        File cityfile = loadCityFile(cityName);
+        if (cityfile != null) {
+            cityfile.delete();
+            if (deleteConsultsToo) {
+                File consultsDirectory = getCityConsultsDirectory(cityName);
+                File[] consults = consultsDirectory.listFiles();
+                if (consults != null)
+                    for (File consult : consults)
+                        consult.delete();
+                consultsDirectory.delete();
+            }
+        } else throw new InvalidParameterException("city name: " + cityName);
     }
 //CONSULTS
 
@@ -223,24 +225,31 @@ public class FileManager {
      * @param consultName the name of the specific consult you want to get
      * @return the path save on consult file
      */
-    public static CompletePath loadConsult(String cityName, String consultName) {
+    public static LinkedList<Vertex> loadConsult(String cityName, String consultName) {
         try {
-            City actualCity = MapsManager.getInstance().getActualCity();
             File consult = loadConsultFile(cityName, consultName);
-            RandomAccessFile raf = new RandomAccessFile(consult, "r");
-            CompletePath cp = new CompletePath();
+            Scanner sc = new Scanner(consult);
+            ILinkedWeightedEdgeNotDirectedGraph subgraph = new LinkedGraph();
+            Vertex previous = null;
+            Vertex current = null;
+            int counter = 0;
+            sc.nextLine();//skip headers
             do {
-                byte[] busNameB = new byte[raf.readInt()];
-                raf.read(busNameB);
-                String busNameS = (String) Convert.toObject(busNameB);
-                byte[] stopNameB = new byte[raf.readInt()];
-                raf.read(stopNameB);
-                String stopNameS = (String) Convert.toObject(stopNameB);
-                Float distance = raf.readFloat();
-                cp.addPath(actualCity.getVertex(stopNameS), actualCity.getBus(busNameS), distance);
-            } while (raf.getFilePointer() < raf.length());
-            return cp;
-        } catch (IOException | ClassNotFoundException e) {
+                String[] pathString = sc.nextLine().split(",");
+                String busStopString = pathString[0];
+                String busString = pathString[1];
+                String distanceString = pathString[2];
+                subgraph.insertVertex(new BusStop(busStopString));
+                current = subgraph.getVerticesList().get(counter);
+                if (previous != null) {
+                    Route weight = new Route(new Bus(busString), Float.parseFloat(distanceString));
+                    subgraph.insertWEdgeNDG(counter - 1, counter, weight);
+                }
+                previous = current;
+                counter++;
+            } while (sc.hasNextLine());
+            return subgraph.getVerticesList();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -256,29 +265,34 @@ public class FileManager {
         File consult = null;
         boolean consultFileExists;
         int id = ccd.listFiles().length;
+        String[] headers = {"Bus Stop", "Bus", "Distance"};
         try {
             do {
-                String newConsultName = "[" + ++id + "] " + ((BusStop) paths.getFirst().getStop().getInfo()).getName() + "-" + ((BusStop) paths.getLast().getStop().getInfo()).getName() + ".txt";
+                String newConsultName = "[" + ++id + "] " + ((BusStop) paths.getFirst().getStop().getInfo()).getName() + "-" + ((BusStop) paths.getLast().getStop().getInfo()).getName() + ".csv";
                 consult = new File(ccd.getPath(), newConsultName);
                 consultFileExists = !consult.createNewFile();
             } while (consultFileExists);
-            RandomAccessFile raf = new RandomAccessFile(consult, "rw");
-            int counter = 0;
+            FileWriter fw = new FileWriter(consult);
+            Path first = paths.getFirst();
+            for (String header : headers) {
+                fw.write(header);
+                fw.write(",");
+            }
+            fw.write("\n");
             for (Path path : paths) {
                 String busName = "Walking";
-                if (counter++ == 0) busName = "Start";
+                if (path.equals(first)) busName = "Start";
                 else if (path.getBus() != null) busName = path.getBus().getName();
                 Float distance = path.getDistance();
                 String stopName = ((BusStop) path.getStop().getInfo()).getName();
-                byte[] busNameBytes = Convert.toBytes(busName);
-                byte[] stopNameBytes = Convert.toBytes(stopName);
-                raf.writeInt(busNameBytes.length);
-                raf.write(busNameBytes);
-                raf.writeInt(stopNameBytes.length);
-                raf.write(stopNameBytes);
-                raf.writeFloat(distance);
+                fw.write(stopName);
+                fw.write(",");
+                fw.write(busName);
+                fw.write(",");
+                fw.write(String.valueOf(distance));
+                fw.write("\n");
             }
-            raf.close();
+            fw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

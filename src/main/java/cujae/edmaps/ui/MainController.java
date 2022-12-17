@@ -3,10 +3,7 @@ package cujae.edmaps.ui;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.FileManager;
 import cujae.edmaps.core.MapsManager;
-import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.utils.ViewLoader;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -36,6 +33,10 @@ public class MainController implements Initializable {
     private void onAddBus() throws IOException {
         ViewLoader.newWindow(getClass().getResource("add-form.fxml"), "Add Bus", null);
     }
+    @FXML
+    private void onCreateCity() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("add-form.fxml"), "Add City", null);
+    }
 
     @FXML
     private void onAddStop() throws IOException {
@@ -54,7 +55,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void onRefresh() {
-        Group graph = new Drawer(stage).draw(null);
+        Group graph = new Drawer(stage).draw(null, null);
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
         this.graphContainer.getChildren().add(graph);
@@ -79,8 +80,8 @@ public class MainController implements Initializable {
                     MenuItem c = new MenuItem(consult.split("\\.")[0]);
                     c.setOnAction(event1 -> {
                         //TODO: trigger load consult show subgraph
-                        LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult).parseToGraph().getVerticesList();
-                        onRefresh(vertices);
+                        LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult);
+                        onRefresh(vertices, city.getName());
                     });
                     submenu.getItems().add(c);
                 }
@@ -89,8 +90,8 @@ public class MainController implements Initializable {
         }
     }
 
-    private void onRefresh(LinkedList<Vertex> vertices) {
-        Group graph = new Drawer(stage).draw(vertices);
+    private void onRefresh(LinkedList<Vertex> vertices, String cityName) {
+        Group graph = new Drawer(stage).draw(vertices,cityName);
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
         this.graphContainer.getChildren().add(graph);
