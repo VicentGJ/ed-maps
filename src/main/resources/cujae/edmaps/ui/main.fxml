@@ -59,7 +59,7 @@
                   <MenuItem mnemonicParsing="false" text="Modify connection" />
                   <Menu mnemonicParsing="false" text="Delete">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="City">
+                      <MenuItem mnemonicParsing="false" text="City" onAction="#onDeleteCity">
                            <accelerator>
                               <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
