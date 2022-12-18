@@ -27,6 +27,10 @@ public class ViewLoader {
         return controller;
     }
 
+    public static void newWindow(Stage stage) {
+        stage.show();
+    }
+
     public static Object thisWindow(URL fxmlResource, ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(fxmlResource);
         Parent next_page_parent = loader.load();

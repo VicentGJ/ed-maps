@@ -4,11 +4,13 @@ import cujae.edmaps.core.City;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -31,21 +33,29 @@ public class SimpleAddController implements Initializable {
     }
 
     @FXML
-    public void onOkButton() {
-        switch (type) {
-            case BUS:
-                city.addBus(nameField.getText());
-                break;
-            case STOP:
-                city.addBusStop(nameField.getText());
-                Drawer drawer = Drawer.getInstance();
-                MainController.setGraphContainer(drawer.draw(null, null));
-                break;
-            case CITY:
-                MapsManager.getInstance().createCity(nameField.getText());
-                break;
+    public void onOkButton(ActionEvent event) throws IOException {
+        try {
+            switch (type) {
+                case BUS:
+                    city.addBus(nameField.getText());
+                    break;
+                case STOP:
+                    city.addBusStop(nameField.getText());
+                    Drawer drawer = Drawer.getInstance();
+                    MainController.setGraphContainer(drawer.draw(null, null));
+                    break;
+                case CITY:
+                    MapsManager.getInstance().createCity(nameField.getText());
+                    break;
+            }
+            ViewLoader.getStage().close();
         }
-        ViewLoader.getStage().close();
+        catch (Exception e) {
+            PopupController controller = (PopupController) ViewLoader.newWindow(getClass().getResource("popup.fxml"), "Error", null);
+            controller.setText("Error", e.getMessage());
+            controller.setPrevious("add-form.fxml", ((Stage) nameField.getScene().getWindow()).getTitle());
+            ViewLoader.closeWindow(event);
+        }
     }
 
     @FXML
