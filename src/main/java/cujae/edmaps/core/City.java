@@ -427,6 +427,16 @@ public class City {
         }
         return edges;
     }
+
+    public LinkedList<Edge> getConnectingEdges(String tail, String head) {
+        Vertex headVertex = getVertex(head);
+        Vertex tailVertex = getVertex(tail);
+        LinkedList<Edge> edges = new LinkedList<>();
+        for (Edge e : tailVertex.getEdgeList()) {
+            if (e.getVertex().equals(headVertex)) edges.add(e);
+        }
+        return edges;
+    }
     //*************************************************************************
     //------------------------------SHORTEST PATH------------------------------
     //*************************************************************************
@@ -461,4 +471,6 @@ public class City {
         }
         return buses;
     }
+
+
 }
