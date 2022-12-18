@@ -56,7 +56,9 @@ public class MainController implements Initializable {
 
     @FXML
     public void onRefresh() {
-        Group graph = new Drawer(stage).draw(null, null);
+        Drawer drawer = Drawer.getInstance();
+        drawer.setStage(stage);
+        Group graph = drawer.draw(null, null);
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
         this.graphContainer.getChildren().add(graph);
@@ -92,7 +94,9 @@ public class MainController implements Initializable {
     }
 
     public void onRefresh(LinkedList<Vertex> vertices, String cityName) {
-        Group graph = new Drawer(stage).draw(vertices,cityName);
+        Drawer drawer = Drawer.getInstance();
+        drawer.setStage(stage);
+        Group graph = drawer.draw(vertices,cityName);
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
         this.graphContainer.getChildren().add(graph);
