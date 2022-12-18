@@ -451,4 +451,14 @@ public class City {
     public void restartDijkstra() {
         this.dijsktraShortestPath = null;
     }
+
+    //Bus Filter
+    public List<Bus> busFilter(String tail, String head){
+        List<Bus> buses = new LinkedList<>();
+        for(Bus b : busList){
+            if(canInsertRoute(getBusStopIndex(tail), getBusStopIndex(head), b))
+                buses.add(b);
+        }
+        return buses;
+    }
 }
