@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -21,8 +22,9 @@ import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
 
+    private static final AnchorPane graphContainer = new AnchorPane();
     @FXML
-    private AnchorPane graphContainer;
+    private VBox root;
     @FXML
     private Menu loadCityConsultFileMenu;
     @FXML
@@ -60,8 +62,8 @@ public class MainController implements Initializable {
         drawer.setStage(stage);
         Group graph = drawer.draw(null, null);
         if (graphContainer.getChildren().size() > 0)
-            this.graphContainer.getChildren().remove(0);
-        this.graphContainer.getChildren().add(graph);
+            graphContainer.getChildren().remove(0);
+        graphContainer.getChildren().add(graph);
     }
 
     @FXML
@@ -98,8 +100,14 @@ public class MainController implements Initializable {
         drawer.setStage(stage);
         Group graph = drawer.draw(vertices,cityName);
         if (graphContainer.getChildren().size() > 0)
-            this.graphContainer.getChildren().remove(0);
-        this.graphContainer.getChildren().add(graph);
+            graphContainer.getChildren().remove(0);
+        graphContainer.getChildren().add(graph);
+    }
+
+    public static void setGraphContainer(Group graph) {
+        if (graphContainer.getChildren().size() > 0)
+            graphContainer.getChildren().remove(0);
+        graphContainer.getChildren().add(graph);
     }
 
     @FXML
@@ -127,5 +135,6 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         stage = ViewLoader.getStage();
+        root.getChildren().add(graphContainer);
     }
 }

@@ -2,6 +2,7 @@ package cujae.edmaps.ui;
 
 import cujae.edmaps.core.City;
 import cujae.edmaps.core.MapsManager;
+import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,9 +33,17 @@ public class SimpleAddController implements Initializable {
     @FXML
     public void onOkButton() {
         switch (type) {
-            case BUS -> city.addBus(nameField.getText());
-            case STOP -> city.addBusStop(nameField.getText());
-            case CITY -> MapsManager.getInstance().createCity(nameField.getText());
+            case BUS:
+                city.addBus(nameField.getText());
+                break;
+            case STOP:
+                city.addBusStop(nameField.getText());
+                Drawer drawer = Drawer.getInstance();
+                MainController.setGraphContainer(drawer.draw(null, null));
+                break;
+            case CITY:
+                MapsManager.getInstance().createCity(nameField.getText());
+                break;
         }
         ViewLoader.getStage().close();
     }
