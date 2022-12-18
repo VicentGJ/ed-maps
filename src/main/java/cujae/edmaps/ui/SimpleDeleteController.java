@@ -52,6 +52,7 @@ public class SimpleDeleteController implements Initializable {
             }
         }
         comboBox.setItems(itemList);
+        comboBox.setValue(itemList.get(0));
     }
 
     @FXML
