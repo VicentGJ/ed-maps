@@ -44,6 +44,8 @@ public class City {
     }
 
     public void addBus(String name) {
+        if (name.isBlank())
+            throw new InvalidParameterException("name cannot be blank");
         if (!existBus(name))
             this.busList.add(new Bus(name));
     }
