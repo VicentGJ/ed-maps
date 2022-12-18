@@ -54,7 +54,7 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void onRefresh() {
+    public void onRefresh() {
         Group graph = new Drawer(stage).draw(null, null);
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
@@ -90,7 +90,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void onRefresh(LinkedList<Vertex> vertices, String cityName) {
+    public void onRefresh(LinkedList<Vertex> vertices, String cityName) {
         Group graph = new Drawer(stage).draw(vertices,cityName);
         if (graphContainer.getChildren().size() > 0)
             this.graphContainer.getChildren().remove(0);
@@ -122,6 +122,5 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         stage = ViewLoader.getStage();
-
     }
 }
