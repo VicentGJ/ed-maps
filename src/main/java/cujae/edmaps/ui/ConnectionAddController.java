@@ -94,7 +94,7 @@ public class ConnectionAddController implements Initializable {
                     busComboBox.setValue("Walking");
                     okButton.setDisable(true);
                 } else {
-                    for (Bus b : city.busFilter(stop2ComboBox.getValue(), stop2ComboBox.getValue())) {
+                    for (Bus b : city.busFilter(stop2ComboBox.getValue(), stop1ComboBox.getValue())) {
                         busList.add(b.getName());
                     }
                     busComboBox.getItems().clear();
