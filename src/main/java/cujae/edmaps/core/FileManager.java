@@ -19,7 +19,7 @@ import java.util.*;
  * All these directories and files are only created if they don't already exist
  */
 public class FileManager {
-    private static final String FILES_DIRECTORY = "./src/main/java/cujae/edmaps/files/";
+    private static final String FILES_DIRECTORY = "./src/main/resources/files/";
     private static final String CITIES_DIRECTORY = FILES_DIRECTORY + "cities/";
     private static final String CONSULTS_DIRECTORY = FILES_DIRECTORY + "consults/";
 

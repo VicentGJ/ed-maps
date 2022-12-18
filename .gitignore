@@ -39,4 +39,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-src/main/java/cujae/edmaps/files/
+src/main/resources/files/
