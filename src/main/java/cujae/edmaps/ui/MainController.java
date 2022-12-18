@@ -57,6 +57,16 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void onDeleteBus() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("delete-bus-and-stop-form.fxml"), "Delete Bus", null);
+    }
+
+    @FXML
+    private void onDeleteStop() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("delete-bus-and-stop-form.fxml"), "Delete Stop", null);
+    }
+
+    @FXML
     public void onRefresh() {
         Drawer drawer = Drawer.getInstance();
         drawer.setStage(stage);
