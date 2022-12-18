@@ -6,19 +6,19 @@ import cujae.edmaps.core.City;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class ConnectionAddController implements Initializable {
@@ -26,25 +26,32 @@ public class ConnectionAddController implements Initializable {
     @FXML
     ComboBox<String> stop1ComboBox, stop2ComboBox, busComboBox;
     @FXML
-    Spinner distanceSpinner;
+    Spinner<Integer> distanceSpinner;
 
     @FXML
     Button okButton;
 
     ObservableList<String> stopList = FXCollections.observableArrayList();
-    ObservableList<String> busList = FXCollections.observableArrayList();
+    // ObservableList<String> busList = FXCollections.observableArrayList();
     private final City city = MapsManager.getInstance().getActualCity();
 
     @FXML
-    public void onOkButton() {
-
-        Float distance = Float.parseFloat(String.valueOf(distanceSpinner.getValueFactory().getValue()));
-        String bus = null;
-        if (!busComboBox.getValue().equalsIgnoreCase("Walking")) bus = busComboBox.getValue();
-        city.insertRoute(stop1ComboBox.getValue(), stop2ComboBox.getValue(), bus, distance);
-        Drawer drawer = Drawer.getInstance();
-        MainController.setGraphContainer(drawer.draw(null, null));
-        ViewLoader.getStage().close();
+    public void onOkButton(ActionEvent event) throws IOException {
+        try {
+            Float distance = Float.parseFloat(String.valueOf(distanceSpinner.getValueFactory().getValue()));
+            String bus = null;
+            if (!busComboBox.getValue().equalsIgnoreCase("Walking")) bus = busComboBox.getValue();
+            city.insertRoute(stop1ComboBox.getValue(), stop2ComboBox.getValue(), bus, distance);
+            Drawer drawer = Drawer.getInstance();
+            MainController.setGraphContainer(drawer.draw(null, null));
+            ViewLoader.closeWindow(event);
+        }
+        catch (Exception e) {
+            PopupController controller = (PopupController) ViewLoader.newWindow(getClass().getResource("popup.fxml"), "Error", null);
+            controller.setText("Error", e.getMessage());
+            controller.setPrevious("add-connection-form.fxml", ((Stage) okButton.getScene().getWindow()).getTitle());
+            ViewLoader.closeWindow(event);
+        }
     }
 
     @FXML

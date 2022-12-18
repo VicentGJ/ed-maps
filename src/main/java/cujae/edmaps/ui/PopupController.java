@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -30,7 +29,9 @@ public class PopupController {
 
     @FXML
     private void onOkButton(ActionEvent event) throws IOException {
-        ViewLoader.newWindow(getClass().getResource(previousFXML), previousTitle, null);
+        if (previousFXML != null && previousTitle != null) {
+            ViewLoader.newWindow(getClass().getResource(previousFXML), previousTitle, null);
+        }
         ViewLoader.closeWindow(event);
     }
 }
