@@ -26,11 +26,20 @@ public class Drawer {
     private HashMap<Integer, Location> nodes;
     private ArrayList<Route> addedEdges;
     private HashMap<WeightedEdge, Segment> edges;
-    private final Stage stage;
+    private Stage stage;
     private Float totalDistance;
 
+    private static Drawer instance;
 
-    public Drawer(Stage stage) {
+    public static Drawer getInstance() {
+        if(instance == null)
+            instance = new Drawer();
+        return instance;
+    }
+
+    private Drawer() {}
+
+    public void setStage (Stage stage) {
         this.stage = stage;
     }
 
