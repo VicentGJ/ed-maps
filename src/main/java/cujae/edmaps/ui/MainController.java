@@ -67,6 +67,11 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void onDeleteConnection() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("delete-connection-form.fxml"), "Delete Connection", null);
+    }
+
+    @FXML
     public void onRefresh() {
         Drawer drawer = Drawer.getInstance();
         drawer.setStage(stage);
