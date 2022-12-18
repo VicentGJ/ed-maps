@@ -38,6 +38,11 @@ public class ViewLoader {
         return controller;
     }
 
+    public static void closeWindow(ActionEvent event) {
+        Stage thisStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        thisStage.close();
+    }
+
     public static Stage getStage() {
         return stage;
     }
@@ -45,4 +50,5 @@ public class ViewLoader {
     public static void setStage(Stage stage) {
         ViewLoader.stage = stage;
     }
+
 }
