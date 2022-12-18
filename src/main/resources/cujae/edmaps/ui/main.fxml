@@ -64,12 +64,12 @@
                               <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Bus">
+                        <MenuItem mnemonicParsing="false" onAction="#onDeleteBus" text="Bus">
                            <accelerator>
                               <KeyCodeCombination alt="DOWN" code="B" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Stop">
+                        <MenuItem mnemonicParsing="false" onAction="#onDeleteStop" text="Stop">
                            <accelerator>
                               <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
