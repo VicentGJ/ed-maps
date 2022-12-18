@@ -15,6 +15,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ConnectionAddController implements Initializable {
@@ -46,17 +49,47 @@ public class ConnectionAddController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        City city = MapsManager.getInstance().getActualCity();
         for (BusStop stop : city.getBusStopList()) {
             stopList.add(stop.getName());
         }
-        busList.add("Walking");
-        for (Bus bus : city.getBusList()) {
-            busList.add(bus.getName());
-        }
         stop1ComboBox.setItems(stopList);
         stop2ComboBox.setItems(stopList);
-        busComboBox.setItems(busList);
+        busComboBox.setDisable(true);
+        busComboBox.getItems().add("Walking");
         busComboBox.setValue("Walking");
+
+        stop1ComboBox.setOnAction(event -> {
+            LinkedList<String> busList = new LinkedList<>();
+            if (stop2ComboBox.getValue() != null) {
+                for (Bus b : city.busFilter(stop1ComboBox.getValue(), stop2ComboBox.getValue())) {
+                    busList.add(b.getName());
+                }
+                busComboBox.setDisable(false);
+                busComboBox.getItems().clear();
+                busComboBox.getItems().add("Walking");
+                busComboBox.setValue("Walking");
+                busComboBox.getItems().addAll(busList);
+            } else {
+                busComboBox.setDisable(true);
+                busComboBox.setValue("Walking");
+            }
+        });
+        stop2ComboBox.setOnAction(event -> {
+            LinkedList<String> busList = new LinkedList<>();
+            if (stop1ComboBox.getValue() != null) {
+                for (Bus b : city.busFilter(stop2ComboBox.getValue(), stop2ComboBox.getValue())) {
+                    busList.add(b.getName());
+                }
+                busComboBox.setDisable(false);
+                busComboBox.getItems().clear();
+                busComboBox.getItems().add("Walking");
+                busComboBox.setValue("Walking");
+                busComboBox.getItems().addAll(busList);
+            } else {
+                busComboBox.setDisable(true);
+                busComboBox.setValue("Walking");
+            }
+        });
     }
 }
