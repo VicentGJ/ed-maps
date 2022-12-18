@@ -74,7 +74,7 @@
                               <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                              <MenuItem mnemonicParsing="false" text="Connection">
+                              <MenuItem mnemonicParsing="false" onAction="#onDeleteConnection" text="Connection">
                            <accelerator>
                               <KeyCodeCombination alt="DOWN" code="N" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
