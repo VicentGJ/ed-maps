@@ -62,7 +62,11 @@ public class SimpleDeleteController implements Initializable {
                 Drawer drawer = Drawer.getInstance();
                 MainController.setGraphContainer(drawer.draw(null, null));
             }
-            case BUS -> city.removeBus(comboBox.getValue());
+            case BUS -> {
+                city.removeBus(comboBox.getValue());
+                Drawer drawer = Drawer.getInstance();
+                MainController.setGraphContainer(drawer.draw(null, null));
+            }
         }
         ViewLoader.closeWindow(event);
     }
