@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 
@@ -27,12 +28,16 @@ public class ConnectionAddController implements Initializable {
     @FXML
     Spinner distanceSpinner;
 
+    @FXML
+    Button okButton;
+
     ObservableList<String> stopList = FXCollections.observableArrayList();
     ObservableList<String> busList = FXCollections.observableArrayList();
     private final City city = MapsManager.getInstance().getActualCity();
 
     @FXML
     public void onOkButton() {
+
         Float distance = Float.parseFloat(String.valueOf(distanceSpinner.getValueFactory().getValue()));
         String bus = null;
         if (!busComboBox.getValue().equalsIgnoreCase("Walking")) bus = busComboBox.getValue();
@@ -56,6 +61,7 @@ public class ConnectionAddController implements Initializable {
         stop1ComboBox.setItems(stopList);
         stop2ComboBox.setItems(stopList);
         busComboBox.setDisable(true);
+        okButton.setDisable(true);
         busComboBox.getItems().add("Walking");
         busComboBox.setValue("Walking");
 
@@ -63,43 +69,45 @@ public class ConnectionAddController implements Initializable {
             LinkedList<String> busList = new LinkedList<>();
             if (stop2ComboBox.getValue() != null) {
                 if (stop2ComboBox.getValue().equalsIgnoreCase(stop1ComboBox.getValue())) {
-                    busComboBox.setDisable(true);
                     busComboBox.setValue("Walking");
+                    okButton.setDisable(true);
                 } else {
                     for (Bus b : city.busFilter(stop1ComboBox.getValue(), stop2ComboBox.getValue())) {
                         busList.add(b.getName());
                     }
-                    busComboBox.setDisable(false);
                     busComboBox.getItems().clear();
                     busComboBox.getItems().add("Walking");
                     busComboBox.setValue("Walking");
                     busComboBox.getItems().addAll(busList);
+                    okButton.setDisable(false);
                 }
             } else {
-                busComboBox.setDisable(true);
                 busComboBox.setValue("Walking");
+                okButton.setDisable(true);
             }
+            busComboBox.setDisable(busList.isEmpty());
         });
         stop2ComboBox.setOnAction(event -> {
             LinkedList<String> busList = new LinkedList<>();
             if (stop1ComboBox.getValue() != null) {
                 if (stop2ComboBox.getValue().equalsIgnoreCase(stop1ComboBox.getValue())) {
-                    busComboBox.setDisable(true);
                     busComboBox.setValue("Walking");
+                    okButton.setDisable(true);
                 } else {
                     for (Bus b : city.busFilter(stop2ComboBox.getValue(), stop2ComboBox.getValue())) {
                         busList.add(b.getName());
                     }
-                    busComboBox.setDisable(false);
                     busComboBox.getItems().clear();
                     busComboBox.getItems().add("Walking");
                     busComboBox.setValue("Walking");
                     busComboBox.getItems().addAll(busList);
+                    okButton.setDisable(false);
                 }
             } else {
-                busComboBox.setDisable(true);
                 busComboBox.setValue("Walking");
+                okButton.setDisable(true);
             }
+            busComboBox.setDisable(busList.isEmpty());
         });
     }
 }

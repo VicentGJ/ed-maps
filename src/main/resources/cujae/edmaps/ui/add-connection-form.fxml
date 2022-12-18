@@ -39,7 +39,7 @@
                         <Label text="Distance: "/>
                         <Spinner fx:id="distanceSpinner" editable="true">
                             <valueFactory>
-                                <SpinnerValueFactory.DoubleSpinnerValueFactory max="99999999999999999999" min="0"/>
+                                <SpinnerValueFactory.DoubleSpinnerValueFactory max="99999999999999999999" min="1"/>
                             </valueFactory>
                         </Spinner>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="meters"/>
@@ -47,7 +47,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                     <children>
-                        <Button mnemonicParsing="false" onAction="#onOkButton" text="Ok"/>
+                        <Button mnemonicParsing="false" onAction="#onOkButton" text="Ok" fx:id="okButton"/>
                         <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCancelButton"
                                 text="Cancel"/>
                     </children>
