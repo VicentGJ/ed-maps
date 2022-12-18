@@ -35,6 +35,10 @@ public class City {
         return routeGraph;
     }
 
+    //***************************************************************
+    //------------------------------BUS------------------------------
+    //***************************************************************
+
     public List<Bus> getBusList() {
         return busList;
     }
@@ -57,6 +61,54 @@ public class City {
         return bus;
     }
 
+    /**
+     * Search for the Bus's name in BusList
+     *
+     * @param name the name of the Bus to find
+     * @return true if the Bus already exists, false otherwise
+     */
+    public boolean existBus(String name) {
+        boolean found = false;
+        for (Bus bus : busList)
+            if (bus.getName().equalsIgnoreCase(name)) {
+                found = true;
+                break;
+            }
+        return found;
+    }
+
+    /**
+     * Removes the Bus and all its routes in the graph
+     *
+     * @param name the Bus's name to remove
+     * @throws InvalidParameterException if bus doesn't exist
+     */
+    public void removeBus(String name) {
+        Iterator<Bus> i = busList.iterator();
+        boolean removed = false;
+        Bus current = null;
+        while (i.hasNext() && !removed) {
+            current = i.next();
+            if (current.getName().equalsIgnoreCase(name)) {
+                removeConnections(current);
+                i.remove();
+                removed = true;
+            }
+        }
+        if (!removed) throw new InvalidParameterException("name not found: " + name);
+    }
+
+    public void renameBus(String oldName, String newName) {
+        Bus bus = getBus(oldName);
+        if (bus != null) {
+            if (!existBus(newName)) {
+                bus.setName(newName);
+            } else throw new InvalidParameterException("newName already exist: " + newName);
+        } else throw new InvalidParameterException("oldName not found: " + oldName);
+    }
+    //********************************************************************
+    //------------------------------BUS STOP------------------------------
+    //********************************************************************
     public void addBusStop(String name) {
         if (!existBusStop(name)) {
             routeGraph.insertVertex(new BusStop(name));
@@ -86,22 +138,6 @@ public class City {
     }
 
     /**
-     * Search for the Bus's name in BusList
-     *
-     * @param name the name of the Bus to find
-     * @return true if the Bus already exists, false otherwise
-     */
-    public boolean existBus(String name) {
-        boolean found = false;
-        for (Bus bus : busList)
-            if (bus.getName().equalsIgnoreCase(name)) {
-                found = true;
-                break;
-            }
-        return found;
-    }
-
-    /**
      * Get the BusStop's Vertex from the graph, by searching the BusStop name
      *
      * @param busStopName the name of the busStop to find
@@ -121,25 +157,6 @@ public class City {
         return result;
     }
 
-    /**
-     * Finds the shortest path between the given busStops
-     *
-     * @param start the BusStop's name of the starting point
-     * @param goal  the BusStop's name of the goal point
-     * @return a CompletePath instance with the path from start to goal
-     * @throws Exception
-     */
-    //TODO: document when is the Exception thrown
-    public CompletePath getPathBetween(String start, String goal) throws Exception {
-        Vertex tail = getVertex(start);
-        Vertex head = getVertex(goal);
-        if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equalsIgnoreCase(start)) {
-            dijsktraShortestPath = new DijkstraShortestPath(tail);
-        }
-        CompletePath consult = dijsktraShortestPath.getShortestPathTo(head);
-        consult.save();
-        return consult;
-    }
 
     /**
      * Find the index of the given BusStop in the vertices list of the graph
@@ -154,6 +171,48 @@ public class City {
             if (((BusStop) i.next().getInfo()).getName().equalsIgnoreCase(busStopName)) index = count;
         return index;
     }
+
+    /**
+     * Modify the name of the specified BusStop
+     *
+     * @param oldName The actual BusStop's name
+     * @param newName the new BusStop's name
+     * @throws InvalidParameterException if the oldName doesn't exist or if the newName is already taken
+     */
+    public void renameBusStop(String oldName, String newName) {
+        Vertex vertex = getVertex(oldName);
+        if (vertex != null) {
+            if (!existBusStop(newName))
+                ((BusStop) vertex.getInfo()).setName(newName);
+            else throw new InvalidParameterException("newName already exist: " + newName);
+        } else throw new InvalidParameterException("oldName not found: " + oldName);
+    }
+
+    public void removeBusStop(String name) {
+        Vertex busStopVertex = getVertex(name);
+        if (busStopVertex == null) throw new InvalidParameterException("name not found: " + name);
+        Vertex currentVertex = null;
+        Iterator<Vertex> vertexIterator = this.routeGraph.getVerticesList().iterator();
+        while (vertexIterator.hasNext()) {
+            currentVertex = vertexIterator.next();
+            Edge currentEdge = null;
+            if (currentVertex.equals(busStopVertex)) {
+                currentVertex.getEdgeList().clear();
+                vertexIterator.remove();
+            } else {
+                Iterator<Edge> edgeIterator = currentVertex.getEdgeList().iterator();
+                while (edgeIterator.hasNext()) {
+                    currentEdge = edgeIterator.next();
+                    if (currentEdge.getVertex().equals(busStopVertex)) {
+                        edgeIterator.remove();
+                    }
+                }
+            }
+        }
+    }
+    //******************************************************************
+    //------------------------------ROUTES------------------------------
+    //******************************************************************
 
     /**
      * Insert the <strong>weighted directed edge</strong> from tail to head
@@ -219,7 +278,6 @@ public class City {
         return true;
     }
 
-
     /**
      * Removes the <strong>weighted edge</strong> that points from tail to head
      *
@@ -256,27 +314,6 @@ public class City {
     }
 
     /**
-     * Removes the Bus and all its routes in the graph
-     *
-     * @param name the Bus's name to remove
-     * @throws InvalidParameterException if bus doesn't exist
-     */
-    public void removeBus(String name) {
-        Iterator<Bus> i = busList.iterator();
-        boolean removed = false;
-        Bus current = null;
-        while (i.hasNext() && !removed) {
-            current = i.next();
-            if (current.getName().equalsIgnoreCase(name)) {
-                removeConnections(current);
-                i.remove();
-                removed = true;
-            }
-        }
-        if (!removed) throw new InvalidParameterException("name not found: " + name);
-    }
-
-    /**
      * Remove all the connections of a given Bus
      *
      * @param bus the Bus which connections are going to be deleted
@@ -299,36 +336,11 @@ public class City {
     }
 
     /**
-     * Modify the name of the specified BusStop
-     *
-     * @param oldName The actual BusStop's name
-     * @param newName the new BusStop's name
-     * @throws InvalidParameterException if the oldName doesn't exist or if the newName is already taken
-     */
-    public void renameBusStop(String oldName, String newName) {
-        Vertex vertex = getVertex(oldName);
-        if (vertex != null) {
-            if (!existBusStop(newName))
-                ((BusStop) vertex.getInfo()).setName(newName);
-            else throw new InvalidParameterException("newName already exist: " + newName);
-        } else throw new InvalidParameterException("oldName not found: " + oldName);
-    }
-
-    public void renameBus(String oldName, String newName) {
-        Bus bus = getBus(oldName);
-        if (bus != null) {
-            if (!existBus(newName)) {
-                bus.setName(newName);
-            } else throw new InvalidParameterException("newName already exist: " + newName);
-        } else throw new InvalidParameterException("oldName not found: " + oldName);
-    }
-
-    /**
      * Modify the distance of a route between two busStops
      *
      * @param tail        the BusStop's name that represents the departure stop of the route
      * @param head        the BusStop's name that represents the arrival stop of the route
-     * @param bus         the name of the route it's going to be deleted
+     * @param bus         the name of the route you want to modify
      * @param newDistance the new route's distance
      * @throws InvalidParameterException if tail, head or bus don't exist
      */
@@ -350,12 +362,33 @@ public class City {
     }
 
     /**
+     *Change the route bus for another that exists
+     *
+     * @param tail the BusStop's name that represents the departure stop of the route
+     * @param head the BusStop's name that represents the arrival stop of the route
+     * @param oldBusName the name of the bus it's going to be change
+     * @param newBusName the new bus name
+     */
+    public void changeRouteBus(String tail, String head, String oldBusName, String newBusName){
+        WeightedEdge edge = getEdge(oldBusName, tail, head);
+        if(edge == null) throw new InvalidParameterException("oldBusName: " + oldBusName);
+        Route route = (Route) edge.getWeight();
+        Bus bus = getBus(newBusName);
+        if(bus == null) throw new InvalidParameterException("newBusName: " + newBusName);
+        //if aux == null means that there is not another route with the same bus between these vertex
+        WeightedEdge aux = getEdge(newBusName, tail, head);
+        if(aux == null && canInsertRoute(getBusStopIndex(tail), getBusStopIndex(head), bus))
+            route.setBus(bus);
+    }
+
+    /**
      * Get the WeightedEdge instance that goes from tail to head, using the given bus
      *
      * @param busName the name of the bus that represents the route
      * @param tail    a bus stop name
      * @return The WeightedEdge that connects tail and head through the bus, null if it doesn't exist
      */
+    //TODO getVertex can return null
     public WeightedEdge getEdge(String busName, String tail, String head) {
         Vertex t = getVertex(tail);
         Vertex h = getVertex(head);
@@ -380,29 +413,6 @@ public class City {
         return found;
     }
 
-    public void removeBusStop(String name) {
-        Vertex busStopVertex = getVertex(name);
-        if (busStopVertex == null) throw new InvalidParameterException("name not found: " + name);
-        Vertex currentVertex = null;
-        Iterator<Vertex> vertexIterator = this.routeGraph.getVerticesList().iterator();
-        while (vertexIterator.hasNext()) {
-            currentVertex = vertexIterator.next();
-            Edge currentEdge = null;
-            if (currentVertex.equals(busStopVertex)) {
-                currentVertex.getEdgeList().clear();
-                vertexIterator.remove();
-            } else {
-                Iterator<Edge> edgeIterator = currentVertex.getEdgeList().iterator();
-                while (edgeIterator.hasNext()) {
-                    currentEdge = edgeIterator.next();
-                    if (currentEdge.getVertex().equals(busStopVertex)) {
-                        edgeIterator.remove();
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * Get all the edges that directly connect v1 with v2
      *
@@ -416,6 +426,26 @@ public class City {
             if (e.getVertex().equals(head)) edges.add(e);
         }
         return edges;
+    }
+    //*************************************************************************
+    //------------------------------SHORTEST PATH------------------------------
+    //*************************************************************************
+    /**
+     * Finds the shortest path between the given busStops
+     *
+     * @param start the BusStop's name of the starting point
+     * @param goal  the BusStop's name of the goal point
+     * @return a CompletePath instance with the path from start to goal
+     */
+    public CompletePath getPathBetween(String start, String goal) {
+        Vertex tail = getVertex(start);
+        Vertex head = getVertex(goal);
+        if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equalsIgnoreCase(start)) {
+            dijsktraShortestPath = new DijkstraShortestPath(tail);
+        }
+        CompletePath consult = dijsktraShortestPath.getShortestPathTo(head);
+        consult.save();
+        return consult;
     }
 
     public void restartDijkstra() {

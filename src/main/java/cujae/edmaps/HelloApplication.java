@@ -5,6 +5,7 @@ import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.*;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
+import cujae.edmaps.ui.MainController;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,13 +18,10 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("ui/main.fxml"));
-        ViewLoader.setStage(stage);
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("ED MAPS");
-        stage.setScene(scene);
-        stage.show();
-        stage.setMaximized(true);
+        MainController controller = (MainController) ViewLoader.newWindow(
+                HelloApplication.class.getResource("ui/main.fxml"), "ED MAPS", null);
+        ViewLoader.getStage().setMaximized(true);
+        controller.onRefresh();
     }
 
     public static void userHistoryCityCreation() {

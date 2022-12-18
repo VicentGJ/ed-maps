@@ -4,15 +4,21 @@ import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.Bus;
+import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.Route;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
 public class DijkstraShortestPath {
-    private Vertex start;
-    private Map<Vertex, WayToArrive> nodes;
+    private final Vertex start;
+    private final Map<Vertex, WayToArrive> nodes;
 
-    private class WayToArrive {
+    /**
+     * WayToArrive class represent how you came to a vertex having the previous vertex,
+     * the bus used to, the distance from the beginning, and the distance of the edge.
+     */
+    private static class WayToArrive {
         private Vertex previous;
         private Bus bus;
         private Float distanceUpToHere;
@@ -36,7 +42,14 @@ public class DijkstraShortestPath {
         dijkstraAlgorithm(new HashSet<>(), toUnlock);
     }
 
-    public void dijkstraAlgorithm(Set<Vertex> alreadyUnlocked, Map<Vertex, WayToArrive> toUnlock) {
+    /**
+     *Use a modification of dijkstra shortest path algorithm to find the best way to cross a city and save it
+     * on a map to be used later
+     *
+     * @param alreadyUnlocked vertex that were unlocked by the algorithm
+     * @param toUnlock vertex that are waiting to be unlocked should start with the start vertex
+     */
+    private void dijkstraAlgorithm(Set<Vertex> alreadyUnlocked, Map<Vertex, WayToArrive> toUnlock) {
         Vertex vertex = getShortest(toUnlock);
         while (vertex != null) {
             alreadyUnlocked.add(vertex);
@@ -45,41 +58,55 @@ public class DijkstraShortestPath {
             for (Edge e : vertex.getEdgeList()) {
                 Route weight = (Route) ((WeightedEdge) e).getWeight();
                 Vertex target = e.getVertex();
-                Float actualDistance = distance + weight.getDistance();
-                WayToArrive wayToArrive = null;
-                if (nodes.containsKey(target)) {
-                    wayToArrive = nodes.get(target);
-                    if (wayToArrive.distanceUpToHere > actualDistance) {
-                        wayToArrive.distanceUpToHere = actualDistance;
-                        wayToArrive.bus = weight.getBus();
-                        wayToArrive.previous = vertex;
-                        wayToArrive.edgeDistance = weight.getDistance();
+                if(!alreadyUnlocked.contains(target)) {
+                    Float actualDistance = distance + weight.getDistance();
+                    WayToArrive wayToArrive;
+                    if (nodes.containsKey(target)) {
+                        wayToArrive = nodes.get(target);
+                        if (wayToArrive.distanceUpToHere > actualDistance) {
+                            wayToArrive.distanceUpToHere = actualDistance;
+                            wayToArrive.bus = weight.getBus();
+                            wayToArrive.previous = vertex;
+                            wayToArrive.edgeDistance = weight.getDistance();
+                        }
+                    } else {
+                        wayToArrive = new WayToArrive(vertex, weight.getBus(), actualDistance, weight.getDistance());
+                        nodes.put(target, wayToArrive);
                     }
-                } else {
-                    wayToArrive = new WayToArrive(vertex, weight.getBus(), actualDistance, weight.getDistance());
-                    nodes.put(target, wayToArrive);
-                }
-                if (!alreadyUnlocked.contains(target)) {
                     toUnlock.put(target, wayToArrive);
                 }
             }
             vertex = getShortest(toUnlock);
         }
-
     }
 
-    public CompletePath getShortestPathTo(Vertex goal) throws Exception {
+    /**
+     * Using the map made by dijkstraAlgorithm find the best way to go from the start vertex set before to the
+     * destination vertex
+     *
+     * @param destination the vertex you want to go
+     * @return A CompletePath with the list of vertex you have to go through
+     * @throws InvalidParameterException if there is no way to go to the destination vertex
+     */
+    public CompletePath getShortestPathTo(Vertex destination) {
         CompletePath result = new CompletePath();
-        while (goal != null) {
-            if (nodes.containsKey(goal)) {
-                WayToArrive wayToArrive = nodes.get(goal);
-                result.addPath(goal, wayToArrive.bus, wayToArrive.edgeDistance);
-                goal = wayToArrive.previous;
-            } else throw new Exception();
+        while (destination != null) {
+            if (nodes.containsKey(destination)) {
+                WayToArrive wayToArrive = nodes.get(destination);
+                result.addPath(destination, wayToArrive.bus, wayToArrive.edgeDistance);
+                destination = wayToArrive.previous;
+            } else throw new InvalidParameterException("destination: " + ((BusStop)destination.getInfo()).getName());
+
         }
         return result;
     }
 
+    /**
+     * Find the shortest route up to that moment
+     *
+     * @param map vertex with they WayToArrive
+     * @return vertex who has the shortest distance
+     */
     private Vertex getShortest(Map<Vertex, WayToArrive> map) {
         Vertex result = null;
         Iterator<Map.Entry<Vertex, WayToArrive>> it = map.entrySet().iterator();
