@@ -1,4 +1,4 @@
-package cujae.edmaps.ui;
+package cujae.edmaps.utils;
 
 import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
