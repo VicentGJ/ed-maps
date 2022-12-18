@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 
@@ -24,6 +25,9 @@ public class ConnectionDeleteController implements Initializable {
     @FXML
     ComboBox<String> stop1ComboBox, stop2ComboBox, busComboBox;
 
+    @FXML
+    Button okButton;
+
     ObservableList<String> stopList = FXCollections.observableArrayList();
     private final City city = MapsManager.getInstance().getActualCity();
 
@@ -35,7 +39,7 @@ public class ConnectionDeleteController implements Initializable {
         stop1ComboBox.setItems(stopList);
         stop2ComboBox.setItems(stopList);
         busComboBox.setDisable(true);
-
+        okButton.setDisable(true);
         stop1ComboBox.setOnAction(event -> {
             LinkedList<String> busList = new LinkedList<>();
             if (stop2ComboBox.getValue() != null) {
@@ -45,11 +49,13 @@ public class ConnectionDeleteController implements Initializable {
                     else busList.add("Walking");
                 }
                 busComboBox.setDisable(busList.isEmpty());
+                if(!busList.isEmpty()) busComboBox.setValue(busList.getFirst());
                 busComboBox.getItems().clear();
                 busComboBox.getItems().addAll(busList);
             } else {
                 busComboBox.setDisable(true);
             }
+            okButton.setDisable(busComboBox.isDisable());
         });
         stop2ComboBox.setOnAction(event -> {
             LinkedList<String> busList = new LinkedList<>();
@@ -60,11 +66,14 @@ public class ConnectionDeleteController implements Initializable {
                     else busList.add("Walking");
                 }
                 busComboBox.setDisable(busList.isEmpty());
+                if(!busList.isEmpty()) busComboBox.setValue(busList.getFirst());
                 busComboBox.getItems().clear();
                 busComboBox.getItems().addAll(busList);
             } else {
                 busComboBox.setDisable(true);
             }
+            okButton.setDisable(busComboBox.isDisable());
+
         });
     }
 
