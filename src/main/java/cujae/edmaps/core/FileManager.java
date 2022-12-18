@@ -171,7 +171,7 @@ public class FileManager {
      * @param cityName          the City's name which file is going to be deleted
      * @param deleteConsultsToo true to also delete the city's consults directory, false otherwise
      */
-    public void deleteCity(String cityName, boolean deleteConsultsToo) {
+    public static void deleteCity(String cityName, boolean deleteConsultsToo) {
         File cityfile = loadCityFile(cityName);
         if (cityfile != null) {
             cityfile.delete();

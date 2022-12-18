@@ -5,6 +5,7 @@ import cujae.edmaps.core.FileManager;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -151,5 +152,9 @@ public class MainController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         stage = ViewLoader.getStage();
         root.getChildren().add(graphContainer);
+    }
+
+    public void onDeleteCity() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("delete-city-form.fxml"), "Delete City", null);
     }
 }
