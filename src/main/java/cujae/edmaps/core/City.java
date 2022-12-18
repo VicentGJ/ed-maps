@@ -330,7 +330,7 @@ public class City {
             while (j.hasNext()) {
                 currentWEdge = (WeightedEdge) j.next();
                 Route route = (Route) currentWEdge.getWeight();
-                if (route.getBus().equals(bus)) j.remove();
+                if (Objects.equals(route.getBus(),bus)) j.remove();
             }
         }
     }
