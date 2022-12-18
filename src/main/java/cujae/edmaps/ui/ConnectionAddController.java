@@ -4,6 +4,7 @@ import cujae.edmaps.core.Bus;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
 import cujae.edmaps.core.MapsManager;
+import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -33,6 +34,8 @@ public class ConnectionAddController implements Initializable {
         String bus = null;
         if (!busComboBox.getValue().equalsIgnoreCase("Walking")) bus = busComboBox.getValue();
         city.insertRoute(stop1ComboBox.getValue(), stop2ComboBox.getValue(), bus, distance);
+        Drawer drawer = Drawer.getInstance();
+        MainController.setGraphContainer(drawer.draw(null, null));
         ViewLoader.getStage().close();
     }
 
