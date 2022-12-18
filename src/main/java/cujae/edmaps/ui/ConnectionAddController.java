@@ -62,14 +62,19 @@ public class ConnectionAddController implements Initializable {
         stop1ComboBox.setOnAction(event -> {
             LinkedList<String> busList = new LinkedList<>();
             if (stop2ComboBox.getValue() != null) {
-                for (Bus b : city.busFilter(stop1ComboBox.getValue(), stop2ComboBox.getValue())) {
-                    busList.add(b.getName());
+                if (stop2ComboBox.getValue().equalsIgnoreCase(stop1ComboBox.getValue())) {
+                    busComboBox.setDisable(true);
+                    busComboBox.setValue("Walking");
+                } else {
+                    for (Bus b : city.busFilter(stop1ComboBox.getValue(), stop2ComboBox.getValue())) {
+                        busList.add(b.getName());
+                    }
+                    busComboBox.setDisable(false);
+                    busComboBox.getItems().clear();
+                    busComboBox.getItems().add("Walking");
+                    busComboBox.setValue("Walking");
+                    busComboBox.getItems().addAll(busList);
                 }
-                busComboBox.setDisable(false);
-                busComboBox.getItems().clear();
-                busComboBox.getItems().add("Walking");
-                busComboBox.setValue("Walking");
-                busComboBox.getItems().addAll(busList);
             } else {
                 busComboBox.setDisable(true);
                 busComboBox.setValue("Walking");
@@ -78,14 +83,19 @@ public class ConnectionAddController implements Initializable {
         stop2ComboBox.setOnAction(event -> {
             LinkedList<String> busList = new LinkedList<>();
             if (stop1ComboBox.getValue() != null) {
-                for (Bus b : city.busFilter(stop2ComboBox.getValue(), stop2ComboBox.getValue())) {
-                    busList.add(b.getName());
+                if (stop2ComboBox.getValue().equalsIgnoreCase(stop1ComboBox.getValue())) {
+                    busComboBox.setDisable(true);
+                    busComboBox.setValue("Walking");
+                } else {
+                    for (Bus b : city.busFilter(stop2ComboBox.getValue(), stop2ComboBox.getValue())) {
+                        busList.add(b.getName());
+                    }
+                    busComboBox.setDisable(false);
+                    busComboBox.getItems().clear();
+                    busComboBox.getItems().add("Walking");
+                    busComboBox.setValue("Walking");
+                    busComboBox.getItems().addAll(busList);
                 }
-                busComboBox.setDisable(false);
-                busComboBox.getItems().clear();
-                busComboBox.getItems().add("Walking");
-                busComboBox.setValue("Walking");
-                busComboBox.getItems().addAll(busList);
             } else {
                 busComboBox.setDisable(true);
                 busComboBox.setValue("Walking");
