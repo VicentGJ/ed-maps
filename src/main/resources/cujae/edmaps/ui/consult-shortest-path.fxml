@@ -28,7 +28,7 @@
             </VBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="600.0" spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onOkButton" text="Ok" />
+                  <Button mnemonicParsing="false" onAction="#onOkButton" text="Ok" fx:id="okButton"/>
                   <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCancelButton" text="Cancel" />
                </children>
                <VBox.margin>

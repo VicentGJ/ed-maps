@@ -14,10 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
@@ -34,6 +31,9 @@ public class ConsultController implements Initializable {
     private TableView<PathHelper> tableView;
     @FXML
     private TableColumn stopColumn, busColumn, distanceColumn;
+
+    @FXML
+    Button okButton;
 
     private final ObservableList<String> stopList = FXCollections.observableArrayList();
     private final City city = MapsManager.getInstance().getActualCity();
@@ -68,9 +68,16 @@ public class ConsultController implements Initializable {
         for (BusStop stop : city.getBusStopList()) {
             stopList.add(stop.getName());
         }
+        okButton.setDisable(true);
         startComboBox.setItems(stopList);
         destinationComboBox.setItems(stopList);
         city.restartDijkstra();
+        startComboBox.setOnAction(event -> {
+            okButton.setDisable(destinationComboBox.getValue() == null);
+        });
+        destinationComboBox.setOnAction(event -> {
+            okButton.setDisable(startComboBox.getValue() == null);
+        });
     }
 
     @FXML
@@ -97,9 +104,9 @@ public class ConsultController implements Initializable {
             busColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("busName"));
             distanceColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("distance"));
             tableView.setItems(pathList);
-            totalDistanceDisplay.setText(String.valueOf(totalDistance)+"m");
+            totalDistanceDisplay.setText(String.valueOf(totalDistance) + "m");
             LinkedList<Vertex> vertices = FileManager.loadLastConsult(city.getName());
-            MainController.setGraphContainer(Drawer.getInstance().draw(vertices,city.getName()));
+            MainController.setGraphContainer(Drawer.getInstance().draw(vertices, city.getName()));
         } catch (Exception e) {
             e.printStackTrace();
         }
