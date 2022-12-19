@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="204.0" prefWidth="302.0" spacing="10.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.ConnectionDeleteController">
+   <children>
+      <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox>
+               <children>
+                  <Label text="Stop 1" />
+                  <ComboBox fx:id="stop1ComboBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="10.0">
+               <children>
+                  <Label text="Stop 2" />
+                  <ComboBox fx:id="stop2ComboBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="55.0">
+               <children>
+                  <Label text="Bus" />
+                  <ComboBox fx:id="busComboBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </VBox>
+      <HBox alignment="CENTER_RIGHT" fillHeight="false" spacing="10.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onOkButton" text="Ok" fx:id="okButton"/>
+            <Button mnemonicParsing="false" onAction="#onCancelButton" text="Cancel" />
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="root" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.MainController">
+    <children>
+        <MenuBar VBox.vgrow="NEVER">
+            <menus>
+                <Menu mnemonicParsing="false" onShowing="#onShowingFileMenu" text="File">
+                    <items>
+                  <Menu mnemonicParsing="false" text="New">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onCreateCity" text="City">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#onAddBus" text="Bus">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="B" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#onAddStop" text="Stop">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#onAddConnection" text="Connection">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                    </items>
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="ANY" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </Menu>
+                        <MenuItem mnemonicParsing="false" onAction="#onRefresh" text="Refresh">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#onSaveCity" text="Save City To File">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                        <Menu fx:id="loadCityFileMenu" mnemonicParsing="false" text="Load City File" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#onQuit" text="Quit">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                  <Menu mnemonicParsing="false" text="Rename">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#onRenameBus" text="Bus" />
+                        <MenuItem mnemonicParsing="false" onAction="#onRenameCity" text="City" />
+                        <MenuItem mnemonicParsing="false" onAction="#onRenameBusStop" text="Stop" />
+                    </items>
+                  </Menu>
+                  <MenuItem mnemonicParsing="false" text="Modify connection" onAction="#onModifyConnection"/>
+                  <Menu mnemonicParsing="false" text="Delete">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#onDeleteCity" text="City">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#onDeleteBus" text="Bus">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="B" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#onDeleteStop" text="Stop">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#onDeleteConnection" text="Connection">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="N" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                    </items>
+                  </Menu>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" onShown="#onShowingConsultsMenu" text="Consult">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onMakeConsult" text="Make Consult">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="N" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                        <Menu fx:id="loadCityConsultFileMenu" mnemonicParsing="false" text="Load Consult From File" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </children>
+</VBox>

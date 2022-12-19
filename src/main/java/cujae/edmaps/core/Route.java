@@ -1,10 +1,10 @@
 package cujae.edmaps.core;
 
-public class Route {
+public class Route implements Cloneable{
     private Bus bus;
-    private Double distance;
+    private Float distance;
 
-    public Route(Bus bus, Double distance) {
+    public Route(Bus bus, Float distance) {
         setBus(bus);
         setDistance(distance);
     }
@@ -17,11 +17,22 @@ public class Route {
         this.bus = bus;
     }
 
-    public Double getDistance() {
+    public Float getDistance() {
         return distance;
     }
 
-    public void setDistance(Double distance) {
-        this.distance = distance;
+    public boolean setDistance(Float distance) {
+        if (distance < 0) return false;
+        else this.distance = distance;
+        return true;
+    }
+    public Object clone() {
+        Object clone = null;
+        try {
+            clone = super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return clone;
     }
 }
