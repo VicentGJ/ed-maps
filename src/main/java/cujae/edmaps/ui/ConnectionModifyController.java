@@ -46,7 +46,7 @@ public class ConnectionModifyController implements Initializable {
         } catch (Exception e) {
             PopupController controller = (PopupController) ViewLoader.newWindow(getClass().getResource("popup.fxml"), "Error", null);
             controller.setText("Error", e.getMessage());
-            controller.setPrevious("add-connection-form.fxml", ((Stage) okButton.getScene().getWindow()).getTitle());
+            controller.setPrevious("modify-connection-form.fxml", ((Stage) okButton.getScene().getWindow()).getTitle());
             ViewLoader.closeWindow(event);
         }
     }
