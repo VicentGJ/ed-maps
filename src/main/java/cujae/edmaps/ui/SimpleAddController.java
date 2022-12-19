@@ -52,7 +52,7 @@ public class SimpleAddController implements Initializable {
                 }
                 case BUS -> {
                     if (!nameField.getText().isBlank()) {
-                        exists = MapsManager.getInstance().getActualCity().existBus(nameField.getText());
+                        exists = MapsManager.getInstance().getActualCity().existBus(nameField.getText()) || nameField.getText().equalsIgnoreCase("walking");
                     }
                 }
                 case STOP -> {
