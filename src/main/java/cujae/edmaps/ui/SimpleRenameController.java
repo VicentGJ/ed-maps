@@ -32,7 +32,7 @@ public class SimpleRenameController implements Initializable {
     private Type type = Type.CITY;
 
     @FXML
-    private void onOkButton(ActionEvent event) throws IOException {
+    private void onOkButton(ActionEvent event) {
         String newName = nameField.getText();
         String oldName = comboBox.getValue();
         switch (type) {
@@ -45,12 +45,10 @@ public class SimpleRenameController implements Initializable {
                 }
             }
             case BUS -> {
-                Bus b = MapsManager.getInstance().getActualCity().getBus(oldName);
-                b.setName(newName);
+                MapsManager.getInstance().getActualCity().renameBus(oldName,newName);
             }
             case STOP -> {
-                BusStop bs = MapsManager.getInstance().getActualCity().getBusStop(oldName);
-                bs.setName(newName);
+                MapsManager.getInstance().getActualCity().renameBusStop(oldName,newName);
             }
         }
         MainController.setGraphContainer(Drawer.getInstance().draw(null, null));
@@ -58,7 +56,7 @@ public class SimpleRenameController implements Initializable {
     }
 
     @FXML
-    private void onCancelButton(ActionEvent event) throws IOException {
+    private void onCancelButton(ActionEvent event) {
         ViewLoader.closeWindow(event);
     }
 

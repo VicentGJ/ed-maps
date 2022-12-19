@@ -5,7 +5,6 @@ import cujae.edmaps.core.FileManager;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -169,5 +168,10 @@ public class MainController implements Initializable {
     @FXML
     public void onRenameBusStop() throws IOException {
         ViewLoader.newWindow(getClass().getResource("rename-form.fxml"), "Rename Stop", null);
+    }
+    @FXML
+    public void onModifyConnection()throws IOException{
+        ViewLoader.newWindow(getClass().getResource("modify-connection-form.fxml"), "Modify Connection", null);
+
     }
 }
