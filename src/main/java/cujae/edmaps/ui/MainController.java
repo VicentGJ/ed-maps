@@ -160,6 +160,14 @@ public class MainController implements Initializable {
     }
     @FXML
     public void onRenameCity() throws IOException {
-        ViewLoader.newWindow(getClass().getResource("rename-city-form.fxml"), "Rename City", null);
+        ViewLoader.newWindow(getClass().getResource("rename-form.fxml"), "Rename City", null);
+    }
+    @FXML
+    public void onRenameBus() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("rename-form.fxml"), "Rename Bus", null);
+    }
+    @FXML
+    public void onRenameBusStop() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("rename-form.fxml"), "Rename Stop", null);
     }
 }
