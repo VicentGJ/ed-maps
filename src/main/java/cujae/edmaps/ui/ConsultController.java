@@ -93,7 +93,7 @@ public class ConsultController implements Initializable {
             busColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("busName"));
             distanceColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("distance"));
             tableView.setItems(pathList);
-            totalDistanceDisplay.setText(String.valueOf(totalDistance));
+            totalDistanceDisplay.setText(String.valueOf(totalDistance)+"m");
         } catch (Exception e) {
             e.printStackTrace();
         }
