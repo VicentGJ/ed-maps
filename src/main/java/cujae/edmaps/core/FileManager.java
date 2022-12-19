@@ -165,13 +165,20 @@ public class FileManager {
         File cityfile = loadCityFile(cityName);
         if (cityfile != null) {
             cityfile.delete();
+            File consultsDirectory = getCityConsultsDirectory(cityName);
             if (deleteConsultsToo) {
-                File consultsDirectory = getCityConsultsDirectory(cityName);
                 File[] consults = consultsDirectory.listFiles();
                 if (consults != null)
                     for (File consult : consults)
                         consult.delete();
                 consultsDirectory.delete();
+            } else {
+                int newID = 1;
+                File[] cities = FileManager.getAllConsultDirectories();
+                for (File f : cities) {
+                    if (f.getName().startsWith("[deleted]-") && f.getName().endsWith(cityName)) newID++;
+                }
+                consultsDirectory.renameTo(new File(CONSULTS_DIRECTORY + "[deleted]-" + newID + "-" + cityName));
             }
         } else throw new InvalidParameterException("city name: " + cityName);
     }
