@@ -129,7 +129,7 @@ public class MainController implements Initializable {
     private void onShowingFileMenu() {
         loadCityFileMenu.getItems().clear();
         File[] cities = FileManager.getAllCityFiles();
-        if (cities != null) {
+        if (cities.length != 0) {
             Arrays.sort(cities);
             for (File city : cities) {
                 MenuItem c = new MenuItem(city.getName().split("\\.")[0]);
@@ -139,6 +139,10 @@ public class MainController implements Initializable {
                 });
                 loadCityFileMenu.getItems().add(c);
             }
+        }else{
+            MenuItem c = new MenuItem("No data");
+            c.setDisable(true);
+            loadCityFileMenu.getItems().add(c);
         }
     }
 
