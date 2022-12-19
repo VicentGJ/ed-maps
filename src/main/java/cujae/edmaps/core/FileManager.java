@@ -260,12 +260,12 @@ public class FileManager {
         int lastId = consults.length;
         String name = "";
         for (File f : consults) {
-            if (f.getName().startsWith("[" + lastId + "]")){
-                name=f.getName();
+            if (f.getName().startsWith("[" + lastId + "]")) {
+                name = f.getName();
                 break;
             }
         }
-        return loadConsult(cityName,name);
+        return loadConsult(cityName, name);
     }
 
     /**
@@ -310,5 +310,19 @@ public class FileManager {
             e.printStackTrace();
         }
         return consult;
+    }
+
+    public static void renameCityFile(String oldName, String newName) {
+        File[] cities = getAllCityFiles();
+        File city = null;
+        for (File f : cities) {
+            if (f.getName().split("\\.")[0].equalsIgnoreCase(oldName)) {
+                city = f;
+                break;
+            }
+        }
+        File consultsDirectory = getCityConsultsDirectory(oldName);
+        city.renameTo(new File(CITIES_DIRECTORY + newName + ".csv"));
+        consultsDirectory.renameTo(new File(CONSULTS_DIRECTORY + newName));
     }
 }
