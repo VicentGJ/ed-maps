@@ -1,10 +1,13 @@
 package cujae.edmaps.ui;
 
+import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
+import cujae.edmaps.core.FileManager;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.core.dijkstra.CompletePath;
 import cujae.edmaps.core.dijkstra.Path;
+import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -18,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class ConsultController implements Initializable {
@@ -94,6 +98,8 @@ public class ConsultController implements Initializable {
             distanceColumn.setCellValueFactory(new PropertyValueFactory<PathHelper, String>("distance"));
             tableView.setItems(pathList);
             totalDistanceDisplay.setText(String.valueOf(totalDistance)+"m");
+            LinkedList<Vertex> vertices = FileManager.loadLastConsult(city.getName());
+            MainController.setGraphContainer(Drawer.getInstance().draw(vertices,city.getName()));
         } catch (Exception e) {
             e.printStackTrace();
         }

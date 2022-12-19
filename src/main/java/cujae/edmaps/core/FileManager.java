@@ -255,6 +255,19 @@ public class FileManager {
         return null;
     }
 
+    public static LinkedList<Vertex> loadLastConsult(String cityName) {
+        File[] consults = FileManager.getAllCityConsultFiles(cityName);
+        int lastId = consults.length;
+        String name = "";
+        for (File f : consults) {
+            if (f.getName().startsWith("[" + lastId + "]")){
+                name=f.getName();
+                break;
+            }
+        }
+        return loadConsult(cityName,name);
+    }
+
     /**
      * @param cityName the City's name of the consult you want to get
      * @param paths    the path of the consult you want to save
