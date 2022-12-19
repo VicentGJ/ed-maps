@@ -66,7 +66,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#onRenameBusStop" text="Stop" />
                     </items>
                   </Menu>
-                  <MenuItem mnemonicParsing="false" text="Modify connection" />
+                  <MenuItem mnemonicParsing="false" text="Modify connection" onAction="#onModifyConnection"/>
                   <Menu mnemonicParsing="false" text="Delete">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#onDeleteCity" text="City">

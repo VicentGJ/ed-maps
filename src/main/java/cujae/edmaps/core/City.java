@@ -164,6 +164,15 @@ public class City {
         return (BusStop) getVertex(busStopName).getInfo();
     }
 
+    public List<String> getAdjacentStops(String busStopName) {
+        HashSet<String> adjacents = new HashSet<>();
+        Vertex bsVertex = getVertex(busStopName);
+        for (Edge e : bsVertex.getEdgeList()) {
+            adjacents.add(((BusStop) e.getVertex().getInfo()).getName());
+        }
+        return adjacents.stream().toList();
+    }
+
     /**
      * Find the index of the given BusStop in the vertices list of the graph
      *
