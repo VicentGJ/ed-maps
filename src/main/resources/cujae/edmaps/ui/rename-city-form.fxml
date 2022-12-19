@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="169.0" prefWidth="335.0" spacing="10.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.RenameCityController">
+   <children>
+      <VBox>
+         <children>
+            <Label text="City" />
+            <ComboBox prefHeight="24.0" prefWidth="297.0" fx:id="comboBox"/>
+         </children>
+      </VBox>
+      <VBox>
+         <children>
+            <Label text="New Name" />
+            <TextField fx:id="nameField"/>
+         </children>
+      </VBox>
+      <HBox alignment="CENTER_RIGHT" spacing="10.0">
+         <children>
+            <Button mnemonicParsing="false" text="Ok" fx:id="okButton" onAction="#onOkButton"/>
+            <Button mnemonicParsing="false" text="Cancel" onAction="#onCancelButton"/>
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

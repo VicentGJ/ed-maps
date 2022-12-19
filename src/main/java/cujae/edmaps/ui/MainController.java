@@ -154,7 +154,12 @@ public class MainController implements Initializable {
         root.getChildren().add(graphContainer);
     }
 
+    @FXML
     public void onDeleteCity() throws IOException {
         ViewLoader.newWindow(getClass().getResource("delete-city-form.fxml"), "Delete City", null);
+    }
+    @FXML
+    public void onRenameCity() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("rename-city-form.fxml"), "Rename City", null);
     }
 }

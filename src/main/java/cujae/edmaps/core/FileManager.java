@@ -30,15 +30,6 @@ public class FileManager {
         cities.mkdir();
         File consults = new File(CONSULTS_DIRECTORY);
         consults.mkdir();
-        File readme = new File(consults, "README.txt");
-        try {
-            readme.createNewFile();
-            FileWriter fw = new FileWriter(readme);
-            fw.write("DO NOT DELETE ANY FILES FROM HERE MANUALLY!\nThank you.");
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 //CITIES
@@ -133,7 +124,6 @@ public class FileManager {
                     for (int j = i + 1; j < connections.length; j++) {
                         if (!connections[j].equals("0")) {
                             String[] routes = connections[j].split("\\|");
-                            System.out.println(Arrays.toString(routes));
                             for (String route : routes) {
                                 String[] r = route.split(";");
                                 String busName = r[0];
