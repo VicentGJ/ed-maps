@@ -10,13 +10,13 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="169.0" prefWidth="335.0" spacing="10.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.SimpleRenameController">
    <children>
-      <VBox spacing="5.0">
+      <VBox>
          <children>
-            <Label text="Label" />
+            <Label text="Label" fx:id="label"/>
             <ComboBox fx:id="comboBox" prefHeight="24.0" prefWidth="297.0" />
          </children>
       </VBox>
-      <VBox spacing="5.0">
+      <VBox>
          <children>
             <Label text="New Name" />
             <TextField fx:id="nameField" />
