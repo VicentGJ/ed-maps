@@ -32,14 +32,15 @@ public class Drawer {
     private static Drawer instance;
 
     public static Drawer getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new Drawer();
         return instance;
     }
 
-    private Drawer() {}
+    private Drawer() {
+    }
 
-    public void setStage (Stage stage) {
+    public void setStage(Stage stage) {
         this.stage = stage;
     }
 
@@ -72,10 +73,10 @@ public class Drawer {
         LinkedList<ImageView> locations = new LinkedList<>();
         LinkedList<Vertex> vertices = vertexList == null ? MapsManager.getInstance().getActualCity().getRouteGraph().getVerticesList() : vertexList;
         final int NODES = vertices.size();
-        final double RADIUS = stage.getHeight() / 2 - 70d;
+        final double RADIUS = stage.getHeight() < stage.getWidth() ? stage.getHeight() / 2 - 70d : stage.getWidth() / 2 - 70d;
         final double CENTER_X = stage.getWidth() / 2;
         final double CENTER_Y = stage.getHeight() / 2 - 50d;
-        Iterator<Vertex> iterator= vertices.descendingIterator();
+        Iterator<Vertex> iterator = vertices.descendingIterator();
         double i = 0;
         Vertex current = null;
         int pos = NODES;
@@ -87,7 +88,7 @@ public class Drawer {
             nodes.put(1, new Location(vertices.getFirst(), location));
         } else while (iterator.hasNext()) {
             current = iterator.next();
-            System.out.println(((BusStop)current.getInfo()).getName());
+            System.out.println(((BusStop) current.getInfo()).getName());
             double angle = Math.toRadians((++i / NODES) * 360d);
             double centerX = (Math.cos(angle) * RADIUS) + CENTER_X;
             double centerY = (Math.sin(angle) * RADIUS) + CENTER_Y;

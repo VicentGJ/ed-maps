@@ -27,7 +27,7 @@ public class HelloApplication extends Application {
     public static void userHistoryCityCreation() {
         //user story 1: create city and get the shortest path between 2 bus stops
         System.out.println("User story 1: shortest path");
-        MapsManager.getInstance().createCity("Madrid");
+        MapsManager.getInstance().createCity("Test City");
         City madrid = MapsManager.getInstance().getActualCity();
         madrid.addBus("Route-1");
         madrid.addBus("Route-2");
@@ -102,6 +102,9 @@ public class HelloApplication extends Application {
 
         File madridFile = FileManager.saveCity(madrid);
         System.out.println(madrid.getName() + " city saved at: " + madridFile.getAbsolutePath());
+
+//        FileManager.renameCityFile("Madrid","ABC");
+//        madrid.setName("ABC");
     }
 
     public static void main(String[] args) throws Exception {
