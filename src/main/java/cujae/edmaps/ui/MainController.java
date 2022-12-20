@@ -96,7 +96,7 @@ public class MainController implements Initializable {
         for (File city : cities) {
             String[] consults = city.list();
             Menu submenu = new Menu(city.getName());
-            if (consults.length > 0) {
+            if (consults != null && consults.length > 0) {
                 Arrays.sort(consults);
                 for (String consult : consults) {
                     MenuItem c = new MenuItem(consult.split("\\.")[0]);

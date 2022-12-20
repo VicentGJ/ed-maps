@@ -30,15 +30,6 @@ public class FileManager {
         cities.mkdir();
         File consults = new File(CONSULTS_DIRECTORY);
         consults.mkdir();
-        File readme = new File(consults, "README.txt");
-        try {
-            readme.createNewFile();
-            FileWriter fw = new FileWriter(readme);
-            fw.write("DO NOT DELETE ANY FILES FROM HERE MANUALLY!\nThank you.");
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 //CITIES
