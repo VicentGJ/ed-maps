@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -36,7 +37,8 @@ public class SimpleAddController implements Initializable {
             case "Add City" -> type = AddType.CITY;
         }
         okButton.setDisable(true);
-        nameField.setOnKeyTyped(event -> {
+        nameField.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+            System.out.println(event.getEventType().getName());
             boolean exists = false;
             switch (type) {
                 case CITY -> {
@@ -61,7 +63,7 @@ public class SimpleAddController implements Initializable {
                     }
                 }
             }
-            okButton.setDisable(exists);
+            okButton.setDisable(exists || nameField.getText().isBlank());
         });
     }
 
@@ -71,9 +73,9 @@ public class SimpleAddController implements Initializable {
             switch (type) {
                 case BUS -> city.addBus(nameField.getText());
                 case STOP -> {
-                        city.addBusStop(nameField.getText());
-                        Drawer drawer = Drawer.getInstance();
-                        MainController.setGraphContainer(drawer.draw(null, null));
+                    city.addBusStop(nameField.getText());
+                    Drawer drawer = Drawer.getInstance();
+                    MainController.setGraphContainer(drawer.draw(null, null));
                 }
                 case CITY -> {
                     MapsManager.getInstance().createCity(nameField.getText());
