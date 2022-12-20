@@ -5,7 +5,6 @@ import cujae.edmaps.core.FileManager;
 import cujae.edmaps.core.MapsManager;
 import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -37,9 +36,11 @@ public class MainController implements Initializable {
     private void onAddBus() throws IOException {
         ViewLoader.newWindow(getClass().getResource("add-form.fxml"), "Add Bus", null);
     }
+
     @FXML
     private void onCreateCity() throws IOException {
-        ViewLoader.newWindow(getClass().getResource("add-form.fxml"), "Add City", null);
+//        ViewLoader.newWindow(getClass().getResource("add-form.fxml"), "Add City", null);
+        ViewLoader.newWindow(getClass().getResource("change-city-warning.fxml"), "New City Warning", null);
     }
 
     @FXML
@@ -100,7 +101,6 @@ public class MainController implements Initializable {
                 for (String consult : consults) {
                     MenuItem c = new MenuItem(consult.split("\\.")[0]);
                     c.setOnAction(event1 -> {
-                        //TODO: trigger load consult show subgraph
                         LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult);
                         onRefresh(vertices, city.getName());
                     });
@@ -114,7 +114,7 @@ public class MainController implements Initializable {
     public void onRefresh(LinkedList<Vertex> vertices, String cityName) {
         Drawer drawer = Drawer.getInstance();
         drawer.setStage(stage);
-        Group graph = drawer.draw(vertices,cityName);
+        Group graph = drawer.draw(vertices, cityName);
         if (graphContainer.getChildren().size() > 0)
             graphContainer.getChildren().remove(0);
         graphContainer.getChildren().add(graph);
@@ -130,16 +130,24 @@ public class MainController implements Initializable {
     private void onShowingFileMenu() {
         loadCityFileMenu.getItems().clear();
         File[] cities = FileManager.getAllCityFiles();
-        if (cities != null) {
+        if (cities.length != 0) {
             Arrays.sort(cities);
             for (File city : cities) {
                 MenuItem c = new MenuItem(city.getName().split("\\.")[0]);
                 c.setOnAction(event -> {
-                    MapsManager.getInstance().setActualCity(city.getName().split("\\.")[0]);
-                    onRefresh();
+                    try {
+                        ChangeCityWarningController controller = (ChangeCityWarningController) ViewLoader.newWindow(getClass().getResource("change-city-warning.fxml"), "Load City Warning", null);
+                        controller.setCityName(city.getName().split("\\.")[0]);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 });
                 loadCityFileMenu.getItems().add(c);
             }
+        } else {
+            MenuItem c = new MenuItem("No data");
+            c.setDisable(true);
+            loadCityFileMenu.getItems().add(c);
         }
     }
 
@@ -154,7 +162,29 @@ public class MainController implements Initializable {
         root.getChildren().add(graphContainer);
     }
 
+    @FXML
     public void onDeleteCity() throws IOException {
         ViewLoader.newWindow(getClass().getResource("delete-city-form.fxml"), "Delete City", null);
+    }
+
+    @FXML
+    public void onRenameCity() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("rename-form.fxml"), "Rename City", null);
+    }
+
+    @FXML
+    public void onRenameBus() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("rename-form.fxml"), "Rename Bus", null);
+    }
+
+    @FXML
+    public void onRenameBusStop() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("rename-form.fxml"), "Rename Stop", null);
+    }
+
+    @FXML
+    public void onModifyConnection() throws IOException {
+        ViewLoader.newWindow(getClass().getResource("modify-connection-form.fxml"), "Modify Connection", null);
+
     }
 }
