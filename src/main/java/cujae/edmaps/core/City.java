@@ -28,6 +28,8 @@ public class City {
     }
 
     public void setName(String name) {
+        if (name.isBlank())throw new InvalidParameterException("name can't be blank");
+
         this.name = name;
     }
 
@@ -45,7 +47,7 @@ public class City {
 
     public void addBus(String name) {
         if (name.isBlank())
-            throw new InvalidParameterException("name cannot be blank");
+            throw new InvalidParameterException("name can't be blank");
         if (!existBus(name))
             this.busList.add(new Bus(name));
     }
@@ -108,13 +110,19 @@ public class City {
             } else throw new InvalidParameterException("newName already exist: " + newName);
         } else throw new InvalidParameterException("oldName not found: " + oldName);
     }
+
     //********************************************************************
     //------------------------------BUS STOP------------------------------
     //********************************************************************
     public void addBusStop(String name) {
-        if (!existBusStop(name)) {
-            routeGraph.insertVertex(new BusStop(name));
+        if (existBusStop(name)) {
+            throw new InvalidParameterException(name + "already exist");
         }
+        if (name.isBlank()) {
+            throw new InvalidParameterException("name can't be blank");
+        }
+        routeGraph.insertVertex(new BusStop(name));
+
     }
 
     public List<BusStop> getBusStopList() {
@@ -332,7 +340,7 @@ public class City {
             while (j.hasNext()) {
                 currentWEdge = (WeightedEdge) j.next();
                 Route route = (Route) currentWEdge.getWeight();
-                if (Objects.equals(route.getBus(),bus)) j.remove();
+                if (Objects.equals(route.getBus(), bus)) j.remove();
             }
         }
     }
@@ -364,22 +372,22 @@ public class City {
     }
 
     /**
-     *Change the route bus for another that exists
+     * Change the route bus for another that exists
      *
-     * @param tail the BusStop's name that represents the departure stop of the route
-     * @param head the BusStop's name that represents the arrival stop of the route
+     * @param tail       the BusStop's name that represents the departure stop of the route
+     * @param head       the BusStop's name that represents the arrival stop of the route
      * @param oldBusName the name of the bus it's going to be change
      * @param newBusName the new bus name
      */
-    public void changeRouteBus(String tail, String head, String oldBusName, String newBusName){
+    public void changeRouteBus(String tail, String head, String oldBusName, String newBusName) {
         WeightedEdge edge = getEdge(oldBusName, tail, head);
-        if(edge == null) throw new InvalidParameterException("oldBusName: " + oldBusName);
+        if (edge == null) throw new InvalidParameterException("oldBusName: " + oldBusName);
         Route route = (Route) edge.getWeight();
         Bus bus = getBus(newBusName);
-        if(bus == null) throw new InvalidParameterException("newBusName: " + newBusName);
+        if (bus == null) throw new InvalidParameterException("newBusName: " + newBusName);
         //if aux == null means that there is not another route with the same bus between these vertex
         WeightedEdge aux = getEdge(newBusName, tail, head);
-        if(aux == null && canInsertRoute(getBusStopIndex(tail), getBusStopIndex(head), bus))
+        if (aux == null && canInsertRoute(getBusStopIndex(tail), getBusStopIndex(head), bus))
             route.setBus(bus);
     }
 
@@ -442,6 +450,7 @@ public class City {
     //*************************************************************************
     //------------------------------SHORTEST PATH------------------------------
     //*************************************************************************
+
     /**
      * Finds the shortest path between the given busStops
      *
@@ -465,10 +474,10 @@ public class City {
     }
 
     //Bus Filter
-    public List<Bus> busFilter(String tail, String head){
+    public List<Bus> busFilter(String tail, String head) {
         List<Bus> buses = new LinkedList<>();
-        for(Bus b : busList){
-            if(canInsertRoute(getBusStopIndex(tail), getBusStopIndex(head), b))
+        for (Bus b : busList) {
+            if (canInsertRoute(getBusStopIndex(tail), getBusStopIndex(head), b))
                 buses.add(b);
         }
         return buses;

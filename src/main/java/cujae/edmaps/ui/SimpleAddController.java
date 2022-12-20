@@ -71,9 +71,9 @@ public class SimpleAddController implements Initializable {
             switch (type) {
                 case BUS -> city.addBus(nameField.getText());
                 case STOP -> {
-                    city.addBusStop(nameField.getText());
-                    Drawer drawer = Drawer.getInstance();
-                    MainController.setGraphContainer(drawer.draw(null, null));
+                        city.addBusStop(nameField.getText());
+                        Drawer drawer = Drawer.getInstance();
+                        MainController.setGraphContainer(drawer.draw(null, null));
                 }
                 case CITY -> {
                     MapsManager.getInstance().createCity(nameField.getText());
