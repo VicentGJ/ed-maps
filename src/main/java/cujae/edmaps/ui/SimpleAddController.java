@@ -37,8 +37,7 @@ public class SimpleAddController implements Initializable {
             case "Add City" -> type = AddType.CITY;
         }
         okButton.setDisable(true);
-        nameField.addEventFilter(KeyEvent.KEY_TYPED, event -> {
-            System.out.println(event.getEventType().getName());
+        nameField.setOnKeyTyped(event -> {
             boolean exists = false;
             switch (type) {
                 case CITY -> {
