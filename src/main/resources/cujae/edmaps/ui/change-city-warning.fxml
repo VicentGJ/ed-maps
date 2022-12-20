@@ -9,8 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="434.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.ChangeCityWarningController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="138.0" prefWidth="335.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cujae.edmaps.ui.ChangeCityWarningController">
    <children>
       <VBox spacing="10.0">
          <children>
@@ -19,12 +18,12 @@
                   <Font size="22.0" />
                </font>
             </Label>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="If you continue now, unsaved changes will be lost, are you sure you want to continue?" wrappingWidth="403.43603515625" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="If you continue, unsaved changes will be lost" wrappingWidth="403.43603515625" />
          </children>
       </VBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="19.0" prefWidth="434.0" spacing="10.0">
          <children>
-            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSave" text="Save ">
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSave" text="Save">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -44,7 +43,7 @@
             </Button>
          </children>
          <VBox.margin>
-            <Insets />
+            <Insets top="5.0" />
          </VBox.margin>
       </HBox>
    </children>
