@@ -92,26 +92,33 @@ public class MainController implements Initializable {
     private void onShowingConsultsMenu() {
         loadCityConsultFileMenu.getItems().clear();
         File[] cities = FileManager.getAllConsultDirectories();
-        Arrays.sort(cities);
-        for (File city : cities) {
-            String[] consults = city.list();
-            Menu submenu = new Menu(city.getName());
-            if (consults != null && consults.length > 0) {
-                Arrays.sort(consults);
-                for (String consult : consults) {
-                    MenuItem c = new MenuItem(consult.split("\\.")[0]);
-                    c.setOnAction(event1 -> {
-                        LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult);
-                        onRefresh(vertices, city.getName());
-                    });
+        if(cities.length>0) {
+            Arrays.sort(cities);
+            for (File city : cities) {
+                String[] consults = city.list();
+                Menu submenu = new Menu(city.getName());
+                if (consults != null && consults.length > 0) {
+                    Arrays.sort(consults);
+                    for (String consult : consults) {
+                        MenuItem c = new MenuItem(consult.split("\\.")[0]);
+                        c.setOnAction(event1 -> {
+                            LinkedList<Vertex> vertices = FileManager.loadConsult(city.getName(), consult);
+                            onRefresh(vertices, city.getName());
+                        });
+                        submenu.getItems().add(c);
+                    }
+                } else {
+                    MenuItem c = new MenuItem("No Consults");
+                    c.setDisable(true);
                     submenu.getItems().add(c);
                 }
-            } else {
-                MenuItem c = new MenuItem("No Consults");
-                c.setDisable(true);
-                submenu.getItems().add(c);
+                loadCityConsultFileMenu.getItems().add(submenu);
             }
-            loadCityConsultFileMenu.getItems().add(submenu);
+        }else{
+            MenuItem c = new MenuItem("No Cities");
+            c.setDisable(true);
+            loadCityConsultFileMenu.getItems().add(c);
+
         }
     }
 
