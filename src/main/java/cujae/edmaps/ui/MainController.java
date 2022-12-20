@@ -95,9 +95,9 @@ public class MainController implements Initializable {
         Arrays.sort(cities);
         for (File city : cities) {
             String[] consults = city.list();
-            if (consults != null) {
+            Menu submenu = new Menu(city.getName());
+            if (consults.length > 0) {
                 Arrays.sort(consults);
-                Menu submenu = new Menu(city.getName());
                 for (String consult : consults) {
                     MenuItem c = new MenuItem(consult.split("\\.")[0]);
                     c.setOnAction(event1 -> {
@@ -106,8 +106,12 @@ public class MainController implements Initializable {
                     });
                     submenu.getItems().add(c);
                 }
-                loadCityConsultFileMenu.getItems().add(submenu);
+            } else {
+                MenuItem c = new MenuItem("No Consults");
+                c.setDisable(true);
+                submenu.getItems().add(c);
             }
+            loadCityConsultFileMenu.getItems().add(submenu);
         }
     }
 
