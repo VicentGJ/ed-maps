@@ -28,6 +28,8 @@ public class City {
     }
 
     public void setName(String name) {
+        if (name.isBlank())throw new InvalidParameterException("name can't be blank");
+
         this.name = name;
     }
 
@@ -45,7 +47,7 @@ public class City {
 
     public void addBus(String name) {
         if (name.isBlank())
-            throw new InvalidParameterException("name cannot be blank");
+            throw new InvalidParameterException("name can't be blank");
         if (!existBus(name))
             this.busList.add(new Bus(name));
     }
@@ -113,9 +115,14 @@ public class City {
     //------------------------------BUS STOP------------------------------
     //********************************************************************
     public void addBusStop(String name) {
-        if (!existBusStop(name)) {
-            routeGraph.insertVertex(new BusStop(name));
+        if (existBusStop(name)) {
+            throw new InvalidParameterException(name + "already exist");
         }
+        if (name.isBlank()) {
+            throw new InvalidParameterException("name can't be blank");
+        }
+        routeGraph.insertVertex(new BusStop(name));
+
     }
 
     public List<BusStop> getBusStopList() {
