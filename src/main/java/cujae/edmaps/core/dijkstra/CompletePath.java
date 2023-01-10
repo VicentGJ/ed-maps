@@ -6,7 +6,7 @@ import cujae.edmaps.core.*;
 import java.util.LinkedList;
 
 public class CompletePath {
-    private LinkedList<Path> paths;
+    private final LinkedList<Path> paths;
 
     public CompletePath() {
         paths = new LinkedList<>();
