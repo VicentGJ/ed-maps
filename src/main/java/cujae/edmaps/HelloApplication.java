@@ -3,13 +3,11 @@ package cujae.edmaps;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.*;
-import cujae.edmaps.core.dijkstra.CompletePath;
+import cujae.edmaps.core.dijkstra.ShortestPath;
 import cujae.edmaps.core.dijkstra.Path;
 import cujae.edmaps.ui.MainController;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -48,7 +46,7 @@ public class HelloApplication extends Application {
         madrid.insertRoute("Airport", "Train Station", "Route-3", 1.0f);
         madrid.insertRoute("Train Station", "Old town", "Route-3", 1.0f);
         try {
-            CompletePath path = madrid.getPathBetween("Airport", "Old town");
+            ShortestPath path = madrid.getPathBetween("Airport", "Old town");
             System.out.println("consult file created...");
             for (Path p : path.getPaths()) {
                 System.out.println(p.getBus() != null ? p.getBus().getName() : null);

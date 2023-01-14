@@ -1,13 +1,10 @@
 package cujae.edmaps.ui;
 
-import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.City;
-import cujae.edmaps.core.FileManager;
 import cujae.edmaps.core.MapsManager;
-import cujae.edmaps.core.dijkstra.CompletePath;
+import cujae.edmaps.core.dijkstra.ShortestPath;
 import cujae.edmaps.core.dijkstra.Path;
-import cujae.edmaps.utils.Drawer;
 import cujae.edmaps.utils.ViewLoader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -18,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class ConsultController implements Initializable {
@@ -85,7 +81,7 @@ public class ConsultController implements Initializable {
         try {
             Float totalDistance = 0f;
             ObservableList<PathHelper> pathList = FXCollections.observableArrayList();
-            CompletePath path = city.getPathBetween(startComboBox.getValue(), destinationComboBox.getValue());
+            ShortestPath path = city.getPathBetween(startComboBox.getValue(), destinationComboBox.getValue());
             Path first = path.getPaths().getFirst();
             for (Path p : path.getPaths()) {
 //                System.out.println(p.getBus() != null ? p.getBus().getName() : null);

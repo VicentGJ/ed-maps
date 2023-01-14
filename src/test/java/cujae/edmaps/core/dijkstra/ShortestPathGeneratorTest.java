@@ -7,16 +7,14 @@ import cujae.edmaps.core.Bus;
 import cujae.edmaps.core.BusStop;
 import cujae.edmaps.core.Route;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ShortestPathTest {
-    private static ShortestPath shortestPath;
+class ShortestPathGeneratorTest {
+    private static ShortestPathGenerator shortestPathGenerator;
     private static ILinkedWeightedEdgeNotDirectedGraph graph;
 
     @BeforeAll
@@ -47,7 +45,7 @@ class ShortestPathTest {
     }
     @BeforeAll
     static void initiateShortestPath(){
-        shortestPath = new ShortestPath();
+        shortestPathGenerator = new ShortestPathGenerator();
     }
 
 
@@ -59,9 +57,9 @@ class ShortestPathTest {
         Vertex oldTown = graph.getVerticesList().get(3);
         Vertex cityHall = graph.getVerticesList().get(4);
 
-        shortestPath.setInitialStop(airport);
-        CompletePath completePath = shortestPath.getShortestPathTo(trainStation);
-        List<Path> pathList = completePath.getPaths();
+        shortestPathGenerator.setInitialStop(airport);
+        ShortestPath shortestPath = shortestPathGenerator.getShortestPathTo(trainStation);
+        List<Path> pathList = shortestPath.getPaths();
 
         Path path;
         //Airport
