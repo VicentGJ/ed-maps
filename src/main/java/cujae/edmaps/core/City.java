@@ -5,8 +5,8 @@ import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
-import cujae.edmaps.core.dijkstra.CompletePath;
-import cujae.edmaps.core.dijkstra.DijkstraShortestPath;
+import cujae.edmaps.core.dijkstra.ShortestPath;
+import cujae.edmaps.core.dijkstra.ShortestPathGenerator;
 
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -15,12 +15,13 @@ public class City {
     private String name;
     private ILinkedWeightedEdgeNotDirectedGraph routeGraph;
     private List<Bus> busList;
-    private DijkstraShortestPath dijsktraShortestPath;
+    private ShortestPathGenerator shortestPathGenerator;
 
     public City(String name) {
         setName(name);
         this.routeGraph = new LinkedGraph();
         this.busList = new LinkedList<>();
+        shortestPathGenerator = new ShortestPathGenerator();
     }
 
     public String getName() {
@@ -470,19 +471,19 @@ public class City {
      * @param goal  the BusStop's name of the goal point
      * @return a CompletePath instance with the path from start to goal
      */
-    public CompletePath getPathBetween(String start, String goal) {
+    public ShortestPath getPathBetween(String start, String goal) {
         Vertex tail = getVertex(start);
         Vertex head = getVertex(goal);
-        if (dijsktraShortestPath == null || !((BusStop) dijsktraShortestPath.getStart().getInfo()).getName().equalsIgnoreCase(start)) {
-            dijsktraShortestPath = new DijkstraShortestPath(tail);
+        if (shortestPathGenerator.getInitialStop() == null || !((BusStop) shortestPathGenerator.getInitialStop().getInfo()).getName().equalsIgnoreCase(start)) {
+            shortestPathGenerator.setInitialStop(tail);
         }
-        CompletePath consult = dijsktraShortestPath.getShortestPathTo(head);
+        ShortestPath consult = shortestPathGenerator.getShortestPathTo(head);
         consult.save();
         return consult;
     }
 
     public void restartDijkstra() {
-        this.dijsktraShortestPath = null;
+        this.shortestPathGenerator = new ShortestPathGenerator();
     }
 
     //Bus Filter

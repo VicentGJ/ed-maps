@@ -2,6 +2,7 @@ module cujae.edmaps {
     requires javafx.controls;
     requires javafx.fxml;
     requires LinkedGraph;
+    requires org.jetbrains.annotations;
 
 
     opens cujae.edmaps to javafx.fxml;
