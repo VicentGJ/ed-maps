@@ -5,14 +5,12 @@ import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import cujae.edmaps.core.Route;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class DijkstraAlgorithmImp implements DijkstraAlgorithm{
-    private Vertex initialStop;
     private Map<Vertex, WayToArrive> stopMap;
-    private Map<Vertex, WayToArrive> toUnlock;
     private Set<Vertex> alreadyUnlocked;
+    private PriorityQueue<Map.Entry<Vertex, WayToArrive>> toUnlock;
 
     /**
      * Apply dijkstra algorithm starting on the initial point given and returning
@@ -22,29 +20,30 @@ public class DijkstraAlgorithmImp implements DijkstraAlgorithm{
      * @return a map with the stops and the way to arrive to them
      */
     @Override
-    public Map<Vertex, WayToArrive> getStopMap(Vertex initialStop){
+    public Map<Vertex, WayToArrive> getStopMap(@NotNull Vertex initialStop){
         initializeParameters(initialStop);
         executeAlgorithm();
         return stopMap;
     }
 
     private void initializeParameters(Vertex initialStop){
-        setInitialStop(initialStop);
         stopMap = new HashMap<>();
-        toUnlock = new HashMap<>();
         alreadyUnlocked = new HashSet<>();
-        stopMap.put(initialStop, new WayToArrive(null, null, 0f, 0f));
+        WayToArrive wayToArrive = new WayToArrive(null, null, 0f, 0f);
+        stopMap.put(initialStop, wayToArrive);
+        toUnlock = new PriorityQueue<>(
+                (e1, e2) -> Float.compare(e1.getValue().getDistanceUpToHere(), e2.getValue().getDistanceUpToHere())
+        );
+        toUnlock.add(Map.entry(initialStop, wayToArrive));
     }
     private void executeAlgorithm() {
-        Vertex stop = initialStop;
-        while(stop != null){
+        while(!toUnlock.isEmpty()){
+            Vertex stop = toUnlock.poll().getKey();
             unlockStop(stop);
-            stop = getShortest();
         }
     }
     private void unlockStop(Vertex stop){
         alreadyUnlocked.add(stop);
-        toUnlock.remove(stop);
         addAdjacentStopsToToUnlockMap(stop);
     }
     private void addAdjacentStopsToToUnlockMap(Vertex stop){
@@ -70,38 +69,10 @@ public class DijkstraAlgorithmImp implements DijkstraAlgorithm{
         }else{
             WayToArrive wayToArrive = new WayToArrive(previousStop, route.getBus(), actualDistance, route.getDistance());
             stopMap.put(target, wayToArrive);
-            toUnlock.put(target, wayToArrive);
+            toUnlock.offer(Map.entry(target, wayToArrive));
         }
     }
     private boolean isUnlock(Vertex stop){
         return alreadyUnlocked.contains(stop);
-    }
-    /**
-     * Find the shortest route up to that moment
-     *
-     * @return vertex who has the shortest distance
-     */
-    @Nullable
-    private Vertex getShortest() {
-        Vertex result = null;
-        Iterator<Map.Entry<Vertex, WayToArrive>> it = toUnlock.entrySet().iterator();
-        Float min = 0.0f;
-        if (it.hasNext()) {
-            Map.Entry<Vertex, WayToArrive> entry = it.next();
-            min = entry.getValue().getDistanceUpToHere();
-            result = entry.getKey();
-        }
-        while (it.hasNext()) {
-            Map.Entry<Vertex, WayToArrive> entry = it.next();
-            if (min > entry.getValue().getDistanceUpToHere()) {
-                min = entry.getValue().getDistanceUpToHere();
-                result = entry.getKey();
-            }
-        }
-        return result;
-    }
-
-    private void setInitialStop(@NotNull Vertex initialStop) {
-        this.initialStop = initialStop;
     }
 }
